@@ -5,7 +5,8 @@ const CopyPlugin = require('copy-webpack-plugin');
 module.exports = {
     context: __dirname,
     entry: {
-        main: './src/entries/main.ts',
+        'main': './src/entries/main.ts',
+        'main-window': './src/entries/main-window.tsx',
     },
     externals: [
         { electron: 'commonjs electron' },

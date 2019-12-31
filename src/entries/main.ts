@@ -9,9 +9,12 @@ const createMainWindow = () => {
         throw Error();
 
     const window = mainWindow = new BrowserWindow({
-        width: 800,
         height: 640,
         show: false,
+        webPreferences: {
+            nodeIntegration: true,
+        },
+        width: 800,
     });
 
     window.loadURL(`file://${path.resolve(__dirname, '../views/main-window.html')}`);
