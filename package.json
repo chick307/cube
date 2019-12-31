@@ -1,0 +1,22 @@
+{
+  "name": "cube",
+  "version": "0.0.0",
+  "author": "chick307 <chick307@gmail.com>",
+  "dependencies": {
+    "electron": "^7.1.7"
+  },
+  "devDependencies": {
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.4",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "debug": "electron debug/entries/main.js",
+    "watch": "webpack --config webpack.dev.js --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
