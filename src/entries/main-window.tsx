@@ -8,8 +8,13 @@ import ReactDom from 'react-dom';
 const HOME_DIRECTORY_PATH = remote.app.getPath('home');
 
 type Entry = {
+    path: string;
     name: string;
     type: 'file' | 'directory' | 'other';
+};
+
+type Navigator = {
+    open: (entry: Entry) => void;
 };
 
 const DirectoryEntryView = (props: { entry: Entry; onEntryClick: (entry: Entry) => void; }) => {
@@ -22,12 +27,19 @@ const DirectoryEntryView = (props: { entry: Entry; onEntryClick: (entry: Entry) 
     </>;
 };
 
-const DirectoryView = (props: { directoryPath: string; onEntryClick: (entry: Entry) => void; }) => {
-    const { directoryPath, onEntryClick } = props;
-    const entries = fs.readdirSync(directoryPath).map((name): Entry => {
+const DirectoryView = (props: { directoryPath: string; navigator: Navigator; }) => {
+    const { directoryPath, navigator } = props;
+    const entries = React.useMemo(() => fs.readdirSync(directoryPath).map((name) => {
         const stat = fs.statSync(path.join(directoryPath, name));
-        return { name, type: stat.isFile() ? 'file' : stat.isDirectory() ? 'directory' : 'other' };
-    });
+        return {
+            name,
+            path: path.join(directoryPath, name),
+            type: stat.isFile() ? 'file' : stat.isDirectory() ? 'directory' : 'other',
+        } as Entry;
+    }), [directoryPath]);
+    const onEntryClick = React.useCallback((entry: Entry) => {
+        navigator.open(entry);
+    }, [navigator]);
     return <>
         <div>
             {directoryPath}
@@ -42,16 +54,62 @@ const DirectoryView = (props: { directoryPath: string; onEntryClick: (entry: Ent
     </>;
 };
 
-const MainWindow = () => {
-    const [directoryPath, setDirectoryPath] = React.useState(HOME_DIRECTORY_PATH);
+const FileView = (props: { entry: Entry; navigator: Navigator; }) => {
+    const { entry } = props;
 
-    const onEntryClick = React.useCallback((entry: Entry) => {
-        if (entry.type === 'directory')
-            setDirectoryPath(path.resolve(directoryPath, entry.name));
-    }, [directoryPath]);
+    const content = React.useMemo(() => fs.readFileSync(entry.path, 'utf8'), [entry]);
 
     return <>
-        <DirectoryView directoryPath={directoryPath} onEntryClick={onEntryClick} />
+        <div>
+            <div>
+                {entry.path}
+            </div>
+            <div>
+                <pre>
+                    {content}
+                </pre>
+            </div>
+        </div>
+    </>;
+};
+
+const EntryView = (props: { entry: Entry; navigator: Navigator; }) => {
+    const { entry, navigator } = props;
+
+    if (entry.type === 'directory') {
+        return <DirectoryView directoryPath={entry.path} navigator={navigator} />;
+    }
+
+    if (entry.type === 'file') {
+        return <FileView entry={entry} navigator={navigator} />;
+    }
+
+    return <>
+        <div>
+            <div>
+                {entry.path}
+            </div>
+        </div>
+    </>;
+};
+
+const MainWindow = () => {
+    const [entry, setEntry] = React.useState<Entry>(() => ({
+        name: path.basename(HOME_DIRECTORY_PATH),
+        path: HOME_DIRECTORY_PATH,
+        type: 'directory',
+    }));
+
+    const navigator = React.useMemo(() => {
+        return {
+            open: (entry: Entry) => {
+                setEntry(entry);
+            },
+        };
+    }, []);
+
+    return <>
+        <EntryView entry={entry} navigator={navigator} />
     </>;
 };
 
