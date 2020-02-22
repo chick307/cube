@@ -5,11 +5,13 @@ import { remote } from 'electron';
 import React from 'react';
 import ReactDom from 'react-dom';
 
+import EntryName from '../values/entry-name';
+
 const HOME_DIRECTORY_PATH = remote.app.getPath('home');
 
 type Entry = {
     path: string;
-    name: string;
+    name: EntryName;
     type: 'file' | 'directory' | 'other';
 };
 
@@ -22,7 +24,7 @@ const DirectoryEntryView = (props: { entry: Entry; onEntryClick: (entry: Entry) 
     const onClick = React.useCallback(() => { onEntryClick(entry); }, [entry, onEntryClick]);
     return <>
         <span onDoubleClick={onClick}>
-            {entry.name}
+            {entry.name.toString()}
         </span>
     </>;
 };
@@ -30,9 +32,10 @@ const DirectoryEntryView = (props: { entry: Entry; onEntryClick: (entry: Entry) 
 const DirectoryView = (props: { directoryPath: string; navigator: Navigator; }) => {
     const { directoryPath, navigator } = props;
     const entries = React.useMemo(() => fs.readdirSync(directoryPath).map((name) => {
+        const entryName = new EntryName(name);
         const stat = fs.statSync(path.join(directoryPath, name));
         return {
-            name,
+            name: entryName,
             path: path.join(directoryPath, name),
             type: stat.isFile() ? 'file' : stat.isDirectory() ? 'directory' : 'other',
         } as Entry;
@@ -46,7 +49,7 @@ const DirectoryView = (props: { directoryPath: string; navigator: Navigator; }) 
         </div>
         <ul>
             {entries.map((entry) => (
-                <li key={entry.name}>
+                <li key={entry.name.toString()}>
                     <DirectoryEntryView entry={entry} onEntryClick={onEntryClick} />
                 </li>
             ))}
@@ -95,7 +98,7 @@ const EntryView = (props: { entry: Entry; navigator: Navigator; }) => {
 
 const MainWindow = () => {
     const [entry, setEntry] = React.useState<Entry>(() => ({
-        name: path.basename(HOME_DIRECTORY_PATH),
+        name: new EntryName(path.basename(HOME_DIRECTORY_PATH)),
         path: HOME_DIRECTORY_PATH,
         type: 'directory',
     }));
