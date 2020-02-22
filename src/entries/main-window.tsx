@@ -6,11 +6,12 @@ import React from 'react';
 import ReactDom from 'react-dom';
 
 import EntryName from '../values/entry-name';
+import EntryPath from '../values/entry-path';
 
 const HOME_DIRECTORY_PATH = remote.app.getPath('home');
 
 type Entry = {
-    path: string;
+    path: EntryPath;
     name: EntryName;
     type: 'file' | 'directory' | 'other';
 };
@@ -29,14 +30,15 @@ const DirectoryEntryView = (props: { entry: Entry; onEntryClick: (entry: Entry) 
     </>;
 };
 
-const DirectoryView = (props: { directoryPath: string; navigator: Navigator; }) => {
+const DirectoryView = (props: { directoryPath: EntryPath; navigator: Navigator; }) => {
     const { directoryPath, navigator } = props;
-    const entries = React.useMemo(() => fs.readdirSync(directoryPath).map((name) => {
+    const entries = React.useMemo(() => fs.readdirSync(directoryPath.toString()).map((name) => {
         const entryName = new EntryName(name);
-        const stat = fs.statSync(path.join(directoryPath, name));
+        const entryPath = directoryPath.join(entryName);
+        const stat = fs.statSync(entryPath.toString());
         return {
             name: entryName,
-            path: path.join(directoryPath, name),
+            path: entryPath,
             type: stat.isFile() ? 'file' : stat.isDirectory() ? 'directory' : 'other',
         } as Entry;
     }), [directoryPath]);
@@ -60,12 +62,12 @@ const DirectoryView = (props: { directoryPath: string; navigator: Navigator; }) 
 const FileView = (props: { entry: Entry; navigator: Navigator; }) => {
     const { entry } = props;
 
-    const content = React.useMemo(() => fs.readFileSync(entry.path, 'utf8'), [entry]);
+    const content = React.useMemo(() => fs.readFileSync(entry.path.toString(), 'utf8'), [entry]);
 
     return <>
         <div>
             <div>
-                {entry.path}
+                {entry.path.toString()}
             </div>
             <div>
                 <pre>
@@ -90,7 +92,7 @@ const EntryView = (props: { entry: Entry; navigator: Navigator; }) => {
     return <>
         <div>
             <div>
-                {entry.path}
+                {entry.path.toString()}
             </div>
         </div>
     </>;
@@ -99,7 +101,7 @@ const EntryView = (props: { entry: Entry; navigator: Navigator; }) => {
 const MainWindow = () => {
     const [entry, setEntry] = React.useState<Entry>(() => ({
         name: new EntryName(path.basename(HOME_DIRECTORY_PATH)),
-        path: HOME_DIRECTORY_PATH,
+        path: new EntryPath(HOME_DIRECTORY_PATH),
         type: 'directory',
     }));
 
