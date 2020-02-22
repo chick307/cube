@@ -5,16 +5,16 @@ import { remote } from 'electron';
 import React from 'react';
 import ReactDom from 'react-dom';
 
+import DirectoryEntry from '../entities/directory-entry';
 import FileEntry from '../entities/file-entry';
 import EntryName from '../values/entry-name';
 import EntryPath from '../values/entry-path';
 
 const HOME_DIRECTORY_PATH = remote.app.getPath('home');
-
-type Entry = FileEntry | {
+type Entry = FileEntry | DirectoryEntry | {
     path: EntryPath;
     name: EntryName;
-    type: 'directory' | 'other';
+    type: 'other';
 };
 
 type Navigator = {
@@ -31,26 +31,24 @@ const DirectoryEntryView = (props: { entry: Entry; onEntryClick: (entry: Entry) 
     </>;
 };
 
-const DirectoryView = (props: { directoryPath: EntryPath; navigator: Navigator; }) => {
-    const { directoryPath, navigator } = props;
-    const entries = React.useMemo(() => fs.readdirSync(directoryPath.toString()).map((name) => {
+const DirectoryView = (props: { entry: DirectoryEntry; navigator: Navigator; }) => {
+    const { entry, navigator } = props;
+    const entries = React.useMemo(() => fs.readdirSync(entry.path.toString()).map((name) => {
         const entryName = new EntryName(name);
-        const entryPath = directoryPath.join(entryName);
+        const entryPath = entry.path.join(entryName);
         const stat = fs.statSync(entryPath.toString());
         if (stat.isFile())
             return new FileEntry(entryPath);
-        return {
-            name: entryName,
-            path: entryPath,
-            type: stat.isDirectory() ? 'directory' : 'other',
-        } as Entry;
-    }), [directoryPath]);
+        if (stat.isDirectory())
+            return new DirectoryEntry(entryPath);
+        return { name: entryName, path: entryPath, type: 'other' } as Entry;
+    }), [entry]);
     const onEntryClick = React.useCallback((entry: Entry) => {
         navigator.open(entry);
     }, [navigator]);
     return <>
         <div>
-            {directoryPath}
+            {entry.path.toString()}
         </div>
         <ul>
             {entries.map((entry) => (
@@ -85,7 +83,7 @@ const EntryView = (props: { entry: Entry; navigator: Navigator; }) => {
     const { entry, navigator } = props;
 
     if (entry.type === 'directory') {
-        return <DirectoryView directoryPath={entry.path} navigator={navigator} />;
+        return <DirectoryView entry={entry} navigator={navigator} />;
     }
 
     if (entry.type === 'file') {
@@ -102,11 +100,7 @@ const EntryView = (props: { entry: Entry; navigator: Navigator; }) => {
 };
 
 const MainWindow = () => {
-    const [entry, setEntry] = React.useState<Entry>(() => ({
-        name: new EntryName(path.basename(HOME_DIRECTORY_PATH)),
-        path: new EntryPath(HOME_DIRECTORY_PATH),
-        type: 'directory',
-    }));
+    const [entry, setEntry] = React.useState(() => new DirectoryEntry(new EntryPath(HOME_DIRECTORY_PATH)) as Entry);
 
     const navigator = React.useMemo(() => {
         return {
