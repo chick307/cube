@@ -5,15 +5,16 @@ import { remote } from 'electron';
 import React from 'react';
 import ReactDom from 'react-dom';
 
+import FileEntry from '../entities/file-entry';
 import EntryName from '../values/entry-name';
 import EntryPath from '../values/entry-path';
 
 const HOME_DIRECTORY_PATH = remote.app.getPath('home');
 
-type Entry = {
+type Entry = FileEntry | {
     path: EntryPath;
     name: EntryName;
-    type: 'file' | 'directory' | 'other';
+    type: 'directory' | 'other';
 };
 
 type Navigator = {
@@ -36,10 +37,12 @@ const DirectoryView = (props: { directoryPath: EntryPath; navigator: Navigator; 
         const entryName = new EntryName(name);
         const entryPath = directoryPath.join(entryName);
         const stat = fs.statSync(entryPath.toString());
+        if (stat.isFile())
+            return new FileEntry(entryPath);
         return {
             name: entryName,
             path: entryPath,
-            type: stat.isFile() ? 'file' : stat.isDirectory() ? 'directory' : 'other',
+            type: stat.isDirectory() ? 'directory' : 'other',
         } as Entry;
     }), [directoryPath]);
     const onEntryClick = React.useCallback((entry: Entry) => {
