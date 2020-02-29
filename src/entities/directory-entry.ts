@@ -1,15 +1,19 @@
-import EntryName from '../values/entry-name';
-import EntryPath from '../values/entry-path';
+import Entry from './entry';
 
-export class DirectoryEntry {
-    readonly name: EntryName;
-    readonly path: EntryPath;
+export class DirectoryEntry extends Entry {
     readonly type = 'directory';
 
-    constructor(entryPath: EntryPath) {
-        this.name = entryPath.name;
-        this.path = entryPath;
+    isDirectory(): this is DirectoryEntry {
+        return true;
     }
 }
+
+declare module './entry' {
+    interface Entry {
+        isDirectory(): this is DirectoryEntry;
+    }
+}
+
+Entry.prototype.isDirectory = () => false;
 
 export default DirectoryEntry;

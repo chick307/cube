@@ -1,21 +1,16 @@
 import * as fs from 'fs';
-import * as path from 'path';
 
 import { remote } from 'electron';
 import React from 'react';
 import ReactDom from 'react-dom';
 
 import DirectoryEntry from '../entities/directory-entry';
+import Entry from '../entities/entry';
 import FileEntry from '../entities/file-entry';
 import EntryName from '../values/entry-name';
 import EntryPath from '../values/entry-path';
 
 const HOME_DIRECTORY_PATH = remote.app.getPath('home');
-type Entry = FileEntry | DirectoryEntry | {
-    path: EntryPath;
-    name: EntryName;
-    type: 'other';
-};
 
 type Navigator = {
     open: (entry: Entry) => void;
@@ -41,7 +36,7 @@ const DirectoryView = (props: { entry: DirectoryEntry; navigator: Navigator; }) 
             return new FileEntry(entryPath);
         if (stat.isDirectory())
             return new DirectoryEntry(entryPath);
-        return { name: entryName, path: entryPath, type: 'other' } as Entry;
+        return new Entry(entryPath);
     }), [entry]);
     const onEntryClick = React.useCallback((entry: Entry) => {
         navigator.open(entry);
@@ -82,11 +77,11 @@ const FileView = (props: { entry: Entry; navigator: Navigator; }) => {
 const EntryView = (props: { entry: Entry; navigator: Navigator; }) => {
     const { entry, navigator } = props;
 
-    if (entry.type === 'directory') {
+    if (entry.isDirectory()) {
         return <DirectoryView entry={entry} navigator={navigator} />;
     }
 
-    if (entry.type === 'file') {
+    if (entry.isFile()) {
         return <FileView entry={entry} navigator={navigator} />;
     }
 

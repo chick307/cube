@@ -1,15 +1,19 @@
-import EntryName from '../values/entry-name';
-import EntryPath from '../values/entry-path';
+import Entry from './entry';
 
-export class FileEntry {
-    readonly name: EntryName;
-    readonly path: EntryPath;
+export class FileEntry extends Entry {
     readonly type = 'file';
 
-    constructor(entryPath: EntryPath) {
-        this.name = entryPath.name;
-        this.path = entryPath;
+    isFile(): this is FileEntry {
+        return true;
     }
 }
+
+declare module './entry' {
+    interface Entry {
+        isFile(): this is FileEntry;
+    }
+}
+
+Entry.prototype.isFile = () => false;
 
 export default FileEntry;
