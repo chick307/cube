@@ -1,16 +1,11 @@
 import * as fs from 'fs';
 
-import { remote } from 'electron';
 import React from 'react';
 import ReactDom from 'react-dom';
 
 import DirectoryEntry from '../entities/directory-entry';
 import Entry from '../entities/entry';
-import FileEntry from '../entities/file-entry';
-import EntryName from '../values/entry-name';
-import EntryPath from '../values/entry-path';
-
-const HOME_DIRECTORY_PATH = remote.app.getPath('home');
+import LocalFileSystemService from '../services/local-file-system-service';
 
 type Navigator = {
     open: (entry: Entry) => void;
@@ -26,18 +21,13 @@ const DirectoryEntryView = (props: { entry: Entry; onEntryClick: (entry: Entry) 
     </>;
 };
 
-const DirectoryView = (props: { entry: DirectoryEntry; navigator: Navigator; }) => {
-    const { entry, navigator } = props;
-    const entries = React.useMemo(() => fs.readdirSync(entry.path.toString()).map((name) => {
-        const entryName = new EntryName(name);
-        const entryPath = entry.path.join(entryName);
-        const stat = fs.statSync(entryPath.toString());
-        if (stat.isFile())
-            return new FileEntry(entryPath);
-        if (stat.isDirectory())
-            return new DirectoryEntry(entryPath);
-        return new Entry(entryPath);
-    }), [entry]);
+const DirectoryView = (props: {
+    entry: DirectoryEntry;
+    localFileSystemService: LocalFileSystemService;
+    navigator: Navigator;
+}) => {
+    const { entry, localFileSystemService, navigator } = props;
+    const entries = React.useMemo(() => localFileSystemService.getDirectoryEntries(entry), [entry, localFileSystemService]);
     const onEntryClick = React.useCallback((entry: Entry) => {
         navigator.open(entry);
     }, [navigator]);
@@ -74,11 +64,15 @@ const FileView = (props: { entry: Entry; navigator: Navigator; }) => {
     </>;
 };
 
-const EntryView = (props: { entry: Entry; navigator: Navigator; }) => {
-    const { entry, navigator } = props;
+const EntryView = (props: {
+    entry: Entry;
+    localFileSystemService: LocalFileSystemService;
+    navigator: Navigator;
+}) => {
+    const { entry, localFileSystemService, navigator } = props;
 
     if (entry.isDirectory()) {
-        return <DirectoryView entry={entry} navigator={navigator} />;
+        return <DirectoryView {...{ entry, localFileSystemService, navigator }} />;
     }
 
     if (entry.isFile()) {
@@ -95,7 +89,9 @@ const EntryView = (props: { entry: Entry; navigator: Navigator; }) => {
 };
 
 const MainWindow = () => {
-    const [entry, setEntry] = React.useState(() => new DirectoryEntry(new EntryPath(HOME_DIRECTORY_PATH)) as Entry);
+    const localFileSystemService = React.useMemo(() => new LocalFileSystemService(), []);
+
+    const [entry, setEntry] = React.useState(() => localFileSystemService.getHomeDirectory() as Entry);
 
     const navigator = React.useMemo(() => {
         return {
@@ -106,7 +102,7 @@ const MainWindow = () => {
     }, []);
 
     return <>
-        <EntryView entry={entry} navigator={navigator} />
+        <EntryView {...{ entry, localFileSystemService, navigator }} />
     </>;
 };
 
