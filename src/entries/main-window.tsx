@@ -45,10 +45,50 @@ const DirectoryView = (props: {
     </>;
 };
 
-const FileView = (props: { entry: Entry; navigator: Navigator; }) => {
+const TextFileView = (props: { entry: Entry; }) => {
     const { entry } = props;
 
     const content = React.useMemo(() => fs.readFileSync(entry.path.toString(), 'utf8'), [entry]);
+
+    return <>
+        <pre>
+            {content}
+        </pre>
+    </>;
+};
+
+const ImageFileView = (props: { entry: Entry; }) => {
+    const { entry } = props;
+
+    const contentType = React.useMemo(() => {
+        const ext = entry.path.getExtension();
+        if (ext === '.png')
+            return 'image/png';
+        if (ext === '.jpg' || ext === '.jpeg')
+            return 'image/jpeg';
+        return 'application/octet-stream';
+    }, [entry]);
+
+    const dataUrl = React.useMemo(() => {
+        const content = fs.readFileSync(entry.path.toString());
+        const dataUrl = `data:${contentType};base64,${content.toString('base64')}`;
+        return dataUrl;
+    }, [entry]);
+
+    return <>
+        <div>
+            <img src={dataUrl} />
+        </div>
+    </>;
+};
+
+const FileView = (props: { entry: Entry; navigator: Navigator; }) => {
+    const { entry } = props;
+
+    const ext = entry.path.getExtension();
+
+    const view = /^\.(?:png|jpe?g)$/.test(ext) ? <ImageFileView {...{ entry }} /> :
+        <TextFileView {...{ entry }} />;
 
     return <>
         <div>
@@ -56,9 +96,7 @@ const FileView = (props: { entry: Entry; navigator: Navigator; }) => {
                 {entry.path.toString()}
             </div>
             <div>
-                <pre>
-                    {content}
-                </pre>
+                {view}
             </div>
         </div>
     </>;
