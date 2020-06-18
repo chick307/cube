@@ -4,27 +4,29 @@ import { useStore } from '../hooks/use-store';
 import { EntryStore } from '../stores/entry-store';
 import { DirectoryView } from './directory-view';
 import { FileView } from './file-view';
+import styles from './entry-view.css';
 
 export type Props = {
+    className?: string;
     entryStore: EntryStore;
 };
 
 export const EntryView = (props: Props) => {
-    const { entryStore } = props;
+    const { className = '', entryStore } = props;
 
     const { entry } = useStore(entryStore);
 
     const view =
-        entry.isDirectory() ? <DirectoryView {...{ entry, entryStore }} /> :
-        entry.isFile() ? <FileView {...{ entry, entryStore }} /> :
+        entry.isDirectory() ? <DirectoryView className={styles.view} {...{ entry, entryStore }} /> :
+        entry.isFile() ? <FileView className={styles.view} {...{ entry, entryStore }} /> :
         <></>;
 
     return <>
-        <div>
-            <div>
+        <div className={`${className} ${styles.entryView}`}>
+            <div className={styles.path}>
                 {entry.path.toString()}
             </div>
-            <div>
+            <div className={styles.viewContainer}>
                 {view}
             </div>
         </div>

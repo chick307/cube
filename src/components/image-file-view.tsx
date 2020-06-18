@@ -3,13 +3,15 @@ import fs from 'fs';
 import React from 'react';
 
 import { FileEntry } from '../entities/file-entry';
+import styles from './image-file-view.css';
 
 export type Props = {
+    className?: string;
     entry: FileEntry;
 };
 
 export const ImageFileView = (props: Props) => {
-    const { entry } = props;
+    const { className = '', entry } = props;
 
     const contentType = React.useMemo(() => {
         const ext = entry.path.getExtension();
@@ -27,7 +29,7 @@ export const ImageFileView = (props: Props) => {
     }, [entry]);
 
     return <>
-        <div>
+        <div className={`${className} ${styles.view}`}>
             <img src={dataUrl} />
         </div>
     </>;

@@ -4,14 +4,14 @@ import ReactDom from 'react-dom';
 import { EntryView } from '../components/entry-view';
 import { EntryStore } from '../stores/entry-store';
 import { LocalFileSystemService } from '../services/local-file-system-service';
-import './main-window.css';
+import styles from './main-window.css';
 
 const MainWindow = () => {
     const localFileSystemService = React.useMemo(() => new LocalFileSystemService(), []);
     const entryStore = React.useMemo(() => new EntryStore({ localFileSystemService }), []);
 
     return <>
-        <EntryView {...{ entryStore }} />
+        <EntryView className={styles.mainContent} {...{ entryStore }} />
     </>;
 };
 

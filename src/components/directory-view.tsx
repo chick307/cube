@@ -3,8 +3,10 @@ import React from 'react';
 import { DirectoryEntry } from '../entities/directory-entry';
 import { Entry } from '../entities/entry';
 import { EntryStore } from '../stores/entry-store';
+import styles from './directory-view.css';
 
 export type Props = {
+    className?: string;
     entry: DirectoryEntry;
     entryStore: EntryStore;
 };
@@ -22,7 +24,7 @@ const DirectoryEntryView = (props: { entry: Entry; onEntryClick: (entry: Entry) 
 };
 
 export const DirectoryView = (props: Props) => {
-    const { entry, entryStore } = props;
+    const { className, entry, entryStore } = props;
 
     const entries = React.useMemo(() => entryStore.localFileSystemService.getDirectoryEntries(entry), [entry, entryStore]);
 
@@ -31,12 +33,14 @@ export const DirectoryView = (props: Props) => {
     }, [entryStore]);
 
     return <>
-        <ul>
-            {entries.map((entry) => (
-                <li key={entry.name.toString()}>
-                    <DirectoryEntryView entry={entry} onEntryClick={onEntryClick} />
-                </li>
-            ))}
-        </ul>
+        <div className={`${className} ${styles.view}`}>
+            <ul className={styles.list}>
+                {entries.map((entry) => (
+                    <li key={entry.name.toString()} className={styles.listItem}>
+                        <DirectoryEntryView entry={entry} onEntryClick={onEntryClick} />
+                    </li>
+                ))}
+            </ul>
+        </div>
     </>;
 };
