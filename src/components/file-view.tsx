@@ -1,15 +1,13 @@
 import React from 'react';
 
-import { Entry } from '../entities/entry';
 import { FileEntry } from '../entities/file-entry';
+import { EntryStore } from '../stores/entry-store';
 import { ImageFileView, isImageEntry } from './image-file-view';
 import { TextFileView } from './text-file-view';
 
 export type Props = {
     entry: FileEntry;
-    navigator: {
-        open: (entry: Entry) => void;
-    };
+    entryStore: EntryStore;
 };
 
 export const FileView = (props: Props) => {

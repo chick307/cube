@@ -2,19 +2,18 @@ import React from 'react';
 
 import { DirectoryEntry } from '../entities/directory-entry';
 import { Entry } from '../entities/entry';
-import { LocalFileSystemService } from '../services/local-file-system-service';
+import { EntryStore } from '../stores/entry-store';
 
 export type Props = {
     entry: DirectoryEntry;
-    localFileSystemService: LocalFileSystemService;
-    navigator: {
-        open: (entry: Entry) => void;
-    };
+    entryStore: EntryStore;
 };
 
 const DirectoryEntryView = (props: { entry: Entry; onEntryClick: (entry: Entry) => void; }) => {
     const { entry, onEntryClick } = props;
+
     const onClick = React.useCallback(() => { onEntryClick(entry); }, [entry, onEntryClick]);
+
     return <>
         <span onDoubleClick={onClick}>
             {entry.name.toString()}
@@ -23,11 +22,14 @@ const DirectoryEntryView = (props: { entry: Entry; onEntryClick: (entry: Entry) 
 };
 
 export const DirectoryView = (props: Props) => {
-    const { entry, localFileSystemService, navigator } = props;
-    const entries = React.useMemo(() => localFileSystemService.getDirectoryEntries(entry), [entry, localFileSystemService]);
+    const { entry, entryStore } = props;
+
+    const entries = React.useMemo(() => entryStore.localFileSystemService.getDirectoryEntries(entry), [entry, entryStore]);
+
     const onEntryClick = React.useCallback((entry: Entry) => {
-        navigator.open(entry);
-    }, [navigator]);
+        entryStore.setEntry(entry);
+    }, [entryStore]);
+
     return <>
         <ul>
             {entries.map((entry) => (

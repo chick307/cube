@@ -1,24 +1,22 @@
 import React from 'react';
 
-import { Entry } from '../entities/entry';
-import { LocalFileSystemService } from '../services/local-file-system-service';
+import { useStore } from '../hooks/use-store';
+import { EntryStore } from '../stores/entry-store';
 import { DirectoryView } from './directory-view';
 import { FileView } from './file-view';
 
 export type Props = {
-    entry: Entry;
-    localFileSystemService: LocalFileSystemService;
-    navigator: {
-        open: (entry: Entry) => void;
-    };
+    entryStore: EntryStore;
 };
 
 export const EntryView = (props: Props) => {
-    const { entry, localFileSystemService, navigator } = props;
+    const { entryStore } = props;
+
+    const { entry } = useStore(entryStore);
 
     const view =
-        entry.isDirectory() ? <DirectoryView {...{ entry, navigator }} /> :
-        entry.isFile() ? <FileView {...{ entry, navigator }} /> :
+        entry.isDirectory() ? <DirectoryView {...{ entry, entryStore }} /> :
+        entry.isFile() ? <FileView {...{ entry, entryStore }} /> :
         <></>;
 
     return <>
