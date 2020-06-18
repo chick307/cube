@@ -12,6 +12,10 @@ export class EntryPath {
         this.name = new EntryName(path.basename(value));
     }
 
+    getExtension(): string {
+        return this.name.getExtension();
+    }
+
     join(entryName: EntryName): EntryPath {
         return new EntryPath(path.join(this.value, entryName.toString()));
     }
