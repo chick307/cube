@@ -6,6 +6,7 @@ import ReactDom from 'react-dom';
 import DirectoryEntry from '../entities/directory-entry';
 import Entry from '../entities/entry';
 import LocalFileSystemService from '../services/local-file-system-service';
+import './main-window.css';
 
 type Navigator = {
     open: (entry: Entry) => void;
