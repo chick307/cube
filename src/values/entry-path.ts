@@ -16,6 +16,12 @@ export class EntryPath {
         return this.name.getExtension();
     }
 
+    getParentPath(): EntryPath | null {
+        if (this.value === '/')
+            return null;
+        return new EntryPath(path.join(this.value, '..'));
+    }
+
     join(entryName: EntryName): EntryPath {
         return new EntryPath(path.join(this.value, entryName.toString()));
     }
