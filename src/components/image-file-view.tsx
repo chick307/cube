@@ -1,17 +1,18 @@
-import fs from 'fs';
-
 import React from 'react';
 
 import { FileEntry } from '../entities/file-entry';
+import { useTask } from '../hooks/use-task';
+import { FileSystem } from '../services/file-system';
 import styles from './image-file-view.css';
 
 export type Props = {
     className?: string;
     entry: FileEntry;
+    fileSystem: FileSystem;
 };
 
 export const ImageFileView = (props: Props) => {
-    const { className = '', entry } = props;
+    const { className = '', entry, fileSystem } = props;
 
     const contentType = React.useMemo(() => {
         const ext = entry.path.getExtension();
@@ -22,15 +23,16 @@ export const ImageFileView = (props: Props) => {
         return 'application/octet-stream';
     }, [entry]);
 
-    const dataUrl = React.useMemo(() => {
-        const content = fs.readFileSync(entry.path.toString());
-        const dataUrl = `data:${contentType};base64,${content.toString('base64')}`;
-        return dataUrl;
-    }, [entry]);
+    const [dataUrl] = useTask(async (context) => {
+        const buffer = await context.wrapPromise(fileSystem.readFile(entry));
+        return `data:${contentType};base64,${buffer.toString('base64')}`;
+    }, [entry, fileSystem]);
 
     return <>
         <div className={`${className} ${styles.view}`}>
-            <img src={dataUrl} />
+            {dataUrl === null ? <></> : <>
+                <img src={dataUrl} />
+            </>}
         </div>
     </>;
 };

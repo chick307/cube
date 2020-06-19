@@ -1,50 +1,30 @@
-import { promises as fs } from 'fs';
-
 import React from 'react';
 import JSZip from 'jszip';
 
 import { FileEntry } from '../entities/file-entry';
+import { useTask } from '../hooks/use-task';
+import { FileSystem } from '../services/file-system';
 import styles from './zip-file-view.css';
 
 export type Props = {
     className?: string;
     entry: FileEntry;
+    fileSystem: FileSystem;
 };
 
 export const ZipFileView = (props: Props) => {
-    const { className = '', entry } = props;
+    const { className = '', entry, fileSystem } = props;
 
-    const [loaded, setLoaded] = React.useState(() => false);
-    const [entries, setEntries] = React.useState<JSZip.JSZipObject[]>(() => []);
-
-    React.useEffect(() => {
-        let canceled = false;
-
-        (async () => {
-            const buffer = await fs.readFile(entry.path.toString());
-            if (canceled)
-                return;
-            const zip = await JSZip.loadAsync(buffer);
-            if (canceled)
-                return;
-            const loadedEntries: JSZip.JSZipObject[] = [];
-            zip.forEach((_, zipObject) => {
-                loadedEntries.push(zipObject);
-            });
-            setEntries(() => loadedEntries);
-            setLoaded(() => true);
-        })();
-
-        return () => {
-            canceled = true;
-        };
-    }, [entry]);
-
-    console.log(entries);
+    const [entries] = useTask(async (context) => {
+        const buffer = await context.wrapPromise(fileSystem.readFile(entry));
+        const zip = await context.wrapPromise(JSZip.loadAsync(buffer));
+        const loadedEntries = Object.values(zip.files);
+        return loadedEntries;
+    }, [entry, fileSystem]);
 
     return <>
         <div className={`${className} ${styles.view}`}>
-            {!loaded ? <>
+            {entries == null ? <>
                 <div>...</div>
             </> : <>
                 <ul className={styles.list}>

@@ -1,25 +1,32 @@
-import fs from 'fs';
-
 import React from 'react';
 
 import { FileEntry } from '../entities/file-entry';
+import { useTask } from '../hooks/use-task';
+import { FileSystem } from '../services/file-system';
 import styles from './text-file-view.css';
 
 export type Props = {
     className?: string;
     entry: FileEntry;
+    fileSystem: FileSystem;
 };
 
 export const TextFileView = (props: Props) => {
-    const { className = '', entry } = props;
+    const { className = '', entry, fileSystem } = props;
 
-    const content = React.useMemo(() => fs.readFileSync(entry.path.toString(), 'utf8'), [entry]);
+    const [content] = useTask(async (context) => {
+        const buffer = await context.wrapPromise(fileSystem.readFile(entry));
+        const text = buffer.toString('utf-8');
+        return text;
+    }, [entry, fileSystem]);
 
     return <>
         <div className={`${className} ${styles.view}`}>
-            <pre className={styles.text}>
-                {content}
-            </pre>
+            {content === null ? <></> : <>
+                <pre className={styles.text}>
+                    {content}
+                </pre>
+            </>}
         </div>
     </>;
 };

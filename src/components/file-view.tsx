@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { FileEntry } from '../entities/file-entry';
+import { FileSystem } from '../services/file-system';
 import { EntryStore } from '../stores/entry-store';
 import { ImageFileView, isImageEntry } from './image-file-view';
 import { TextFileView } from './text-file-view';
@@ -11,15 +12,16 @@ export type Props = {
     className?: string;
     entry: FileEntry;
     entryStore: EntryStore;
+    fileSystem: FileSystem;
 };
 
 export const FileView = (props: Props) => {
-    const { className = '', entry } = props;
+    const { className = '', entry, fileSystem } = props;
 
     const view = 
-        isImageEntry(entry) ? <ImageFileView className={styles.view} {...{ entry }} /> :
-        isZipFile(entry) ? <ZipFileView className={styles.view} {...{ entry }} /> :
-        <TextFileView className={styles.view} {...{ entry }} />;
+        isImageEntry(entry) ? <ImageFileView className={styles.view} {...{ entry, fileSystem }} /> :
+        isZipFile(entry) ? <ZipFileView className={styles.view} {...{ entry, fileSystem }} /> :
+        <TextFileView className={styles.view} {...{ entry, fileSystem }} />;
 
     return <>
         <div className={`${className} ${styles.viewContainer}`}>
