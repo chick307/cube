@@ -35,8 +35,8 @@ export const DirectoryView = (props: Props) => {
     }, [entry, fileSystem]);
 
     const onEntryClick = React.useCallback((entry: Entry) => {
-        entryStore.setEntry(entry);
-    }, [entryStore]);
+        entryStore.setEntry(entry, fileSystem);
+    }, [entry, entryStore, fileSystem]);
 
     return <>
         <div className={`${className} ${styles.view}`}>

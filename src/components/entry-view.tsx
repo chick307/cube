@@ -14,8 +14,7 @@ export type Props = {
 export const EntryView = (props: Props) => {
     const { className = '', entryStore } = props;
 
-    const { entry } = useStore(entryStore);
-    const fileSystem = entryStore.localFileSystemService;
+    const { entry, fileSystem } = useStore(entryStore);
 
     const view =
         entry.isDirectory() ? <DirectoryView className={styles.view} {...{ entry, entryStore, fileSystem }} /> :
