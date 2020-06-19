@@ -2,6 +2,8 @@ import React from 'react';
 
 import { DirectoryEntry } from '../entities/directory-entry';
 import { Entry } from '../entities/entry';
+import { useTask } from '../hooks/use-task';
+import { FileSystem } from '../services/file-system';
 import { EntryStore } from '../stores/entry-store';
 import styles from './directory-view.css';
 
@@ -9,6 +11,7 @@ export type Props = {
     className?: string;
     entry: DirectoryEntry;
     entryStore: EntryStore;
+    fileSystem: FileSystem;
 };
 
 const DirectoryEntryView = (props: { entry: Entry; onEntryClick: (entry: Entry) => void; }) => {
@@ -24,9 +27,12 @@ const DirectoryEntryView = (props: { entry: Entry; onEntryClick: (entry: Entry) 
 };
 
 export const DirectoryView = (props: Props) => {
-    const { className, entry, entryStore } = props;
+    const { className, entry, entryStore, fileSystem } = props;
 
-    const entries = React.useMemo(() => entryStore.localFileSystemService.getDirectoryEntries(entry), [entry, entryStore]);
+    const [entries = []] = useTask(async () => {
+        const entries = fileSystem.readDirectory(entry);
+        return entries;
+    }, [entry, fileSystem]);
 
     const onEntryClick = React.useCallback((entry: Entry) => {
         entryStore.setEntry(entry);

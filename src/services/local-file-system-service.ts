@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { promises as fs } from 'fs';
 import { remote } from 'electron';
 
 import DirectoryEntry from '../entities/directory-entry';
@@ -15,22 +15,26 @@ export class LocalFileSystemService implements FileSystem {
         return new DirectoryEntry(HOME_DIRECTORY_PATH);
     }
 
-    getDirectoryEntries(directoryEntry: DirectoryEntry): Entry[] {
-        const entries = fs.readdirSync(directoryEntry.path.toString()).map((name) => {
+    async readDirectory(directoryEntry: DirectoryEntry): Promise<Entry[]> {
+        const names = await fs.readdir(directoryEntry.path.toString());
+        const entries: Entry[] = [];
+        for (const name of names) {
             const entryName = new EntryName(name);
             const entryPath = directoryEntry.path.join(entryName);
-            const stat = fs.statSync(entryPath.toString());
-            if (stat.isFile())
-                return new FileEntry(entryPath);
-            if (stat.isDirectory())
-                return new DirectoryEntry(entryPath);
-            return new Entry(entryPath);
-        });
+            const stat = await fs.stat(entryPath.toString());
+            if (stat.isFile()) {
+                entries.push(new FileEntry(entryPath));
+            } else if (stat.isDirectory()) {
+                entries.push(new DirectoryEntry(entryPath));
+            } else {
+                entries.push(new Entry(entryPath));
+            }
+        }
         return entries;
     }
 
     async readFile(fileEntry: FileEntry): Promise<Buffer> {
-        const buffer = await fs.promises.readFile(fileEntry.path.toString());
+        const buffer = await fs.readFile(fileEntry.path.toString());
         return buffer;
     }
 }
