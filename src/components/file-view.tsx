@@ -16,11 +16,11 @@ export type Props = {
 };
 
 export const FileView = (props: Props) => {
-    const { className = '', entry, fileSystem } = props;
+    const { className = '', entry, entryStore, fileSystem } = props;
 
     const view = 
         isImageEntry(entry) ? <ImageFileView className={styles.view} {...{ entry, fileSystem }} /> :
-        isZipFile(entry) ? <ZipFileView className={styles.view} {...{ entry, fileSystem }} /> :
+        isZipFile(entry) ? <ZipFileView className={styles.view} {...{ entry, entryStore, fileSystem }} /> :
         <TextFileView className={styles.view} {...{ entry, fileSystem }} />;
 
     return <>
