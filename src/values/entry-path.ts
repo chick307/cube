@@ -12,6 +12,10 @@ export class EntryPath {
         this.name = new EntryName(path.basename(value));
     }
 
+    equals(otherEntryPath: EntryPath): boolean {
+        return this.value === otherEntryPath.value;
+    }
+
     getExtension(): string {
         return this.name.getExtension();
     }
