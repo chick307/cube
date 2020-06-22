@@ -1,5 +1,6 @@
 .view-container {
     display: flex;
+    overflow: auto;
 }
 
 .view {

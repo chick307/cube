@@ -4,6 +4,7 @@ import { FileEntry } from '../entities/file-entry';
 import { FileSystem } from '../services/file-system';
 import { EntryStore } from '../stores/entry-store';
 import { ImageFileView, isImageEntry } from './image-file-view';
+import { SpreadView, isSpreadDocument } from './spread-view';
 import { TextFileView } from './text-file-view';
 import { ZipFileView, isZipFile } from './zip-file-view';
 import styles from './file-view.css';
@@ -20,6 +21,7 @@ export const FileView = (props: Props) => {
 
     const view = 
         isImageEntry(entry) ? <ImageFileView className={styles.view} {...{ entry, fileSystem }} /> :
+        isSpreadDocument(entry) ? <SpreadView className={styles.view} {...{ entry, fileSystem }} /> :
         isZipFile(entry) ? <ZipFileView className={styles.view} {...{ entry, entryStore, fileSystem }} /> :
         <TextFileView className={styles.view} {...{ entry, fileSystem }} />;
 
