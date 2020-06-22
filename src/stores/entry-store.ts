@@ -6,6 +6,10 @@ import { Store } from './store';
 export type State = {
     entry: Entry;
     fileSystem: FileSystem;
+    histories: {
+        entry: Entry;
+        fileSystem: FileSystem;
+    }[];
 };
 
 export type Observer = {
@@ -19,6 +23,24 @@ export class EntryStore extends Store<State> {
         super({
             entry: container.localFileSystemService.getHomeDirectory(),
             fileSystem: container.localFileSystemService,
+            histories: [],
+        });
+    }
+
+    canGoBack() {
+        return this.state.histories.length > 0;
+    }
+
+    goBack() {
+        const index = this.state.histories.length - 1;
+        if (index < 0)
+            throw Error();
+        const { entry, fileSystem } = this.state.histories[index];
+        this.setState({
+            ...this.state,
+            entry,
+            fileSystem,
+            histories: this.state.histories.slice(0, index),
         });
     }
 
@@ -26,6 +48,10 @@ export class EntryStore extends Store<State> {
         this.setState({
             entry,
             fileSystem,
+            histories: [
+                ...this.state.histories,
+                { entry: this.state.entry, fileSystem: this.state.fileSystem },
+            ],
         });
     }
 }
