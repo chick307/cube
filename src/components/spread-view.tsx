@@ -58,7 +58,13 @@ export const SpreadView = (props: Props) => {
             return;
 
         const onKeyDown = (e: KeyboardEvent) => {
-            if (e.keyCode === 37 || e.keyCode === 40) {
+            if (e.keyCode === 35) {
+                // end
+                setCurrentSpreadIndex(() => Math.max(spreads.length - 1, 0));
+            } else if (e.keyCode === 36) {
+                // home
+                setCurrentSpreadIndex(() => 0);
+            } else if (e.keyCode === 37 || e.keyCode === 40) {
                 // left key or down key
                 setCurrentSpreadIndex((n) => Math.min(n + 1, spreads.length - 1));
             } else if (e.keyCode === 38 || e.keyCode === 39) {
