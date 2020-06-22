@@ -5,7 +5,17 @@
 }
 
 .path {
-    padding: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.go-back-button {
+    margin: 8px;
+}
+
+.path > .path-string {
+    flex: 1;
+    margin: 8px;
 }
 
 .view-container {
