@@ -9,13 +9,42 @@
     align-items: center;
 }
 
+.main-content > .path {
+    padding-left: 72px;
+    -webkit-app-region: drag;
+}
+
 .go-back-button {
+    box-sizing: border-box;
     margin: 8px;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+    padding: 0 6px;
+    height: 20px;
+    background-color: #FFFFFF;
+    color: #888888;
+}
+
+.main-content > .path > .go-back-button {
+    -webkit-app-region: no-drag;
+}
+
+.go-back-button:disabled {
+    border-color: #EEEEEE;
+    color: #DDDDDD;
+}
+
+.main-content > .path > .go-back-button:disabled {
+    -webkit-app-region: drag;
 }
 
 .path > .path-string {
+    display: inline-block;
     flex: 1;
     margin: 8px;
+    line-height: 20px;
+    height: 20px;
+    overflow: hidden;
 }
 
 .view-container {

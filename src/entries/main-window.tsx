@@ -11,7 +11,7 @@ const MainWindow = () => {
     const entryStore = React.useMemo(() => new EntryStore({ localFileSystemService }), []);
 
     return <>
-        <EntryView className={styles.mainContent} {...{ entryStore }} />
+        <EntryView className={styles.mainContent} mainContent={true} {...{ entryStore }} />
     </>;
 };
 

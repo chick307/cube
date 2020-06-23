@@ -9,10 +9,11 @@ import styles from './entry-view.css';
 export type Props = {
     className?: string;
     entryStore: EntryStore;
+    mainContent?: boolean;
 };
 
 export const EntryView = (props: Props) => {
-    const { className = '', entryStore } = props;
+    const { className = '', entryStore, mainContent = false } = props;
 
     const { entry, fileSystem } = useStore(entryStore);
 
@@ -26,10 +27,10 @@ export const EntryView = (props: Props) => {
         entryStore.goBack();
     }, [entryStore]);
 
-    const goBackButton = <button className={styles.goBackButton} disabled={!ableToGoBack} onClick={goBack}>←</button>;
+    const goBackButton = <button className={styles.goBackButton} disabled={!ableToGoBack} onClick={goBack}>&lt;</button>;
 
     return <>
-        <div className={`${className} ${styles.entryView}`}>
+        <div className={`${className} ${styles.entryView} ${mainContent ? styles.mainContent : ''}`}>
             <div className={styles.path}>
                 {goBackButton}
                 <span className={styles.pathString}>{entry.path.toString()}</span>

@@ -11,8 +11,11 @@ const createMainWindow = () => {
         throw Error();
 
     const window = mainWindow = new BrowserWindow({
+        frame: false,
         height: 640,
         show: false,
+        titleBarStyle: 'hidden',
+        trafficLightPosition: { x: 12, y: 20 },
         webPreferences: {
             nodeIntegration: true,
         },
