@@ -48,8 +48,8 @@ export const DirectoryView = (props: Props) => {
     const { className, entry, entryStore, fileSystem } = props;
 
     const [entries = []] = useTask(async () => {
-        const entries = fileSystem.readDirectory(entry);
-        return entries;
+        const entries = await fileSystem.readDirectory(entry);
+        return entries.filter((entry) => !entry.path.name.toString().startsWith('.'));
     }, [entry, fileSystem]);
 
     const onEntryClick = React.useCallback((entry: Entry) => {
