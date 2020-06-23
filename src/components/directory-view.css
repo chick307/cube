@@ -13,3 +13,26 @@
     margin: 8px;
     cursor: default;
 }
+
+.entry-name-container {
+    display: inline-flex;
+    align-items: center;
+}
+
+.icon {
+    margin: 2px;
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
+.icon-placeholder {
+    display: inline-block;
+    margin: 2px;
+    width: 16px;
+    height: 16px;
+}
+
+.entry-name {
+    margin: 2px;
+}
