@@ -2,6 +2,8 @@ import * as path from 'path';
 
 import { BrowserWindow, app } from 'electron';
 
+import '../handlers/icon-handler';
+
 let mainWindow: BrowserWindow | null = null;
 
 const createMainWindow = () => {
