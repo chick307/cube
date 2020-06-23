@@ -48,7 +48,7 @@ module.exports = {
         filename: path.join('entries', '[name].js'),
     },
     plugins: [
-        new CopyPlugin([{ from: 'src/views', to: 'views' }]),
+        new CopyPlugin({ patterns: [{ from: 'src/views', to: 'views' }] }),
         new MiniCssExtractPlugin({ filename: path.join('styles', '[name].css') }),
     ],
     resolve: {
