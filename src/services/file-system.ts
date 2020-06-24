@@ -4,6 +4,8 @@ import FileEntry from '../entities/file-entry';
 import { SymbolicLinkEntry } from '../entities/symbolic-link-entry';
 
 export type FileSystem = {
+    getContainer(): { fileEntry: FileEntry; fileSystem: FileSystem; } | null;
+
     readDirectory(directoryEntry: DirectoryEntry): Promise<Entry[]>;
 
     readFile(fileEntry: FileEntry): Promise<Buffer>;

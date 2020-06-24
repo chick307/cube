@@ -8,6 +8,7 @@ import { EntryPath } from '../values/entry-path';
 import { FileSystem } from './file-system';
 
 export class ZipFileSystemService implements FileSystem {
+    private _container: { fileEntry: FileEntry; fileSystem: FileSystem; };
     private _root: DirectoryEntry;
     private _zip: Promise<JSZip>;
     private _zipEntries: Promise<Map<string, { entry: Entry; object: JSZip.JSZipObject; }>> | null = null;
@@ -16,6 +17,7 @@ export class ZipFileSystemService implements FileSystem {
         zipFileEntry: FileEntry;
         zipFileSystem: FileSystem;
     }) {
+        this._container = { fileEntry: params.zipFileEntry, fileSystem: params.zipFileSystem };
         this._zip = params.zipFileSystem.readFile(params.zipFileEntry).then((buffer) => JSZip.loadAsync(buffer));
         this._root = new DirectoryEntry(new EntryPath('/'));
     }
@@ -36,6 +38,10 @@ export class ZipFileSystemService implements FileSystem {
             })();
         }
         return this._zipEntries;
+    }
+
+    getContainer() {
+        return this._container;
     }
 
     getRoot(): DirectoryEntry {

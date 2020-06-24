@@ -25,6 +25,10 @@ export class LocalFileSystemService implements FileSystem {
         }
     }
 
+    getContainer(): null {
+        return null;
+    }
+
     getHomeDirectory(): DirectoryEntry {
         return new DirectoryEntry(HOME_DIRECTORY_PATH);
     }
