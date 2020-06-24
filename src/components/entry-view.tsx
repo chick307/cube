@@ -5,6 +5,7 @@ import { EntryStore } from '../stores/entry-store';
 import { DirectoryView } from './directory-view';
 import { FileView } from './file-view';
 import styles from './entry-view.css';
+import { GoBackButton } from './go-back-button';
 
 export type Props = {
     className?: string;
@@ -22,17 +23,10 @@ export const EntryView = (props: Props) => {
         entry.isFile() ? <FileView className={styles.view} {...{ entry, entryStore, fileSystem }} /> :
         <></>;
 
-    const ableToGoBack = entryStore.canGoBack();
-    const goBack = React.useCallback(() => {
-        entryStore.goBack();
-    }, [entryStore]);
-
-    const goBackButton = <button className={styles.goBackButton} disabled={!ableToGoBack} onClick={goBack}>&lt;</button>;
-
     return <>
         <div className={`${className} ${styles.entryView} ${mainContent ? styles.mainContent : ''}`}>
             <div className={styles.path}>
-                {goBackButton}
+                <GoBackButton className={styles.goBackButton} {...{ entryStore }} />
                 <span className={styles.pathString}>{entry.path.toString()}</span>
             </div>
             <div className={styles.viewContainer}>

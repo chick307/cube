@@ -15,23 +15,12 @@
 }
 
 .go-back-button {
-    box-sizing: border-box;
-    margin: 8px;
-    border: 1px solid #CCCCCC;
-    border-radius: 4px;
-    padding: 0 6px;
-    height: 20px;
-    background-color: #FFFFFF;
-    color: #888888;
+    margin: 6px 8px;
+    height: 24px;
 }
 
 .main-content > .path > .go-back-button {
     -webkit-app-region: no-drag;
-}
-
-.go-back-button:disabled {
-    border-color: #EEEEEE;
-    color: #DDDDDD;
 }
 
 .main-content > .path > .go-back-button:disabled {
