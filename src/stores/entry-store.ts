@@ -1,6 +1,5 @@
 import { Entry } from '../entities/entry';
 import { FileSystem } from '../services/file-system';
-import { LocalFileSystemService } from '../services/local-file-system-service';
 import { Store } from './store';
 
 export type State = {
@@ -17,12 +16,13 @@ export type Observer = {
 };
 
 export class EntryStore extends Store<State> {
-    constructor(container: {
-        localFileSystemService: LocalFileSystemService;
+    constructor(params: {
+        entry: Entry;
+        fileSystem: FileSystem;
     }) {
         super({
-            entry: container.localFileSystemService.getHomeDirectory(),
-            fileSystem: container.localFileSystemService,
+            entry: params.entry,
+            fileSystem: params.fileSystem,
             histories: [],
         });
     }

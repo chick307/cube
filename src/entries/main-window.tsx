@@ -8,7 +8,10 @@ import styles from './main-window.css';
 
 const MainWindow = () => {
     const localFileSystemService = React.useMemo(() => new LocalFileSystemService(), []);
-    const entryStore = React.useMemo(() => new EntryStore({ localFileSystemService }), []);
+    const entryStore = React.useMemo(() => new EntryStore({
+        entry: localFileSystemService.getHomeDirectory(),
+        fileSystem: localFileSystemService,
+    }), []);
 
     return <>
         <EntryView className={styles.mainContent} mainContent={true} {...{ entryStore }} />
