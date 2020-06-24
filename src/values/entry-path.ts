@@ -30,6 +30,10 @@ export class EntryPath {
         return new EntryPath(path.join(this.value, entryName.toString()));
     }
 
+    resolve(...paths: EntryPath[]): EntryPath {
+        return new EntryPath(path.resolve(this.value, ...paths.map((p) => p.value)));
+    }
+
     toString(): string {
         return this.value;
     }

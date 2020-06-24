@@ -3,6 +3,7 @@ import JSZip from 'jszip';
 import { DirectoryEntry } from '../entities/directory-entry';
 import { Entry } from '../entities/entry';
 import { FileEntry } from '../entities/file-entry';
+import { SymbolicLinkEntry } from '../entities/symbolic-link-entry';
 import { EntryPath } from '../values/entry-path';
 import { FileSystem } from './file-system';
 
@@ -57,5 +58,9 @@ export class ZipFileSystemService implements FileSystem {
         const { object } = entries.get(fileEntry.path.toString())!;
         const buffer = await object.async('nodebuffer');
         return buffer;
+    }
+
+    async readLink(_: SymbolicLinkEntry): Promise<Entry> {
+        throw Error('Not implemented error');
     }
 }
