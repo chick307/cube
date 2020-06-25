@@ -6,6 +6,7 @@ import { EntryStore } from '../stores/entry-store';
 import { ImageFileView, isImageEntry } from './image-file-view';
 import { ComicView, isComicEntry } from './comic-view';
 import { TextFileView } from './text-file-view';
+import { MediaPlayer, isMediaEntry } from './media-player';
 import { ZipFileView, isZipFile } from './zip-file-view';
 import styles from './file-view.css';
 
@@ -22,6 +23,7 @@ export const FileView = (props: Props) => {
     const view = 
         isImageEntry(entry) ? <ImageFileView className={styles.view} {...{ entry, fileSystem }} /> :
         isComicEntry(entry) ? <ComicView className={styles.view} {...{ entry, fileSystem }} /> :
+        isMediaEntry(entry) ? <MediaPlayer className={styles.view} {...{ entry, fileSystem }} /> :
         isZipFile(entry) ? <ZipFileView className={styles.view} {...{ entry, entryStore, fileSystem }} /> :
         <TextFileView className={styles.view} {...{ entry, fileSystem }} />;
 

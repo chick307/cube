@@ -5,6 +5,7 @@ export class Canceled {
 }
 
 export type TaskContext = {
+    defer: (f: () => void) => void;
     isCanceled: () => boolean;
     wrapPromise: <T>(promise: Promise<T>) => Promise<T>;
 };
@@ -25,6 +26,9 @@ export const useTask = <T>(f: TaskCallback<T>, deps?: React.DependencyList) => {
         });
 
         f({
+            defer: (f) => {
+                canceledPromise.then(f);
+            },
             isCanceled: () => canceled,
             wrapPromise: async <T>(promise: Promise<T>): Promise<T> => {
                 const result = await Promise.race([promise, canceledPromise]);
