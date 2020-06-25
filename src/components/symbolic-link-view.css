@@ -1,0 +1,14 @@
+.view {
+    background: #444444;
+    color: #FFFFFF;
+}
+
+.dest-path {
+    display: inline-block;
+    margin: 1em;
+    cursor: pointer;
+}
+
+.dest-path:hover {
+    text-decoration: underline;
+}

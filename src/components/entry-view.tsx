@@ -6,6 +6,7 @@ import { DirectoryView } from './directory-view';
 import { FileView } from './file-view';
 import styles from './entry-view.css';
 import { GoBackButton } from './go-back-button';
+import { SymbolicLinkView } from './symbolic-link-view';
 
 export type Props = {
     className?: string;
@@ -18,10 +19,15 @@ export const EntryView = (props: Props) => {
 
     const { entry, fileSystem } = useStore(entryStore);
 
-    const view =
-        entry.isDirectory() ? <DirectoryView className={styles.view} {...{ entry, entryStore, fileSystem }} /> :
-        entry.isFile() ? <FileView className={styles.view} {...{ entry, entryStore, fileSystem }} /> :
-        <></>;
+    const view = React.useMemo(() => {
+        const viewProps = { className: styles.view, entryStore, fileSystem };
+        const view =
+            entry.isDirectory() ? <DirectoryView entry={entry} {...viewProps} /> :
+            entry.isFile() ? <FileView entry={entry} {...viewProps} /> :
+            entry.isSymbolicLink() ? <SymbolicLinkView entry={entry} {...viewProps} /> :
+            <></>;
+        return view;
+    }, [entry, entryStore, fileSystem]);
 
     return <>
         <div className={`${className} ${styles.entryView} ${mainContent ? styles.mainContent : ''}`}>
