@@ -1,0 +1,10 @@
+.view {
+    background-color: #444444;
+    color: #FFFFFF;
+    overflow: auto;
+    padding: 8px;
+}
+
+.content {
+    margin: 0;
+}

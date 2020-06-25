@@ -30,3 +30,6 @@ export const TextFileView = (props: Props) => {
         </div>
     </>;
 };
+
+export const isTextEntry = (entry: FileEntry) =>
+    /^\.(?:txt)$/.test(entry.path.getExtension());
