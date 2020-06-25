@@ -5,7 +5,7 @@ import { FileEntry } from '../entities/file-entry';
 import { useTask } from '../hooks/use-task';
 import { FileSystem } from '../services/file-system';
 import { ZipFileSystemService } from '../services/zip-file-system-service';
-import styles from './spread-view.css';
+import styles from './comic-view.css';
 
 export type Props = {
     className?: string;
@@ -13,7 +13,7 @@ export type Props = {
     fileSystem: FileSystem;
 };
 
-export const SpreadView = (props: Props) => {
+export const ComicView = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
 
     const zipFileSystem = React.useMemo(() => {
@@ -128,5 +128,5 @@ export const SpreadView = (props: Props) => {
     </>;
 };
 
-export const isSpreadDocument = (entry: FileEntry) =>
+export const isComicEntry = (entry: FileEntry) =>
     /^\.(?:cbz)$/.test(entry.path.getExtension());
