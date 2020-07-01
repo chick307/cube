@@ -8,6 +8,7 @@ import { useTask } from '../hooks/use-task';
 import { FileSystem } from '../services/file-system';
 import { EntryStore } from '../stores/entry-store';
 import styles from './directory-view.css';
+import { EntryIcon } from './entry-icon';
 
 export type Props = {
     className?: string;
@@ -16,27 +17,16 @@ export type Props = {
     fileSystem: FileSystem;
 };
 
+const iconPlaceholder = <span className={styles.iconPlaceholder}></span>;
+
 const DirectoryEntryView = (props: { entry: Entry; onEntryClick: (entry: Entry) => void; }) => {
     const { entry, onEntryClick } = props;
-
-    const [iconUrl] = useTask<string>(async (context) => {
-        const iconUrl = entry.isDirectory() ?
-            await context.wrapPromise(ipcRenderer.invoke('icon.getDirectoryIconDataUrl', entry.path.toString())) :
-            await context.wrapPromise(ipcRenderer.invoke('icon.getFileIconDataUrl', entry.path.toString()));
-        return iconUrl;
-    }, [entry]);
-
-    const icon = React.useMemo(() => {
-        if (iconUrl == null)
-            return <span className={styles.iconPlaceholder}></span>;
-        return <img className={styles.icon} src={iconUrl} />;
-    }, [iconUrl]);
 
     const onClick = React.useCallback(() => { onEntryClick(entry); }, [entry, onEntryClick]);
 
     return <>
         <span className={styles.entryNameContainer} onDoubleClick={onClick}>
-            {icon}
+            <EntryIcon className={styles.icon} entry={entry} iconPlaceholder={iconPlaceholder} />
             <span className={styles.entryName}>
                 {entry.name.toString()}
             </span>
