@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs';
-import { remote } from 'electron';
+import { ipcRenderer } from 'electron';
 
 import DirectoryEntry from '../entities/directory-entry';
 import Entry from '../entities/entry';
@@ -9,7 +9,7 @@ import EntryName from '../values/entry-name';
 import EntryPath from '../values/entry-path';
 import { FileSystem } from './file-system';
 
-const HOME_DIRECTORY_PATH = new EntryPath(remote.app.getPath('home'));
+const HOME_DIRECTORY_PATH = new EntryPath(ipcRenderer.sendSync('path.home'));
 
 export class LocalFileSystemService implements FileSystem {
     async _createEntry(entryPath: EntryPath): Promise<Entry> {
