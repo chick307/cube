@@ -15,8 +15,8 @@
     "electron": "^9.4.4",
     "electron-builder": "^22.10.5",
     "mini-css-extract-plugin": "^1.5.1",
-    "ts-loader": "^7.0.5",
-    "typescript": "^3.9.5",
+    "ts-loader": "^9.1.1",
+    "typescript": "^4.2.4",
     "webpack": "^5.36.1",
     "webpack-cli": "^4.6.0"
   },

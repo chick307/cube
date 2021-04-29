@@ -99,7 +99,7 @@ export const ComicView = (props: Props) => {
             const url = URL.createObjectURL(blob);
             const image = new Image();
             image.src = url;
-            await context.wrapPromise(new Promise((resolve, reject) => {
+            await context.wrapPromise(new Promise<void>((resolve, reject) => {
                 image.onload = () => { resolve(); };
                 image.onerror = () => { reject(Error()); };
             }).finally(() => {
