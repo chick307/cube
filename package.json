@@ -24,8 +24,10 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "debug": "electron debug/entries/main.js",
-    "watch": "webpack --config webpack.dev.js --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:dev": "npm run build:dev:webpack",
+    "build:dev:webpack": "webpack --config webpack.dev.js",
+    "start:dev": "electron dist/webpack/dev/entries/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --config webpack.dev.js --watch"
   }
 }

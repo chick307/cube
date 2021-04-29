@@ -1,13 +1,9 @@
 const path = require('path');
 
-const common = require('./webpack.common.js');
+const config = require('./webpack.common.js');
 
-module.exports = {
-    ...common,
+module.exports = config({
     devtool: 'inline-source-map',
     mode: 'development',
-    output: {
-        ...common.output,
-        path: path.resolve(__dirname, 'debug'),
-    },
-};
+    path: path.resolve(__dirname, 'dist/webpack/dev'),
+});
