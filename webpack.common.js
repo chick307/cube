@@ -71,9 +71,11 @@ const electronRenderer = (options) => {
                         {
                             loader: 'css-loader',
                             options: {
-                                localsConvention: 'camelCase',
-                                modules: true,
                                 ...options.cssLoaderOptions,
+                                modules: {
+                                    exportLocalsConvention: 'camelCase',
+                                    ...options.cssLoaderOptions?.modules,
+                                },
                             },
                         },
                     ],
