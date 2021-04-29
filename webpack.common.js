@@ -7,9 +7,10 @@ const electronCommon = (options) => {
     return {
         context: __dirname,
         devtool: options.devtool,
-        externals: [
-            { electron: 'commonjs electron' },
-        ],
+        externalsPresets: {
+            electron: true,
+            node: true,
+        },
         mode: options.mode,
         module: {
             rules: [
@@ -25,10 +26,6 @@ const electronCommon = (options) => {
                     ],
                 },
             ],
-        },
-        node: {
-            __dirname: false,
-            __filename: false,
         },
         output: {
             filename: path.join('entries', '[name].js'),
@@ -47,6 +44,10 @@ const electronMain = (options) => {
         entry: {
             'main': './src/entries/main.ts',
         },
+        externalsPresets: {
+            ...base.externalsPresets,
+            electronMain: true,
+        },
         target: 'electron-main',
     };
 };
@@ -57,6 +58,10 @@ const electronRenderer = (options) => {
         ...base,
         entry: {
             'main-window': './src/entries/main-window.tsx',
+        },
+        externalsPresets: {
+            ...base.externalsPresets,
+            electronRenderer: true,
         },
         module: {
             ...base.module,
