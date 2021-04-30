@@ -3,15 +3,27 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const electronCommon = (options) => {
+const common = (options) => {
     return {
         context: __dirname,
         devtool: options.devtool,
+        entry: {},
+        mode: options.mode,
+        output: {
+            filename: path.join('entries', '[name].js'),
+            path: options.path,
+        },
+    };
+};
+
+const electronCommon = (options) => {
+    const base = common(options);
+    return {
+        ...base,
         externalsPresets: {
             electron: true,
             node: true,
         },
-        mode: options.mode,
         module: {
             rules: [
                 {
@@ -26,10 +38,6 @@ const electronCommon = (options) => {
                     ],
                 },
             ],
-        },
-        output: {
-            filename: path.join('entries', '[name].js'),
-            path: options.path,
         },
         resolve: {
             extensions: ['.tsx', '.ts', '.jsx', '.js'],
@@ -95,9 +103,20 @@ const electronRenderer = (options) => {
     };
 };
 
+const assets = (options) => {
+    const base = common(options);
+    return {
+        ...base,
+        plugins: [
+            new CopyPlugin({ patterns: [{ from: 'assets/images', to: 'images' }] }),
+        ],
+    };
+};
+
 module.exports = (options) => {
     return [
         electronMain(options),
         electronRenderer(options),
+        assets(options),
     ];
 };
