@@ -29,7 +29,9 @@ export const GoBackButton = (props: Props) => {
     }, [entryStore]);
 
     const children = React.useMemo(() => buttonChildren || <>
-        {'<'}
+        <svg width="16" height="16" fill="#666666" viewBox="0 0 24 24">
+            <use xlinkHref="images/icons.svg#arrow-left" />
+        </svg>
     </>, [buttonChildren]);
 
     return <>
