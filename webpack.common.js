@@ -50,7 +50,7 @@ const electronMain = (options) => {
     return {
         ...base,
         entry: {
-            'main': './src/entries/main.ts',
+            'main': './src/main/entries/main.ts',
         },
         externalsPresets: {
             ...base.externalsPresets,
