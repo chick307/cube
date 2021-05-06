@@ -11,4 +11,9 @@ module.exports = config({
     devtool: 'inline-source-map',
     mode: 'development',
     path: path.resolve(__dirname, 'dist/webpack/dev'),
+    tsLoaderOptions: {
+        compilerOptions: {
+            jsx: 'react-jsxdev',
+        },
+    },
 });

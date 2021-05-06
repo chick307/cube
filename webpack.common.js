@@ -34,6 +34,7 @@ const electronCommon = (options) => {
                     use: [
                         {
                             loader: 'ts-loader',
+                            options: options.tsLoaderOptions,
                         },
                     ],
                 },
