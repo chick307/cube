@@ -6,15 +6,15 @@ import { DirectoryEntry } from '../../common/entities/directory-entry';
 import { Entry } from '../../common/entities/entry';
 import { useTask } from '../hooks/use-task';
 import { FileSystem } from '../services/file-system';
-import { EntryStore } from '../stores/entry-store';
+import { HistoryStore } from '../stores/history-store';
 import styles from './directory-view.css';
 import { EntryIcon } from './entry-icon';
 
 export type Props = {
     className?: string;
     entry: DirectoryEntry;
-    entryStore: EntryStore;
     fileSystem: FileSystem;
+    historyStore: HistoryStore;
 };
 
 const iconPlaceholder = <span className={styles.iconPlaceholder}></span>;
@@ -35,7 +35,7 @@ const DirectoryEntryView = (props: { entry: Entry; onEntryClick: (entry: Entry) 
 };
 
 export const DirectoryView = (props: Props) => {
-    const { className, entry, entryStore, fileSystem } = props;
+    const { className, entry, fileSystem, historyStore } = props;
 
     const [entries = []] = useTask(async () => {
         const entries = await fileSystem.readDirectory(entry);
@@ -43,8 +43,8 @@ export const DirectoryView = (props: Props) => {
     }, [entry, fileSystem]);
 
     const onEntryClick = React.useCallback((entry: Entry) => {
-        entryStore.setEntry(entry, fileSystem);
-    }, [entry, entryStore, fileSystem]);
+        historyStore.setEntry(entry, fileSystem);
+    }, [entry, fileSystem, historyStore]);
 
     return <>
         <div className={`${className} ${styles.view}`}>

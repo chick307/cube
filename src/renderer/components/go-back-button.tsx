@@ -1,32 +1,32 @@
 import React from 'react';
 
 import { useStore } from '../hooks/use-store';
-import { EntryStore } from '../stores/entry-store';
+import { HistoryStore } from '../stores/history-store';
 import { Button, Props as ButtonProps } from './button';
 
 export type Props = ButtonProps & {
-    entryStore: EntryStore;
+    historyStore: HistoryStore;
 };
 
 export const GoBackButton = (props: Props) => {
     const {
-        entryStore,
+        historyStore,
         disabled: buttonDisabled,
         onClick: buttonOnClick,
         children: buttonChildren,
         ...buttonProps
     } = props;
 
-    const entryStoreState = useStore(entryStore);
+    const historyStoreState = useStore(historyStore);
 
-    const disabled = React.useMemo(() => buttonDisabled || !entryStore.canGoBack(), [buttonDisabled, entryStoreState]);
+    const disabled = React.useMemo(() => buttonDisabled || !historyStore.canGoBack(), [buttonDisabled, historyStoreState]);
 
     const onClick = React.useCallback((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         if (buttonOnClick != null)
             buttonOnClick(event);
         if (!event.isDefaultPrevented())
-            entryStore.goBack();
-    }, [entryStore]);
+            historyStore.goBack();
+    }, [historyStore]);
 
     const children = React.useMemo(() => buttonChildren || <>
         <svg width="16" height="16" fill="#666666" viewBox="0 0 24 24">

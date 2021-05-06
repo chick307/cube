@@ -15,7 +15,7 @@ export type Observer = {
     next: (state: State) => void;
 };
 
-export class EntryStore extends Store<State> {
+export class HistoryStore extends Store<State> {
     constructor(params: {
         entry: Entry;
         fileSystem: FileSystem;

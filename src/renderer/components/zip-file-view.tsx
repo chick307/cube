@@ -3,18 +3,18 @@ import React from 'react';
 import { FileEntry } from '../../common/entities/file-entry';
 import { FileSystem } from '../services/file-system';
 import { ZipFileSystemService } from '../services/zip-file-system-service';
-import { EntryStore } from '../stores/entry-store'
+import { HistoryStore } from '../stores/history-store'
 import { DirectoryView } from './directory-view';
 
 export type Props = {
     className?: string;
     entry: FileEntry;
-    entryStore: EntryStore;
     fileSystem: FileSystem;
+    historyStore: HistoryStore;
 };
 
 export const ZipFileView = (props: Props) => {
-    const { className = '', entry, entryStore, fileSystem } = props;
+    const { className = '', entry, fileSystem, historyStore } = props;
 
     const zipFileSystem = React.useMemo(() => new ZipFileSystemService({
         zipFileEntry: entry,
@@ -23,7 +23,7 @@ export const ZipFileView = (props: Props) => {
 
     return <>
         <DirectoryView className={`${className}`}
-            entry={zipFileSystem.getRoot()} entryStore={entryStore} fileSystem={zipFileSystem} />
+            entry={zipFileSystem.getRoot()} fileSystem={zipFileSystem} {...{ historyStore }} />
     </>;
 };
 
