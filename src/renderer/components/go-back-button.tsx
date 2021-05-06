@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useHistoryController } from '../contexts/history-controller-context';
 import { useStore } from '../hooks/use-store';
 import { HistoryStore } from '../stores/history-store';
 import { Button, Props as ButtonProps } from './button';
@@ -17,6 +18,8 @@ export const GoBackButton = (props: Props) => {
         ...buttonProps
     } = props;
 
+    const historyController = useHistoryController();
+
     const historyStoreState = useStore(historyStore);
 
     const disabled = React.useMemo(() => buttonDisabled || !historyStore.canGoBack(), [buttonDisabled, historyStoreState]);
@@ -25,8 +28,8 @@ export const GoBackButton = (props: Props) => {
         if (buttonOnClick != null)
             buttonOnClick(event);
         if (!event.isDefaultPrevented())
-            historyStore.goBack();
-    }, [historyStore]);
+            historyController.goBack();
+    }, [historyController]);
 
     const children = React.useMemo(() => buttonChildren || <>
         <svg width="16" height="16" fill="#666666" viewBox="0 0 24 24">

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { SymbolicLinkEntry } from '../../common/entities/symbolic-link-entry';
+import { useHistoryController } from '../contexts/history-controller-context';
 import { useTask } from '../hooks/use-task';
 import { FileSystem } from '../services/file-system';
 import { HistoryStore } from '../stores/history-store';
@@ -10,11 +11,12 @@ export type Props = {
     className?: string;
     entry: SymbolicLinkEntry;
     fileSystem: FileSystem;
-    historyStore: HistoryStore;
 };
 
 export const SymbolicLinkView = (props: Props) => {
-    const { className = '', entry, fileSystem, historyStore } = props;
+    const { className = '', entry, fileSystem } = props;
+
+    const historyController = useHistoryController();
 
     const [destination] = useTask(async (context) => {
         const destination = await context.wrapPromise(fileSystem.readLink(entry));
@@ -24,7 +26,7 @@ export const SymbolicLinkView = (props: Props) => {
     const onClick = React.useCallback(() => {
         if (destination == null)
             return;
-        historyStore.setEntry(destination, fileSystem);
+        historyController.navigate({ entry: destination, fileSystem });
     }, [destination]);
 
     if (destination == null)

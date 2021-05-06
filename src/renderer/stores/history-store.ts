@@ -39,7 +39,7 @@ export class HistoryStore extends Store<State> implements MutableHistoryStore {
         return this.state.histories.length > 0;
     }
 
-    goBack() {
+    pop(): void {
         const index = this.state.histories.length - 1;
         if (index < 0)
             throw Error();
@@ -52,21 +52,13 @@ export class HistoryStore extends Store<State> implements MutableHistoryStore {
         });
     }
 
-    pop(): void {
-        this.goBack();
-    }
-
     push(state: {
         entry: Entry;
         fileSystem: FileSystem;
     }) {
-        this.setEntry(state.entry, state.fileSystem);
-    }
-
-    setEntry(entry: Entry, fileSystem: FileSystem) {
         this.setState({
-            entry,
-            fileSystem,
+            entry: state.entry,
+            fileSystem: state.fileSystem,
             histories: [
                 ...this.state.histories,
                 { entry: this.state.entry, fileSystem: this.state.fileSystem },

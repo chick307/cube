@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDom from 'react-dom';
 
 import { EntryView } from '../components/entry-view';
+import { HistoryControllerProvider } from '../contexts/history-controller-context';
+import { HistoryControllerImpl } from '../controllers/history-controller';
 import { HistoryStore } from '../stores/history-store';
 import { LocalFileSystemService } from '../services/local-file-system-service';
 import styles from './main-window.css';
@@ -12,9 +14,12 @@ const MainWindow = () => {
         entry: localFileSystemService.getHomeDirectory(),
         fileSystem: localFileSystemService,
     }), []);
+    const historyController = React.useMemo(() => new HistoryControllerImpl({ historyStore }), [historyStore]);
 
     return <>
-        <EntryView className={styles.mainContent} mainContent={true} {...{ historyStore }} />
+        <HistoryControllerProvider value={historyController}>
+            <EntryView className={styles.mainContent} mainContent={true} {...{ historyStore }} />
+        </HistoryControllerProvider>
     </>;
 };
 

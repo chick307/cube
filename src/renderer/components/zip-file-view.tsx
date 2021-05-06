@@ -10,11 +10,10 @@ export type Props = {
     className?: string;
     entry: FileEntry;
     fileSystem: FileSystem;
-    historyStore: HistoryStore;
 };
 
 export const ZipFileView = (props: Props) => {
-    const { className = '', entry, fileSystem, historyStore } = props;
+    const { className = '', entry, fileSystem } = props;
 
     const zipFileSystem = React.useMemo(() => new ZipFileSystemService({
         zipFileEntry: entry,
@@ -23,7 +22,7 @@ export const ZipFileView = (props: Props) => {
 
     return <>
         <DirectoryView className={`${className}`}
-            entry={zipFileSystem.getRoot()} fileSystem={zipFileSystem} {...{ historyStore }} />
+            entry={zipFileSystem.getRoot()} fileSystem={zipFileSystem} />
     </>;
 };
 

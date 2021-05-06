@@ -20,14 +20,14 @@ export const EntryView = (props: Props) => {
     const { entry, fileSystem } = useStore(historyStore);
 
     const view = React.useMemo(() => {
-        const viewProps = { className: styles.view, fileSystem, historyStore };
+        const viewProps = { className: styles.view, fileSystem };
         const view =
-            entry.isDirectory() ? <DirectoryView entry={entry} {...viewProps} /> :
-            entry.isFile() ? <FileView entry={entry} {...viewProps} /> :
-            entry.isSymbolicLink() ? <SymbolicLinkView entry={entry} {...viewProps} /> :
+            entry.isDirectory() ? <DirectoryView {...{ entry, ...viewProps }} /> :
+            entry.isFile() ? <FileView {...{ entry, ...viewProps }} /> :
+            entry.isSymbolicLink() ? <SymbolicLinkView {...{ entry, ...viewProps }} /> :
             <></>;
         return view;
-    }, [entry, fileSystem, historyStore]);
+    }, [entry, fileSystem]);
 
     return <>
         <div className={`${className} ${styles.entryView} ${mainContent ? styles.mainContent : ''}`}>

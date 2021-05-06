@@ -15,17 +15,16 @@ export type Props = {
     className?: string;
     entry: FileEntry;
     fileSystem: FileSystem;
-    historyStore: HistoryStore;
 };
 
 export const FileView = (props: Props) => {
-    const { className = '', entry, fileSystem, historyStore } = props;
+    const { className = '', entry, fileSystem } = props;
 
     const view = 
         isImageEntry(entry) ? <ImageFileView className={styles.view} {...{ entry, fileSystem }} /> :
         isComicEntry(entry) ? <ComicView className={styles.view} {...{ entry, fileSystem }} /> :
         isMediaEntry(entry) ? <MediaPlayer className={styles.view} {...{ entry, fileSystem }} /> :
-        isZipFile(entry) ? <ZipFileView className={styles.view} {...{ entry, fileSystem, historyStore }} /> :
+        isZipFile(entry) ? <ZipFileView className={styles.view} {...{ entry, fileSystem }} /> :
         isTextEntry(entry) ? <TextFileView className={styles.view} {...{ entry, fileSystem }} /> :
         <BinaryFileView className={styles.view} {...{ entry, fileSystem }} />;
 

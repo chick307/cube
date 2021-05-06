@@ -4,6 +4,7 @@ import { ipcRenderer } from 'electron';
 
 import { DirectoryEntry } from '../../common/entities/directory-entry';
 import { Entry } from '../../common/entities/entry';
+import { useHistoryController } from '../contexts/history-controller-context';
 import { useTask } from '../hooks/use-task';
 import { FileSystem } from '../services/file-system';
 import { HistoryStore } from '../stores/history-store';
@@ -14,15 +15,21 @@ export type Props = {
     className?: string;
     entry: DirectoryEntry;
     fileSystem: FileSystem;
-    historyStore: HistoryStore;
 };
 
 const iconPlaceholder = <span className={styles.iconPlaceholder}></span>;
 
-const DirectoryEntryView = (props: { entry: Entry; onEntryClick: (entry: Entry) => void; }) => {
-    const { entry, onEntryClick } = props;
+const DirectoryEntryView = (props: {
+    entry: Entry;
+    fileSystem: FileSystem;
+}) => {
+    const { entry, fileSystem } = props;
 
-    const onClick = React.useCallback(() => { onEntryClick(entry); }, [entry, onEntryClick]);
+    const historyController = useHistoryController();
+
+    const onClick = React.useCallback(() => {
+        historyController.navigate({ entry, fileSystem });
+    }, [entry, fileSystem]);
 
     return <>
         <span className={styles.entryNameContainer} onDoubleClick={onClick}>
@@ -35,23 +42,19 @@ const DirectoryEntryView = (props: { entry: Entry; onEntryClick: (entry: Entry) 
 };
 
 export const DirectoryView = (props: Props) => {
-    const { className, entry, fileSystem, historyStore } = props;
+    const { className, entry, fileSystem } = props;
 
     const [entries = []] = useTask(async () => {
         const entries = await fileSystem.readDirectory(entry);
         return entries.filter((entry) => !entry.path.name.toString().startsWith('.'));
     }, [entry, fileSystem]);
 
-    const onEntryClick = React.useCallback((entry: Entry) => {
-        historyStore.setEntry(entry, fileSystem);
-    }, [entry, fileSystem, historyStore]);
-
     return <>
         <div className={`${className} ${styles.view}`}>
             <ul className={styles.list}>
                 {entries.map((entry) => (
                     <li key={entry.name.toString()} className={styles.listItem}>
-                        <DirectoryEntryView entry={entry} onEntryClick={onEntryClick} />
+                        <DirectoryEntryView {...{ entry, fileSystem }} />
                     </li>
                 ))}
             </ul>
