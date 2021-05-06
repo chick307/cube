@@ -15,5 +15,3 @@ export class EntryName {
         return this.value;
     }
 }
-
-export default EntryName;

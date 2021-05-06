@@ -1,4 +1,4 @@
-import Entry from './entry';
+import { Entry } from './entry';
 
 export class SymbolicLinkEntry extends Entry {
     readonly type = 'symbolic-link';

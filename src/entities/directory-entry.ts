@@ -1,4 +1,4 @@
-import Entry from './entry';
+import { Entry } from './entry';
 
 export class DirectoryEntry extends Entry {
     readonly type = 'directory';
@@ -25,5 +25,3 @@ Entry.prototype.getParentEntry = function getParentEntry(this: Entry): Directory
 };
 
 Entry.prototype.isDirectory = () => false;
-
-export default DirectoryEntry;

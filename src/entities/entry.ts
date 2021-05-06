@@ -1,5 +1,5 @@
-import EntryName from '../values/entry-name';
-import EntryPath from '../values/entry-path';
+import { EntryName } from '../values/entry-name';
+import { EntryPath } from '../values/entry-path';
 
 export class Entry {
     readonly name: EntryName;
@@ -10,5 +10,3 @@ export class Entry {
         this.path = entryPath;
     }
 }
-
-export default Entry;

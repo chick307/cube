@@ -1,4 +1,4 @@
-import Entry from './entry';
+import { Entry } from './entry';
 
 export class FileEntry extends Entry {
     readonly type = 'file';
@@ -15,5 +15,3 @@ declare module './entry' {
 }
 
 Entry.prototype.isFile = () => false;
-
-export default FileEntry;

@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import EntryName from './entry-name';
+import { EntryName } from './entry-name';
 
 export class EntryPath {
     private value: string;
@@ -38,5 +38,3 @@ export class EntryPath {
         return this.value;
     }
 }
-
-export default EntryPath;
