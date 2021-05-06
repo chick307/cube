@@ -46,6 +46,7 @@
     "build:prod:webpack": "webpack --config webpack.prod.js",
     "start:dev": "electron dist/webpack/dev/entries/main.js",
     "test": "jest",
+    "coverage": "jest --collect-coverage",
     "watch": "webpack --config webpack.dev.js --watch"
   }
 }
