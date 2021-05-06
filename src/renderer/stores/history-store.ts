@@ -15,7 +15,15 @@ export type Observer = {
     next: (state: State) => void;
 };
 
-export class HistoryStore extends Store<State> {
+export type MutableHistoryStore = {
+    pop(): void;
+    push(state: {
+        entry: Entry;
+        fileSystem: FileSystem;
+    }): void;
+};
+
+export class HistoryStore extends Store<State> implements MutableHistoryStore {
     constructor(params: {
         entry: Entry;
         fileSystem: FileSystem;
@@ -42,6 +50,17 @@ export class HistoryStore extends Store<State> {
             fileSystem,
             histories: this.state.histories.slice(0, index),
         });
+    }
+
+    pop(): void {
+        this.goBack();
+    }
+
+    push(state: {
+        entry: Entry;
+        fileSystem: FileSystem;
+    }) {
+        this.setEntry(state.entry, state.fileSystem);
     }
 
     setEntry(entry: Entry, fileSystem: FileSystem) {
