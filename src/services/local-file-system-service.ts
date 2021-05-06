@@ -1,12 +1,12 @@
 import { promises as fs } from 'fs';
 import { ipcRenderer } from 'electron';
 
-import { DirectoryEntry } from '../entities/directory-entry';
-import { Entry } from '../entities/entry';
-import { FileEntry } from '../entities/file-entry';
-import { SymbolicLinkEntry } from '../entities/symbolic-link-entry';
-import { EntryName } from '../values/entry-name';
-import { EntryPath } from '../values/entry-path';
+import { DirectoryEntry } from '../common/entities/directory-entry';
+import { Entry } from '../common/entities/entry';
+import { FileEntry } from '../common/entities/file-entry';
+import { SymbolicLinkEntry } from '../common/entities/symbolic-link-entry';
+import { EntryName } from '../common/values/entry-name';
+import { EntryPath } from '../common/values/entry-path';
 import { FileSystem } from './file-system';
 
 const HOME_DIRECTORY_PATH = new EntryPath(ipcRenderer.sendSync('path.home'));

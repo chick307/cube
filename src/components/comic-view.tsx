@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { DirectoryEntry } from '../entities/directory-entry';
-import { FileEntry } from '../entities/file-entry';
+import { DirectoryEntry } from '../common/entities/directory-entry';
+import { FileEntry } from '../common/entities/file-entry';
 import { useTask } from '../hooks/use-task';
 import { FileSystem } from '../services/file-system';
 import { ZipFileSystemService } from '../services/zip-file-system-service';

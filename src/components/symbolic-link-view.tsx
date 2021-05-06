@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SymbolicLinkEntry } from '../entities/symbolic-link-entry';
+import { SymbolicLinkEntry } from '../common/entities/symbolic-link-entry';
 import { useTask } from '../hooks/use-task';
 import { FileSystem } from '../services/file-system';
 import { EntryStore } from '../stores/entry-store';

@@ -1,4 +1,4 @@
-import { Entry } from '../entities/entry';
+import { Entry } from '../common/entities/entry';
 import { FileSystem } from '../services/file-system';
 import { Store } from './store';
 

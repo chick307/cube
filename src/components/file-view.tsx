@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { FileEntry } from '../entities/file-entry';
+import { FileEntry } from '../common/entities/file-entry';
 import { FileSystem } from '../services/file-system';
 import { EntryStore } from '../stores/entry-store';
 import { BinaryFileView } from './binary-file-view';
