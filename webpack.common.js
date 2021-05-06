@@ -65,7 +65,7 @@ const electronRenderer = (options) => {
     return {
         ...base,
         entry: {
-            'main-window': './src/entries/main-window.tsx',
+            'main-window': './src/renderer/entries/main-window.tsx',
         },
         externalsPresets: {
             ...base.externalsPresets,
@@ -96,7 +96,7 @@ const electronRenderer = (options) => {
             ],
         },
         plugins: [
-            new CopyPlugin({ patterns: [{ from: 'src/views', to: 'views' }] }),
+            new CopyPlugin({ patterns: [{ from: 'src/renderer/views', to: 'views' }] }),
             new MiniCssExtractPlugin({ filename: path.join('styles', '[name].css') }),
         ],
         target: 'electron-renderer',

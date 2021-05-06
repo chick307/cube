@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { FileEntry } from '../common/entities/file-entry';
+import { FileEntry } from '../../common/entities/file-entry';
 import { useTask } from '../hooks/use-task';
 import { FileSystem } from '../services/file-system';
 import styles from './image-file-view.css';

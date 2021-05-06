@@ -1,10 +1,10 @@
 import JSZip from 'jszip';
 
-import { DirectoryEntry } from '../common/entities/directory-entry';
-import { Entry } from '../common/entities/entry';
-import { FileEntry } from '../common/entities/file-entry';
-import { SymbolicLinkEntry } from '../common/entities/symbolic-link-entry';
-import { EntryPath } from '../common/values/entry-path';
+import { DirectoryEntry } from '../../common/entities/directory-entry';
+import { Entry } from '../../common/entities/entry';
+import { FileEntry } from '../../common/entities/file-entry';
+import { SymbolicLinkEntry } from '../../common/entities/symbolic-link-entry';
+import { EntryPath } from '../../common/values/entry-path';
 import { FileSystem } from './file-system';
 
 export class ZipFileSystemService implements FileSystem {
