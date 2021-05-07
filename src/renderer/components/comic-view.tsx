@@ -21,13 +21,13 @@ export const ComicView = (props: Props) => {
         return zipFileSystem;
     }, [entry, fileSystem]);
 
-    const [pages] = useTask(async (context) => {
+    const [pages] = useTask(async (signal) => {
         const pages: FileEntry[] = [];
         const getPages = async (directoryEntry: DirectoryEntry) => {
-            const entries = await context.wrapPromise(zipFileSystem.readDirectory(directoryEntry));
+            const entries = await signal.wrapPromise(zipFileSystem.readDirectory(directoryEntry));
             for (const entry of entries) {
                 if (entry.isDirectory()) {
-                    await context.wrapPromise(getPages(entry));
+                    await signal.wrapPromise(getPages(entry));
                 } else if (entry.isFile() && /^\.(?:jpe?g|png)$/.test(entry.path.getExtension())) {
                     pages.push(entry);
                 }
@@ -82,7 +82,7 @@ export const ComicView = (props: Props) => {
 
     const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
-    useTask(async (context) => {
+    useTask(async (signal) => {
         const canvas = canvasRef.current;
         if (canvas == null)
             return;
@@ -92,14 +92,14 @@ export const ComicView = (props: Props) => {
             return;
         }
         const loadImage = async (fileEntry: FileEntry) => {
-            const buffer = await context.wrapPromise(zipFileSystem.readFile(fileEntry));
+            const buffer = await signal.wrapPromise(zipFileSystem.readFile(fileEntry));
             const extension = fileEntry.path.getExtension();
             const type = extension === '.png' ? 'image/png' : 'image/jpeg';
             const blob = new Blob([buffer], { type });
             const url = URL.createObjectURL(blob);
             const image = new Image();
             image.src = url;
-            await context.wrapPromise(new Promise<void>((resolve, reject) => {
+            await signal.wrapPromise(new Promise<void>((resolve, reject) => {
                 image.onload = () => { resolve(); };
                 image.onerror = () => { reject(Error()); };
             }).finally(() => {
@@ -107,7 +107,7 @@ export const ComicView = (props: Props) => {
             }));
             return image;
         };
-        const images = await context.wrapPromise(Promise.all(currentSpread.map(loadImage)));
+        const images = await signal.wrapPromise(Promise.all(currentSpread.map(loadImage)));
         const height = images.map((image) => image.height).reduce((a, b) => a < b ? b : a);
         const width = images.map((image) => Math.floor(image.width * height / image.height)).reduce((a, b) => a + b);
         canvas.width = width;

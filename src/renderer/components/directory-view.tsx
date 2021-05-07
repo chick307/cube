@@ -44,8 +44,8 @@ const DirectoryEntryView = (props: {
 export const DirectoryView = (props: Props) => {
     const { className, entry, fileSystem } = props;
 
-    const [entries = []] = useTask(async () => {
-        const entries = await fileSystem.readDirectory(entry);
+    const [entries = []] = useTask(async (signal) => {
+        const entries = await signal.wrapPromise(fileSystem.readDirectory(entry));
         return entries.filter((entry) => !entry.path.name.toString().startsWith('.'));
     }, [entry, fileSystem]);
 

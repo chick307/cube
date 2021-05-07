@@ -12,12 +12,12 @@ export type Props = React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageEle
 export const EntryIcon = (props: Props) => {
     const { entry, iconPlaceholder, src, ...imageProps } = props;
 
-    const [iconUrl] = useTask<string>(async (context) => {
+    const [iconUrl] = useTask<string>(async (signal) => {
         if (src != null)
             return src;
         const iconUrl = entry.isDirectory() ?
-            await context.wrapPromise(ipcRenderer.invoke('icon.getDirectoryIconDataUrl', entry.path.toString())) :
-            await context.wrapPromise(ipcRenderer.invoke('icon.getFileIconDataUrl', entry.path.toString()));
+            await signal.wrapPromise(ipcRenderer.invoke('icon.getDirectoryIconDataUrl', entry.path.toString())) :
+            await signal.wrapPromise(ipcRenderer.invoke('icon.getFileIconDataUrl', entry.path.toString()));
         return iconUrl;
     }, [src, entry]);
 

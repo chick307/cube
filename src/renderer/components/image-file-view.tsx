@@ -23,8 +23,8 @@ export const ImageFileView = (props: Props) => {
         return 'application/octet-stream';
     }, [entry]);
 
-    const [dataUrl] = useTask(async (context) => {
-        const buffer = await context.wrapPromise(fileSystem.readFile(entry));
+    const [dataUrl] = useTask(async (signal) => {
+        const buffer = await signal.wrapPromise(fileSystem.readFile(entry));
         return `data:${contentType};base64,${buffer.toString('base64')}`;
     }, [entry, fileSystem]);
 

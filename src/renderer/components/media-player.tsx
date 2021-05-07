@@ -14,11 +14,11 @@ export type Props = {
 export const MediaPlayer = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
 
-    const [url] = useTask(async (context) => {
-        const buffer = await fileSystem.readFile(entry);
+    const [url] = useTask(async (signal) => {
+        const buffer = await signal.wrapPromise(fileSystem.readFile(entry));
         const blob = new Blob([buffer], { type: 'application/octet-stream' });
         const url = URL.createObjectURL(blob);
-        context.defer(() => {
+        signal.defer(() => {
             URL.revokeObjectURL(url);
         });
         return url;
