@@ -24,7 +24,7 @@ export const ImageFileView = (props: Props) => {
     }, [entry]);
 
     const [dataUrl] = useTask(async (signal) => {
-        const buffer = await signal.wrapPromise(fileSystem.readFile(entry));
+        const buffer = await fileSystem.readFile(entry, signal);
         return `data:${contentType};base64,${buffer.toString('base64')}`;
     }, [entry, fileSystem]);
 

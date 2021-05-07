@@ -15,7 +15,7 @@ export const BinaryFileView = (props: Props) => {
     const { className, entry, fileSystem } = props;
 
     const [text = ''] = useTask(async (signal) => {
-        const buffer = await signal.wrapPromise(fileSystem.readFile(entry));
+        const buffer = await fileSystem.readFile(entry, signal);
         let text = '';
         let i: number;
         for (i = 0; i < buffer.length; i++) {

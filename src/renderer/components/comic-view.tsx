@@ -24,7 +24,7 @@ export const ComicView = (props: Props) => {
     const [pages] = useTask(async (signal) => {
         const pages: FileEntry[] = [];
         const getPages = async (directoryEntry: DirectoryEntry) => {
-            const entries = await signal.wrapPromise(zipFileSystem.readDirectory(directoryEntry));
+            const entries = await zipFileSystem.readDirectory(directoryEntry, signal);
             for (const entry of entries) {
                 if (entry.isDirectory()) {
                     await signal.wrapPromise(getPages(entry));
@@ -92,7 +92,7 @@ export const ComicView = (props: Props) => {
             return;
         }
         const loadImage = async (fileEntry: FileEntry) => {
-            const buffer = await signal.wrapPromise(zipFileSystem.readFile(fileEntry));
+            const buffer = await zipFileSystem.readFile(fileEntry, signal);
             const extension = fileEntry.path.getExtension();
             const type = extension === '.png' ? 'image/png' : 'image/jpeg';
             const blob = new Blob([buffer], { type });

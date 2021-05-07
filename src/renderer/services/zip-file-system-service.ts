@@ -4,6 +4,7 @@ import { DirectoryEntry } from '../../common/entities/directory-entry';
 import { Entry } from '../../common/entities/entry';
 import { FileEntry } from '../../common/entities/file-entry';
 import { SymbolicLinkEntry } from '../../common/entities/symbolic-link-entry';
+import { CloseController, CloseSignal } from '../../common/utils/close-controller';
 import { EntryPath } from '../../common/values/entry-path';
 import { FileSystem } from './file-system';
 
@@ -17,12 +18,14 @@ export class ZipFileSystemService implements FileSystem {
         zipFileEntry: FileEntry;
         zipFileSystem: FileSystem;
     }) {
+        const closeController = new CloseController();
         this._container = { fileEntry: params.zipFileEntry, fileSystem: params.zipFileSystem };
-        this._zip = params.zipFileSystem.readFile(params.zipFileEntry).then((buffer) => JSZip.loadAsync(buffer));
+        this._zip = params.zipFileSystem.readFile(params.zipFileEntry, closeController.signal)
+            .then((buffer) => JSZip.loadAsync(buffer));
         this._root = new DirectoryEntry(new EntryPath('/'));
     }
 
-    private _getZipEntries(): Promise<Map<string, { entry: Entry; object: JSZip.JSZipObject; }>> {
+    private _getZipEntries(signal: CloseSignal): Promise<Map<string, { entry: Entry; object: JSZip.JSZipObject; }>> {
         if (this._zipEntries === null) {
             this._zipEntries = (async () => {
                 const zip = await this._zip;
@@ -48,8 +51,8 @@ export class ZipFileSystemService implements FileSystem {
         return this._root;
     }
 
-    async readDirectory(directoryEntry: DirectoryEntry): Promise<Entry[]> {
-        const entries = await this._getZipEntries();
+    async readDirectory(directoryEntry: DirectoryEntry, signal: CloseSignal): Promise<Entry[]> {
+        const entries = await this._getZipEntries(signal);
         const directoryEntries: Entry[] = [];
         for (const { entry } of entries.values()) {
             const parentEntry = entry.getParentEntry();
@@ -59,14 +62,14 @@ export class ZipFileSystemService implements FileSystem {
         return directoryEntries;
     }
 
-    async readFile(fileEntry: FileEntry): Promise<Buffer> {
-        const entries = await this._getZipEntries();
+    async readFile(fileEntry: FileEntry, signal: CloseSignal): Promise<Buffer> {
+        const entries = await this._getZipEntries(signal);
         const { object } = entries.get(fileEntry.path.toString())!;
-        const buffer = await object.async('nodebuffer');
+        const buffer = await signal.wrapPromise(object.async('nodebuffer'));
         return buffer;
     }
 
-    async readLink(_: SymbolicLinkEntry): Promise<Entry> {
+    async readLink(_: SymbolicLinkEntry, _signal: CloseSignal): Promise<Entry> {
         throw Error('Not implemented error');
     }
 }

@@ -15,7 +15,7 @@ export const MediaPlayer = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
 
     const [url] = useTask(async (signal) => {
-        const buffer = await signal.wrapPromise(fileSystem.readFile(entry));
+        const buffer = await fileSystem.readFile(entry, signal);
         const blob = new Blob([buffer], { type: 'application/octet-stream' });
         const url = URL.createObjectURL(blob);
         signal.defer(() => {

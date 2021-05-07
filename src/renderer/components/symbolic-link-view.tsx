@@ -19,7 +19,7 @@ export const SymbolicLinkView = (props: Props) => {
     const historyController = useHistoryController();
 
     const [destination] = useTask(async (signal) => {
-        const destination = await signal.wrapPromise(fileSystem.readLink(entry));
+        const destination = await fileSystem.readLink(entry, signal);
         return destination;
     }, [entry, fileSystem]);
 

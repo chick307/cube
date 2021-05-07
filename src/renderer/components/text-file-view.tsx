@@ -15,7 +15,7 @@ export const TextFileView = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
 
     const [content] = useTask(async (signal) => {
-        const buffer = await signal.wrapPromise(fileSystem.readFile(entry));
+        const buffer = await fileSystem.readFile(entry, signal);
         const text = buffer.toString('utf-8');
         return text;
     }, [entry, fileSystem]);
