@@ -2,13 +2,14 @@ import { Entry } from '../../common/entities/entry';
 import { FileSystem } from '../services/file-system';
 import { Store } from './store';
 
-export type State = {
+export type HistoryState = {
     entry: Entry;
     fileSystem: FileSystem;
-    histories: {
-        entry: Entry;
-        fileSystem: FileSystem;
-    }[];
+};
+
+export type State = {
+    current: HistoryState;
+    historyStates: HistoryState[];
 };
 
 export type Observer = {
@@ -17,51 +18,48 @@ export type Observer = {
 
 export type MutableHistoryStore = {
     pop(): void;
-    push(state: {
-        entry: Entry;
-        fileSystem: FileSystem;
-    }): void;
+    push(state: HistoryState): void;
 };
 
 export class HistoryStore extends Store<State> implements MutableHistoryStore {
     constructor(params: {
-        entry: Entry;
-        fileSystem: FileSystem;
+        historyState: HistoryState;
     }) {
         super({
-            entry: params.entry,
-            fileSystem: params.fileSystem,
-            histories: [],
+            current: {
+                entry: params.historyState.entry,
+                fileSystem: params.historyState.fileSystem,
+            },
+            historyStates: [],
         });
     }
 
     canGoBack() {
-        return this.state.histories.length > 0;
+        return this.state.historyStates.length > 0;
     }
 
     pop(): void {
-        const index = this.state.histories.length - 1;
+        const index = this.state.historyStates.length - 1;
         if (index < 0)
             throw Error();
-        const { entry, fileSystem } = this.state.histories[index];
+        const historyState = this.state.historyStates[index];
         this.setState({
             ...this.state,
-            entry,
-            fileSystem,
-            histories: this.state.histories.slice(0, index),
+            current: historyState,
+            historyStates: this.state.historyStates.slice(0, index),
         });
     }
 
-    push(state: {
-        entry: Entry;
-        fileSystem: FileSystem;
-    }) {
+    push(state: HistoryState) {
         this.setState({
-            entry: state.entry,
-            fileSystem: state.fileSystem,
-            histories: [
-                ...this.state.histories,
-                { entry: this.state.entry, fileSystem: this.state.fileSystem },
+            ...this.state,
+            current: {
+                entry: state.entry,
+                fileSystem: state.fileSystem,
+            },
+            historyStates: [
+                ...this.state.historyStates,
+                this.state.current,
             ],
         });
     }

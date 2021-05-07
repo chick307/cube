@@ -17,7 +17,7 @@ export type Props = {
 export const EntryView = (props: Props) => {
     const { className = '', mainContent = false, historyStore } = props;
 
-    const { entry, fileSystem } = useStore(historyStore);
+    const { current: { entry, fileSystem } } = useStore(historyStore);
 
     const view = React.useMemo(() => {
         const viewProps = { className: styles.view, fileSystem };

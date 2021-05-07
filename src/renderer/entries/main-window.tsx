@@ -11,8 +11,10 @@ import styles from './main-window.css';
 const MainWindow = () => {
     const localFileSystemService = React.useMemo(() => new LocalFileSystemService(), []);
     const historyStore = React.useMemo(() => new HistoryStore({
-        entry: localFileSystemService.getHomeDirectory(),
-        fileSystem: localFileSystemService,
+        historyState: {
+            entry: localFileSystemService.getHomeDirectory(),
+            fileSystem: localFileSystemService,
+        },
     }), []);
     const historyController = React.useMemo(() => new HistoryControllerImpl({ historyStore }), [historyStore]);
 
