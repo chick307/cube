@@ -5,20 +5,29 @@ export type Observer<State> = {
 export class Store<State> {
     private _observers: Observer<State>[] = [];
     private _state: State;
+    private _updating = Promise.resolve();
 
     constructor(initialState: State) {
         this._state = initialState;
     }
 
-    get state() {
-        return this._state;
+    protected setState(state: State) {
+        this.updateState(() => state);
     }
 
-    protected setState(state: State) {
-        this._state = state;
+    protected updateState(updater: (state: State) => State): void {
+        const updating = this._updating = this._updating
+            .then(() => {
+                this._state = updater(this._state);
+                if (updating !== this._updating)
+                    return;
+                for (const observer of this._observers)
+                    observer.next(this._state);
+            });
+    }
 
-        for (const observer of this._observers)
-            observer.next(state);
+    get state() {
+        return this._state;
     }
 
     subscribe(observer: Observer<State>) {
