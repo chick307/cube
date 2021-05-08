@@ -1,13 +1,11 @@
 import type { Entry } from '../../common/entities/entry';
 import type { FileSystem } from '../services/file-system';
-import type { MutableHistoryStore } from '../stores/history-store';
+import type { HistoryState, MutableHistoryStore } from '../stores/history-store';
 
 export type HistoryController = {
     goBack(): void;
-    navigate(state: {
-        entry: Entry;
-        fileSystem: FileSystem;
-    }): void;
+    navigate(state: HistoryState): void;
+    replace(state: HistoryState): void;
 };
 
 export class HistoryControllerImpl implements HistoryController {
@@ -23,13 +21,11 @@ export class HistoryControllerImpl implements HistoryController {
         this._historyStore.pop();
     }
 
-    navigate(state: {
-        entry: Entry;
-        fileSystem: FileSystem;
-    }): void {
-        this._historyStore.push({
-            entry: state.entry,
-            fileSystem: state.fileSystem,
-        });
+    navigate(state: HistoryState): void {
+        this._historyStore.push(state);
+    }
+
+    replace(state: HistoryState) {
+        this._historyStore.replace(state);
     }
 }

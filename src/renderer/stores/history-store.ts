@@ -19,6 +19,7 @@ export type Observer = {
 export type MutableHistoryStore = {
     pop(): void;
     push(state: HistoryState): void;
+    replace(state: HistoryState): void;
 };
 
 export class HistoryStore extends Store<State> implements MutableHistoryStore {
@@ -61,6 +62,16 @@ export class HistoryStore extends Store<State> implements MutableHistoryStore {
                 ...this.state.historyStates,
                 this.state.current,
             ],
+        });
+    }
+
+    replace(state: HistoryState) {
+        this.setState({
+            ...this.state,
+            current: {
+                entry: state.entry,
+                fileSystem: state.fileSystem,
+            },
         });
     }
 }

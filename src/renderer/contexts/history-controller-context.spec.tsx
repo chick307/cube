@@ -31,6 +31,7 @@ describe('HistoryController context', () => {
             const historyControllerInstance: HistoryController = {
                 goBack: () => {},
                 navigate: () => {},
+                replace: () => {},
             };
 
             TestUtils.act(() => {

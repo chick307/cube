@@ -15,6 +15,7 @@ const dummyFileSystem: FileSystem = {
 const dummyHistoryStore = {
     pop: () => {},
     push: () => {},
+    replace: () => {},
 };
 
 describe('HistoryContollerImpl class', () => {
@@ -54,6 +55,29 @@ describe('HistoryContollerImpl class', () => {
 
             push.mockReset();
             push.mockRestore();
+        });
+    });
+
+    describe('historyController.replace() method', () => {
+        test('it calls historyStore.replace() method', () => {
+            const replace = jest.spyOn(dummyHistoryStore, 'replace');
+            const historyController = new HistoryControllerImpl({
+                historyStore: dummyHistoryStore,
+            });
+
+            expect(replace).not.toBeCalled();
+            historyController.replace({
+                entry: dummyEntry,
+                fileSystem: dummyFileSystem,
+            });
+            expect(replace).toBeCalledTimes(1);
+            expect(replace).toBeCalledWith({
+                entry: dummyEntry,
+                fileSystem: dummyFileSystem,
+            });
+
+            replace.mockReset();
+            replace.mockRestore();
         });
     });
 });
