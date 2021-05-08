@@ -8,6 +8,7 @@ export type HistoryState = {
 };
 
 export type State = {
+    ableToGoBack: boolean;
     current: HistoryState;
     historyStates: HistoryState[];
 };
@@ -27,16 +28,13 @@ export class HistoryStore extends Store<State> implements MutableHistoryStore {
         historyState: HistoryState;
     }) {
         super({
+            ableToGoBack: false,
             current: {
                 entry: params.historyState.entry,
                 fileSystem: params.historyState.fileSystem,
             },
             historyStates: [],
         });
-    }
-
-    canGoBack() {
-        return this.state.historyStates.length > 0;
     }
 
     pop(): void {
@@ -72,6 +70,13 @@ export class HistoryStore extends Store<State> implements MutableHistoryStore {
                 entry: state.entry,
                 fileSystem: state.fileSystem,
             },
+        });
+    }
+
+    setState(state: State): void {
+        super.setState({
+            ...state,
+            ableToGoBack: state.historyStates.length > 0,
         });
     }
 }

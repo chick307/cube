@@ -20,9 +20,9 @@ export const GoBackButton = (props: Props) => {
 
     const historyController = useHistoryController();
 
-    const historyStoreState = useStore(historyStore);
+    const { ableToGoBack } = useStore(historyStore);
 
-    const disabled = React.useMemo(() => buttonDisabled || !historyStore.canGoBack(), [buttonDisabled, historyStoreState]);
+    const disabled = buttonDisabled || !ableToGoBack;
 
     const onClick = React.useCallback((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         if (buttonOnClick != null)
