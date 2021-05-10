@@ -6,6 +6,7 @@ import { DirectoryView } from './directory-view';
 import { FileView } from './file-view';
 import styles from './entry-view.css';
 import { GoBackButton } from './go-back-button';
+import { GoForwardButton } from './go-forward-button';
 import { SymbolicLinkView } from './symbolic-link-view';
 
 export type Props = {
@@ -33,6 +34,7 @@ export const EntryView = (props: Props) => {
         <div className={`${className} ${styles.entryView} ${mainContent ? styles.mainContent : ''}`}>
             <div className={styles.path}>
                 <GoBackButton className={styles.goBackButton} {...{ historyStore }} />
+                <GoForwardButton className={styles.goForwardButton} {...{ historyStore }} />
                 <span className={styles.pathString}>{entry.path.toString()}</span>
             </div>
             <div className={styles.viewContainer}>

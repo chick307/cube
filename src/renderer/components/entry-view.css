@@ -15,7 +15,12 @@
 }
 
 .go-back-button {
-    margin: 6px 8px;
+    margin: 6px 1px 6px 8px;
+    height: 24px;
+}
+
+.go-forward-button {
+    margin: 6px 8px 6px 1px;
     height: 24px;
 }
 
