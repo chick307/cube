@@ -54,6 +54,22 @@ describe('CloseController class', () => {
         });
     });
 
+    describe('CloseController.signal.throwIfClosed() method', () => {
+        test('it throws if closed', async () => {
+            const closeController = new CloseController();
+            closeController.close();
+            expect(() => {
+                closeController.signal.throwIfClosed();
+            }).toThrow(Closed);
+        });
+
+        test('it does nothing if not closed', async () => {
+            const closeController = new CloseController();
+            closeController.signal.throwIfClosed();
+            closeController.close();
+        });
+    });
+
     describe('closeController.signal.wrapPromise() method', () => {
         test('it returns resolved promise if the passed promise is resolved before closing', async () => {
             const closeController = new CloseController();

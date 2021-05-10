@@ -20,6 +20,11 @@ export class CloseSignal {
         await this._signal.defer(callback);
     }
 
+    throwIfClosed(): void {
+        if (this._signal.closed)
+            throw new Closed();
+    }
+
     async wrapPromise<T>(promise: PromiseLike<T>): Promise<T> {
         const result = await Promise.race([promise, this._signal.defer(() => {})]);
         if (this._signal.closed)
