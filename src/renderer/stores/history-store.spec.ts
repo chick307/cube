@@ -36,6 +36,7 @@ describe('HistoryStore class', () => {
             await immediate();
             expect(historyStore.state).toEqual({
                 ableToGoBack: true,
+                ableToGoForward: false,
                 backHistories: [historyState1],
                 current: historyState2,
                 forwardHistories: [],
@@ -54,6 +55,7 @@ describe('HistoryStore class', () => {
             await immediate();
             expect(historyStore.state).toEqual({
                 ableToGoBack: true,
+                ableToGoForward: false,
                 backHistories: [historyState1],
                 current: historyState3,
                 forwardHistories: [],
@@ -70,6 +72,7 @@ describe('HistoryStore class', () => {
             await immediate();
             expect(historyStore.state).toEqual({
                 ableToGoBack: false,
+                ableToGoForward: false,
                 backHistories: [],
                 current: historyState2,
                 forwardHistories: [],
@@ -88,6 +91,7 @@ describe('HistoryStore class', () => {
             await immediate();
             expect(historyStore.state).toEqual({
                 ableToGoBack: true,
+                ableToGoForward: true,
                 backHistories: [historyState1],
                 current: historyState2,
                 forwardHistories: [historyState3],
@@ -96,6 +100,7 @@ describe('HistoryStore class', () => {
             await immediate();
             expect(historyStore.state).toEqual({
                 ableToGoBack: false,
+                ableToGoForward: true,
                 backHistories: [],
                 current: historyState1,
                 forwardHistories: [historyState2, historyState3],
@@ -112,8 +117,59 @@ describe('HistoryStore class', () => {
             expect(historyStore.state).toEqual(stateBeforeShiftBack);
             expect(historyStore.state).toEqual({
                 ableToGoBack: false,
+                ableToGoForward: false,
                 backHistories: [],
                 current: historyState1,
+                forwardHistories: [],
+            });
+        });
+    });
+
+    describe('historyStore.shiftForward() method', () => {
+        test('it shifts histories forward', async () => {
+            const historyStore = new HistoryStore({
+                historyState: historyState1,
+            });
+            historyStore.push(historyState2);
+            historyStore.push(historyState3);
+            historyStore.shiftBack();
+            historyStore.shiftBack();
+            historyStore.shiftForward();
+            await immediate();
+            expect(historyStore.state).toEqual({
+                ableToGoBack: true,
+                ableToGoForward: true,
+                backHistories: [historyState1],
+                current: historyState2,
+                forwardHistories: [historyState3],
+            });
+            historyStore.shiftForward();
+            await immediate();
+            expect(historyStore.state).toEqual({
+                ableToGoBack: true,
+                ableToGoForward: false,
+                backHistories: [historyState1, historyState2],
+                current: historyState3,
+                forwardHistories: [],
+            });
+        });
+
+        test('it does nothing if not able to go back', async () => {
+            const historyStore = new HistoryStore({
+                historyState: historyState1,
+            });
+            historyStore.push(historyState2);
+            historyStore.push(historyState3);
+            await immediate();
+            const stateBeforeShiftForward = historyStore.state;
+            historyStore.shiftForward();
+            await immediate();
+            expect(historyStore.state).toEqual(stateBeforeShiftForward);
+            expect(historyStore.state).toEqual({
+                ableToGoBack: true,
+                ableToGoForward: false,
+                backHistories: [historyState1, historyState2],
+                current: historyState3,
                 forwardHistories: [],
             });
         });

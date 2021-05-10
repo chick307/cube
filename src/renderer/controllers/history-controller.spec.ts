@@ -16,6 +16,7 @@ const dummyHistoryStore = {
     push: () => {},
     replace: () => {},
     shiftBack: () => {},
+    shiftForward: () => {},
 };
 
 describe('HistoryContollerImpl class', () => {

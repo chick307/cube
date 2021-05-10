@@ -16,6 +16,7 @@ const createHistoryState = (state: HistoryState) => {
 
 export type State = {
     ableToGoBack: boolean;
+    ableToGoForward: boolean;
     backHistories: HistoryState[];
     current: HistoryState;
     forwardHistories: HistoryState[];
@@ -29,6 +30,7 @@ export type MutableHistoryStore = {
     push(state: HistoryState): void;
     replace(state: HistoryState): void;
     shiftBack(): void;
+    shiftForward(): void;
 };
 
 export class HistoryStore extends Store<State> implements MutableHistoryStore {
@@ -37,6 +39,7 @@ export class HistoryStore extends Store<State> implements MutableHistoryStore {
     }) {
         super({
             ableToGoBack: false,
+            ableToGoForward: false,
             backHistories: [],
             current: createHistoryState(params.historyState),
             forwardHistories: [],
@@ -84,12 +87,26 @@ export class HistoryStore extends Store<State> implements MutableHistoryStore {
         });
     }
 
+    shiftForward(): void {
+        this.updateState((oldState) => {
+            if (oldState.forwardHistories.length === 0)
+                return oldState;
+            return {
+                ...oldState,
+                backHistories: [...oldState.backHistories, oldState.current],
+                current: oldState.forwardHistories[0],
+                forwardHistories: oldState.forwardHistories.slice(1),
+            };
+        });
+    }
+
     protected updateState(updater: (oldState: State) => State): void {
         super.updateState((oldState) => {
             const newState = updater(oldState);
             return {
                 ...newState,
                 ableToGoBack: newState.backHistories.length !== 0,
+                ableToGoForward: newState.forwardHistories.length !== 0,
             };
         });
     }
