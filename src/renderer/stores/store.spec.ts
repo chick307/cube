@@ -1,3 +1,4 @@
+import { immediate } from '../../common/utils/immediate';
 import { Store } from './store';
 
 class TestStore extends Store<any> {
@@ -9,8 +10,6 @@ class TestStore extends Store<any> {
         super.updateState(updater);
     }
 }
-
-const immediate = () => new Promise((resolve) => void setImmediate(resolve));
 
 describe('Store class', () => {
     describe('store.setState() method', () => {
