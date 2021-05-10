@@ -18,7 +18,7 @@ export class HistoryControllerImpl implements HistoryController {
     }
 
     goBack(): void {
-        this._historyStore.pop();
+        this._historyStore.shiftBack();
     }
 
     navigate(state: HistoryState): void {

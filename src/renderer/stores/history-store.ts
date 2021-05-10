@@ -7,10 +7,18 @@ export type HistoryState = {
     fileSystem: FileSystem;
 };
 
+const createHistoryState = (state: HistoryState) => {
+    return {
+        entry: state.entry,
+        fileSystem: state.fileSystem,
+    };
+};
+
 export type State = {
     ableToGoBack: boolean;
+    backHistories: HistoryState[];
     current: HistoryState;
-    historyStates: HistoryState[];
+    forwardHistories: HistoryState[];
 };
 
 export type Observer = {
@@ -18,9 +26,9 @@ export type Observer = {
 };
 
 export type MutableHistoryStore = {
-    pop(): void;
     push(state: HistoryState): void;
     replace(state: HistoryState): void;
+    shiftBack(): void;
 };
 
 export class HistoryStore extends Store<State> implements MutableHistoryStore {
@@ -29,54 +37,60 @@ export class HistoryStore extends Store<State> implements MutableHistoryStore {
     }) {
         super({
             ableToGoBack: false,
-            current: {
-                entry: params.historyState.entry,
-                fileSystem: params.historyState.fileSystem,
-            },
-            historyStates: [],
-        });
-    }
-
-    pop(): void {
-        const index = this.state.historyStates.length - 1;
-        if (index < 0)
-            throw Error();
-        const historyState = this.state.historyStates[index];
-        this.setState({
-            ...this.state,
-            current: historyState,
-            historyStates: this.state.historyStates.slice(0, index),
+            backHistories: [],
+            current: createHistoryState(params.historyState),
+            forwardHistories: [],
         });
     }
 
     push(state: HistoryState) {
-        this.setState({
-            ...this.state,
-            current: {
-                entry: state.entry,
-                fileSystem: state.fileSystem,
-            },
-            historyStates: [
-                ...this.state.historyStates,
-                this.state.current,
-            ],
+        this.updateState((oldState) => {
+            return {
+                ...oldState,
+                backHistories: [
+                    ...oldState.backHistories,
+                    oldState.current,
+                ],
+                current: createHistoryState(state),
+                forwardHistories: [],
+            };
         });
     }
 
     replace(state: HistoryState) {
-        this.setState({
-            ...this.state,
-            current: {
-                entry: state.entry,
-                fileSystem: state.fileSystem,
-            },
+        this.updateState((oldState) => {
+            return {
+                ...oldState,
+                current: createHistoryState(state),
+            };
         });
     }
 
-    setState(state: State): void {
-        super.setState({
-            ...state,
-            ableToGoBack: state.historyStates.length > 0,
+    shiftBack(): void {
+        this.updateState((oldState) => {
+            const index = oldState.backHistories.length - 1;
+            if (index < 0)
+                return oldState;
+            const state = oldState.backHistories[index];
+            return {
+                ...oldState,
+                backHistories: oldState.backHistories.slice(0, index),
+                current: state,
+                forwardHistories: [
+                    oldState.current,
+                    ...oldState.forwardHistories,
+                ],
+            };
+        });
+    }
+
+    protected updateState(updater: (oldState: State) => State): void {
+        super.updateState((oldState) => {
+            const newState = updater(oldState);
+            return {
+                ...newState,
+                ableToGoBack: newState.backHistories.length !== 0,
+            };
         });
     }
 }

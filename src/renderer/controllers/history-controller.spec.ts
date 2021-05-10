@@ -13,25 +13,25 @@ const dummyFileSystem: FileSystem = {
 };
 
 const dummyHistoryStore = {
-    pop: () => {},
     push: () => {},
     replace: () => {},
+    shiftBack: () => {},
 };
 
 describe('HistoryContollerImpl class', () => {
     describe('historyController.goBack() method', () => {
-        test('it calls historyStore.pop() method', () => {
-            const pop = jest.spyOn(dummyHistoryStore, 'pop');
+        test('it calls historyStore.shiftBack() method', () => {
+            const shiftBack = jest.spyOn(dummyHistoryStore, 'shiftBack');
             const historyController = new HistoryControllerImpl({
                 historyStore: dummyHistoryStore,
             });
 
-            expect(pop).not.toBeCalled();
+            expect(shiftBack).not.toBeCalled();
             historyController.goBack();
-            expect(pop).toBeCalledTimes(1);
+            expect(shiftBack).toBeCalledTimes(1);
 
-            pop.mockReset();
-            pop.mockRestore();
+            shiftBack.mockReset();
+            shiftBack.mockRestore();
         });
     });
 
