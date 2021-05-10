@@ -32,6 +32,15 @@ describe('CloseController class', () => {
         });
     });
 
+    describe('closeController.signal.closed property', () => {
+        test('it returns whether closed or not', async () => {
+            const closeController = new CloseController();
+            expect(closeController.signal.closed).toBe(false);
+            closeController.close();
+            expect(closeController.signal.closed).toBe(true);
+        });
+    });
+
     describe('closeController.signal.defer() method', () => {
         test('it returns a rejected promise when the callback has been thrown any error', async () => {
             const error = Error();

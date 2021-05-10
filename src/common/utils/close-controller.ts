@@ -2,12 +2,18 @@ export class Closed {
     //
 }
 
+export type CloseSignalLike = {
+    closed: boolean;
+    defer(callback: () => void): Promise<void>;
+};
+
 export class CloseSignal {
-    constructor(private _signal: {
-        closed: boolean;
-        defer(callback: () => void): Promise<void>;
-    }) {
+    constructor(private _signal: CloseSignalLike) {
         //
+    }
+
+    get closed(): boolean {
+        return this._signal.closed;
     }
 
     async defer(callback: () => void): Promise<void> {
