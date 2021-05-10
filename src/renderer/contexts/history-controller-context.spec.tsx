@@ -30,6 +30,7 @@ describe('HistoryController context', () => {
 
             const historyControllerInstance: HistoryController = {
                 goBack: () => {},
+                goForward: () => {},
                 navigate: () => {},
                 replace: () => {},
             };

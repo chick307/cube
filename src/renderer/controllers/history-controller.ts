@@ -4,6 +4,7 @@ import type { HistoryState, MutableHistoryStore } from '../stores/history-store'
 
 export type HistoryController = {
     goBack(): void;
+    goForward(): void;
     navigate(state: HistoryState): void;
     replace(state: HistoryState): void;
 };
@@ -19,6 +20,10 @@ export class HistoryControllerImpl implements HistoryController {
 
     goBack(): void {
         this._historyStore.shiftBack();
+    }
+
+    goForward(): void {
+        this._historyStore.shiftForward();
     }
 
     navigate(state: HistoryState): void {

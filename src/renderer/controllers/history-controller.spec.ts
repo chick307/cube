@@ -36,6 +36,22 @@ describe('HistoryContollerImpl class', () => {
         });
     });
 
+    describe('historyController.goForward() method', () => {
+        test('it calls historyStore.shiftForward() method', () => {
+            const shiftForward = jest.spyOn(dummyHistoryStore, 'shiftForward');
+            const historyController = new HistoryControllerImpl({
+                historyStore: dummyHistoryStore,
+            });
+
+            expect(shiftForward).not.toBeCalled();
+            historyController.goForward();
+            expect(shiftForward).toBeCalledTimes(1);
+
+            shiftForward.mockReset();
+            shiftForward.mockRestore();
+        });
+    });
+
     describe('historyController.navigate() method', () => {
         test('it calls historyStore.push() method', () => {
             const push = jest.spyOn(dummyHistoryStore, 'push');
