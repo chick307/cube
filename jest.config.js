@@ -8,4 +8,7 @@ module.exports = {
     coverageReporters: ['lcov'],
     preset: 'ts-jest/presets/js-with-ts',
     testMatch: ['<rootDir>/src/**/*.spec.(js|ts|tsx)'],
+    transform: {
+        '\\.(css)$': '<rootDir>/jest-css-modules-transformer.js',
+    },
 };
