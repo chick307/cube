@@ -1,8 +1,5 @@
-import React from 'react';
-
 import { FileEntry } from '../../common/entities/file-entry';
-import { FileSystem } from '../services/file-system';
-import { HistoryStore } from '../stores/history-store';
+import { FileSystem as FileSystemService } from '../services/file-system';
 import { BinaryFileView } from './binary-file-view';
 import { ImageFileView, isImageEntry } from './image-file-view';
 import { ComicView, isComicEntry } from './comic-view';
@@ -14,7 +11,7 @@ import styles from './file-view.css';
 export type Props = {
     className?: string;
     entry: FileEntry;
-    fileSystem: FileSystem;
+    fileSystem: FileSystemService;
 };
 
 export const FileView = (props: Props) => {

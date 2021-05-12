@@ -1,16 +1,15 @@
 import { Entry } from '../../common/entities/entry';
+import { FileSystem } from '../../common/entities/file-system';
 import { EntryPath } from '../../common/values/entry-path';
-import type { FileSystem } from '../services/file-system';
 import { HistoryControllerImpl } from './history-controller';
+
+class UnknownFileSystem extends FileSystem {
+    //
+}
 
 const dummyEntry = new Entry(new EntryPath('/a'));
 
-const dummyFileSystem: FileSystem = {
-    getContainer: () => null,
-    readDirectory: () => Promise.resolve([]),
-    readFile: () => Promise.resolve(Buffer.from('')),
-    readLink: () => Promise.resolve(dummyEntry),
-};
+const dummyFileSystem = new UnknownFileSystem();
 
 const dummyHistoryStore = {
     push: () => {},

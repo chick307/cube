@@ -3,6 +3,7 @@ import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
 import { DirectoryEntry } from '../../common/entities/directory-entry';
+import { FileSystem } from '../../common/entities/file-system';
 import { immediate } from '../../common/utils/immediate';
 import { EntryPath } from '../../common/values/entry-path';
 import { HistoryControllerProvider } from '../contexts/history-controller-context';
@@ -11,12 +12,11 @@ import { HistoryStore } from '../stores/history-store';
 import buttonStyles from './button.css';
 import { GoBackButton } from './go-back-button';
 
-const fileSystem1 = {
-    getContainer: () => null,
-    readDirectory: () => Promise.resolve([]),
-    readFile: () => Promise.resolve(Buffer.from('')),
-    readLink: () => { throw Error(); }
-};
+class UnknownFileSystem extends FileSystem {
+    //
+}
+
+const fileSystem1 = new UnknownFileSystem();
 
 let container: HTMLElement;
 

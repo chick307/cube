@@ -1,5 +1,5 @@
-import { Entry } from '../../common/entities/entry';
-import { FileSystem } from '../services/file-system';
+import type { Entry } from '../../common/entities/entry';
+import type { FileSystem } from '../../common/entities/file-system';
 import { Store } from './store';
 
 export type HistoryState = {

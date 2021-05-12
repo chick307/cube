@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 
+import { LocalFileSystem } from '../../common/entities/local-file-system';
 import { EntryView } from '../components/entry-view';
 import { HistoryControllerProvider } from '../contexts/history-controller-context';
 import { HistoryControllerImpl } from '../controllers/history-controller';
@@ -13,7 +14,7 @@ const MainWindow = () => {
     const historyStore = React.useMemo(() => new HistoryStore({
         historyState: {
             entry: localFileSystemService.getHomeDirectory(),
-            fileSystem: localFileSystemService,
+            fileSystem: new LocalFileSystem(),
         },
     }), []);
     const historyController = React.useMemo(() => new HistoryControllerImpl({ historyStore }), [historyStore]);

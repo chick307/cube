@@ -1,26 +1,19 @@
 import { DirectoryEntry } from '../../common/entities/directory-entry';
 import { FileEntry } from '../../common/entities/file-entry';
+import { FileSystem } from '../../common/entities/file-system';
 import { EntryPath } from '../../common/values/entry-path';
 import { immediate } from '../../common/utils/immediate';
-import { FileSystem } from '../services/file-system';
 import { HistoryStore } from './history-store';
+
+class UnknownFileSystem extends FileSystem {
+    //
+}
 
 const entry1 = new DirectoryEntry(new EntryPath('/a'));
 const entry2 = new DirectoryEntry(new EntryPath('/a/b'));
 const entry3 = new FileEntry(new EntryPath('/a/b/c'));
 
-const fileSystem1: FileSystem = {
-    getContainer: () => null,
-    readDirectory: (_directoryEntry, signal) => {
-        return signal.wrapPromise(Promise.resolve([]));
-    },
-    readFile: (_fileEntry, signal) => {
-        return signal.wrapPromise(Promise.resolve(Buffer.from('')));
-    },
-    readLink: (_symbolicLinkEntry, signal) => {
-        return signal.wrapPromise(Promise.resolve(entry3));
-    },
-};
+const fileSystem1: FileSystem = new UnknownFileSystem();
 
 const historyState1 = { entry: entry1, fileSystem: fileSystem1 };
 const historyState2 = { entry: entry2, fileSystem: fileSystem1 };

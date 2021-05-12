@@ -1,5 +1,3 @@
-import type { Entry } from '../../common/entities/entry';
-import type { FileSystem } from '../services/file-system';
 import type { HistoryState, MutableHistoryStore } from '../stores/history-store';
 
 export type HistoryController = {
