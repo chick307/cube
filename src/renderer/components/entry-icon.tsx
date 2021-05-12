@@ -2,6 +2,7 @@ import { ipcRenderer } from 'electron';
 import React from 'react';
 
 import { Entry } from '../../common/entities/entry';
+import { useEntryIconService } from '../contexts/entry-icon-service-context';
 import { useTask } from '../hooks/use-task';
 
 export type Props = React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement> & {
@@ -12,12 +13,12 @@ export type Props = React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageEle
 export const EntryIcon = (props: Props) => {
     const { entry, iconPlaceholder, src, ...imageProps } = props;
 
+    const entryIconService = useEntryIconService();
+
     const [iconUrl] = useTask<string>(async (signal) => {
         if (src != null)
             return src;
-        const iconUrl = entry.isDirectory() ?
-            await signal.wrapPromise(ipcRenderer.invoke('icon.getDirectoryIconDataUrl', entry.path.toString())) :
-            await signal.wrapPromise(ipcRenderer.invoke('icon.getFileIconDataUrl', entry.path.toString()));
+        const iconUrl = entryIconService.getEntryIconUrl(entry, { signal });
         return iconUrl;
     }, [src, entry]);
 
