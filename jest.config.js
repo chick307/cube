@@ -6,9 +6,12 @@ module.exports = {
     coverageDirectory: '<rootDir>/coverage',
     coveragePathIgnorePatterns: [],
     coverageReporters: ['lcov'],
-    preset: 'ts-jest/presets/js-with-ts',
+    preset: 'ts-jest/presets/default',
     testMatch: ['<rootDir>/src/**/*.spec.(js|ts|tsx)'],
     transform: {
         '\\.(css)$': '<rootDir>/jest-css-modules-transformer.js',
     },
+    setupFiles: [
+        '<rootDir>/jest-setup.js',
+    ],
 };
