@@ -1,7 +1,6 @@
 import { FileEntry } from '../../common/entities/file-entry';
 import { FileSystem as FileSystemService } from '../services/file-system';
 import { BinaryFileView } from './binary-file-view';
-import { TextFileView, isTextEntry } from './text-file-view';
 import { ZipFileView, isZipFile } from './zip-file-view';
 import styles from './file-view.css';
 
@@ -16,7 +15,6 @@ export const FileView = (props: Props) => {
 
     const view =
         isZipFile(entry) ? <ZipFileView className={styles.view} {...{ entry, fileSystem }} /> :
-        isTextEntry(entry) ? <TextFileView className={styles.view} {...{ entry, fileSystem }} /> :
         <BinaryFileView className={styles.view} {...{ entry, fileSystem }} />;
 
     return <>

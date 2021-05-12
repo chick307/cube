@@ -15,6 +15,7 @@ import { ZipFileSystemService } from '../services/zip-file-system-service';
 import { ComicView, isComicEntry } from './comic-view';
 import { ImageFileView, isImageEntry } from './image-file-view';
 import { isMediaEntry, MediaPlayer } from './media-player';
+import { isTextEntry, TextFileView } from './text-file-view';
 
 export type Props = {
     className?: string;
@@ -60,6 +61,9 @@ export const EntryView = (props: Props) => {
 
             if (isMediaEntry(entry))
                 return <MediaPlayer {...{ entry, ...viewProps }} />;
+
+            if (isTextEntry(entry))
+                return <TextFileView {...{ entry, ...viewProps }} />;
 
             const fileSystemService = fileSystemEntityToFileSystemService(fileSystem);
             return <FileView {...{ entry, ...viewProps, fileSystem: fileSystemService }} />;
