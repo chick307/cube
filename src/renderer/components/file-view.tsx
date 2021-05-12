@@ -1,7 +1,6 @@
 import { FileEntry } from '../../common/entities/file-entry';
 import { FileSystem as FileSystemService } from '../services/file-system';
 import { BinaryFileView } from './binary-file-view';
-import { ComicView, isComicEntry } from './comic-view';
 import { TextFileView, isTextEntry } from './text-file-view';
 import { MediaPlayer, isMediaEntry } from './media-player';
 import { ZipFileView, isZipFile } from './zip-file-view';
@@ -17,7 +16,6 @@ export const FileView = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
 
     const view =
-        isComicEntry(entry) ? <ComicView className={styles.view} {...{ entry, fileSystem }} /> :
         isMediaEntry(entry) ? <MediaPlayer className={styles.view} {...{ entry, fileSystem }} /> :
         isZipFile(entry) ? <ZipFileView className={styles.view} {...{ entry, fileSystem }} /> :
         isTextEntry(entry) ? <TextFileView className={styles.view} {...{ entry, fileSystem }} /> :

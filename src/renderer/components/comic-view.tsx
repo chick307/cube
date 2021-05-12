@@ -2,9 +2,11 @@ import React from 'react';
 
 import { DirectoryEntry } from '../../common/entities/directory-entry';
 import { FileEntry } from '../../common/entities/file-entry';
+import { FileSystem } from '../../common/entities/file-system';
+import { ZipFileSystem } from '../../common/entities/zip-file-system';
+import { EntryPath } from '../../common/values/entry-path';
+import { useEntryService } from '../contexts/entry-service-context';
 import { useTask } from '../hooks/use-task';
-import { FileSystem } from '../services/file-system';
-import { ZipFileSystemService } from '../services/zip-file-system-service';
 import styles from './comic-view.css';
 
 export type Props = {
@@ -13,18 +15,27 @@ export type Props = {
     fileSystem: FileSystem;
 };
 
+const rootDirectoryEntry = new DirectoryEntry(new EntryPath('/'))
+
 export const ComicView = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
 
+    const entryService = useEntryService();
+
     const zipFileSystem = React.useMemo(() => {
-        const zipFileSystem = new ZipFileSystemService({ zipFileEntry: entry, zipFileSystem: fileSystem });
+        const zipFileSystem = new ZipFileSystem({ container: { entry, fileSystem } });
         return zipFileSystem;
     }, [entry, fileSystem]);
 
     const [pages] = useTask(async (signal) => {
         const pages: FileEntry[] = [];
         const getPages = async (directoryEntry: DirectoryEntry) => {
-            const entries = await zipFileSystem.readDirectory(directoryEntry, signal);
+            const entries = await entryService.readDirectory({
+                entry: directoryEntry,
+                fileSystem: zipFileSystem,
+            }, {
+                signal,
+            });
             for (const entry of entries) {
                 if (entry.isDirectory()) {
                     await signal.wrapPromise(getPages(entry));
@@ -33,7 +44,7 @@ export const ComicView = (props: Props) => {
                 }
             }
         };
-        await getPages(zipFileSystem.getRoot());
+        await getPages(rootDirectoryEntry);
         return pages;
     }, [zipFileSystem]);
 
@@ -92,7 +103,12 @@ export const ComicView = (props: Props) => {
             return;
         }
         const loadImage = async (fileEntry: FileEntry) => {
-            const buffer = await zipFileSystem.readFile(fileEntry, signal);
+            const buffer = await entryService.readFile({
+                entry: fileEntry,
+                fileSystem: zipFileSystem
+            }, {
+                signal,
+            });
             const extension = fileEntry.path.getExtension();
             const type = extension === '.png' ? 'image/png' : 'image/jpeg';
             const blob = new Blob([buffer], { type });
