@@ -14,6 +14,7 @@ import { LocalFileSystemService } from '../services/local-file-system-service';
 import { ZipFileSystemService } from '../services/zip-file-system-service';
 import { ComicView, isComicEntry } from './comic-view';
 import { ImageFileView, isImageEntry } from './image-file-view';
+import { isMediaEntry, MediaPlayer } from './media-player';
 
 export type Props = {
     className?: string;
@@ -56,6 +57,9 @@ export const EntryView = (props: Props) => {
 
             if (isComicEntry(entry))
                 return <ComicView {...{ entry, ...viewProps }} />;
+
+            if (isMediaEntry(entry))
+                return <MediaPlayer {...{ entry, ...viewProps }} />;
 
             const fileSystemService = fileSystemEntityToFileSystemService(fileSystem);
             return <FileView {...{ entry, ...viewProps, fileSystem: fileSystemService }} />;
