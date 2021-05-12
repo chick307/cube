@@ -44,7 +44,7 @@ export const EntryView = (props: Props) => {
         const viewProps = { className: styles.view, fileSystem: fileSystemService };
 
         if (entry.isDirectory())
-            return <DirectoryView {...{ entry, ...viewProps }} />;
+            return <DirectoryView {...{ entry, ...viewProps, fileSystem }} />;
 
         if (entry.isSymbolicLink())
             return <SymbolicLinkView {...{ entry, ...viewProps }} />;
