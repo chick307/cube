@@ -7,6 +7,7 @@ import { HistoryControllerProvider } from '../contexts/history-controller-contex
 import { HistoryControllerImpl } from '../controllers/history-controller';
 import { HistoryStore } from '../stores/history-store';
 import { LocalFileSystemService } from '../services/local-file-system-service';
+import { composeElements } from '../utils/compose-elements';
 import styles from './main-window.css';
 
 const MainWindow = () => {
@@ -19,11 +20,10 @@ const MainWindow = () => {
     }), []);
     const historyController = React.useMemo(() => new HistoryControllerImpl({ historyStore }), [historyStore]);
 
-    return <>
-        <HistoryControllerProvider value={historyController}>
-            <EntryView className={styles.mainContent} mainContent={true} {...{ historyStore }} />
-        </HistoryControllerProvider>
-    </>;
+    return composeElements([
+        <HistoryControllerProvider value={historyController} />,
+        <EntryView className={styles.mainContent} mainContent={true} {...{ historyStore }} />,
+    ]);
 };
 
 ReactDom.render(<MainWindow />, document.querySelector('#container'));
