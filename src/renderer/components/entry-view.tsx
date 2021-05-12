@@ -40,17 +40,18 @@ export const EntryView = (props: Props) => {
     const { current: { entry, fileSystem } } = useStore(historyStore);
 
     const view = React.useMemo(() => {
-        const fileSystemService = fileSystemEntityToFileSystemService(fileSystem);
-        const viewProps = { className: styles.view, fileSystem: fileSystemService };
+        const viewProps = { className: styles.view, fileSystem };
 
         if (entry.isDirectory())
-            return <DirectoryView {...{ entry, ...viewProps, fileSystem }} />;
+            return <DirectoryView {...{ entry, ...viewProps }} />;
 
         if (entry.isSymbolicLink())
             return <SymbolicLinkView {...{ entry, ...viewProps }} />;
 
-        if (entry.isFile())
-            return <FileView {...{ entry, ...viewProps }} />;
+        if (entry.isFile()) {
+            const fileSystemService = fileSystemEntityToFileSystemService(fileSystem);
+            return <FileView {...{ entry, ...viewProps, fileSystem: fileSystemService }} />;
+        }
 
         return null;
     }, [entry, fileSystem]);
