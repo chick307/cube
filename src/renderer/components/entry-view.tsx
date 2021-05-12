@@ -1,6 +1,9 @@
 import React from 'react';
 
+import type { FileEntry } from '../../common/entities/file-entry';
 import { FileSystem } from '../../common/entities/file-system';
+import { ZipFileSystem } from '../../common/entities/zip-file-system';
+import { useHistoryController } from '../contexts/history-controller-context';
 import { useStore } from '../hooks/use-store';
 import { HistoryStore } from '../stores/history-store';
 import { DirectoryView } from './directory-view';
@@ -16,12 +19,17 @@ import { ComicView, isComicEntry } from './comic-view';
 import { ImageFileView, isImageEntry } from './image-file-view';
 import { isMediaEntry, MediaPlayer } from './media-player';
 import { isTextEntry, TextFileView } from './text-file-view';
+import { DirectoryEntry } from '../../common/entities/directory-entry';
+import { EntryPath } from '../../common/values/entry-path';
 
 export type Props = {
     className?: string;
     historyStore: HistoryStore;
     mainContent?: boolean;
 };
+
+const isZipEntry = (entry: FileEntry) =>
+    /^\.(?:zip)$/.test(entry.path.getExtension());
 
 const fileSystemEntityToFileSystemService = (entity: FileSystem): FileSystemService => {
     if (entity.isLocal()) {
@@ -40,6 +48,8 @@ const fileSystemEntityToFileSystemService = (entity: FileSystem): FileSystemServ
 
 export const EntryView = (props: Props) => {
     const { className = '', mainContent = false, historyStore } = props;
+
+    const historyController = useHistoryController();
 
     const { current: { entry, fileSystem } } = useStore(historyStore);
 
@@ -65,11 +75,25 @@ export const EntryView = (props: Props) => {
             if (isTextEntry(entry))
                 return <TextFileView {...{ entry, ...viewProps }} />;
 
+            if (isZipEntry(entry))
+                return null;
+
             const fileSystemService = fileSystemEntityToFileSystemService(fileSystem);
             return <FileView {...{ entry, ...viewProps, fileSystem: fileSystemService }} />;
         }
 
         return null;
+    }, [entry, fileSystem]);
+
+    React.useEffect(() => {
+        if (entry.isFile() && isZipEntry(entry)) {
+            historyController.replace({
+                entry: new DirectoryEntry(new EntryPath('/')),
+                fileSystem: new ZipFileSystem({
+                    container: { entry, fileSystem },
+                }),
+            });
+        }
     }, [entry, fileSystem]);
 
     return <>
