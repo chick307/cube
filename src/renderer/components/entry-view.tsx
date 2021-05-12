@@ -12,6 +12,7 @@ import { SymbolicLinkView } from './symbolic-link-view';
 import type { FileSystem as FileSystemService } from '../services/file-system';
 import { LocalFileSystemService } from '../services/local-file-system-service';
 import { ZipFileSystemService } from '../services/zip-file-system-service';
+import { ImageFileView, isImageEntry } from './image-file-view';
 
 export type Props = {
     className?: string;
@@ -49,6 +50,9 @@ export const EntryView = (props: Props) => {
             return <SymbolicLinkView {...{ entry, ...viewProps }} />;
 
         if (entry.isFile()) {
+            if (isImageEntry(entry))
+                return <ImageFileView {...{ entry, ...viewProps }} />;
+
             const fileSystemService = fileSystemEntityToFileSystemService(fileSystem);
             return <FileView {...{ entry, ...viewProps, fileSystem: fileSystemService }} />;
         }
