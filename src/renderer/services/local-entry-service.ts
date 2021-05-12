@@ -1,5 +1,7 @@
 import { Stats as FsStats, promises as fs } from 'fs';
 
+import { ipcRenderer } from 'electron';
+
 import { DirectoryEntry } from '../../common/entities/directory-entry';
 import { Entry } from '../../common/entities/entry';
 import { FileEntry } from '../../common/entities/file-entry';
@@ -33,6 +35,7 @@ export type ReadLinkOptions = {
 };
 
 export type LocalEntryService = {
+    getHomeDirectoryEntry(): DirectoryEntry;
     readDirectory(params: ReadDirectoryParameters, options?: ReadDirectoryOptions | null): Promise<Entry[]>;
     readFile(params: ReadFileParameters, options?: ReadFileOptions | null): Promise<Buffer>;
     readLink(params: ReadLinkParameters, options?: ReadLinkOptions | null): Promise<Entry>;
@@ -50,6 +53,12 @@ export class LocalEntryServiceImpl implements LocalEntryService {
         if (stat.isSymbolicLink())
             return new SymbolicLinkEntry(entryPath);
         return new Entry(entryPath);
+    }
+
+    getHomeDirectoryEntry(): DirectoryEntry {
+        const homeDirectoryPathString = ipcRenderer.sendSync('path.home');
+        const homeDirectoryPath = new EntryPath(homeDirectoryPathString);
+        return new DirectoryEntry(homeDirectoryPath);
     }
 
     async readDirectory(params: ReadDirectoryParameters, options?: ReadDirectoryOptions | null): Promise<Entry[]> {

@@ -1,5 +1,7 @@
 import { promises as fs } from 'fs';
 
+import { ipcRenderer } from 'electron';
+
 import { DirectoryEntry } from '../../common/entities/directory-entry';
 import { Entry } from '../../common/entities/entry';
 import { FileEntry } from '../../common/entities/file-entry';
@@ -64,10 +66,20 @@ describe('LocalEntryService type', () => {
         jest.clearAllMocks();
     });
 
-    describe('localEntryService.readDirectory() method', () => {
-        beforeEach(() => {
+    describe('localEntryService.getHomeDirectoryEntry() method', () => {
+        test('it returns the entry of the home directory', () => {
+            const sendSync = jest.spyOn(ipcRenderer, 'sendSync');
+            sendSync.mockImplementation((channel) => {
+                expect(channel).toBe('path.home');
+                return '/path/to/home';
+            });
+            const localEntryService = new LocalEntryServiceImpl();
+            const result = localEntryService.getHomeDirectoryEntry();
+            expect(result).toEqual(new DirectoryEntry(new EntryPath('/path/to/home')));
         });
+    });
 
+    describe('localEntryService.readDirectory() method', () => {
         test('it returns the entries in the directory', async () => {
             const localEntryService = new LocalEntryServiceImpl();
             const entry = new DirectoryEntry(new EntryPath('/a'));
