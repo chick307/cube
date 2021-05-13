@@ -3,6 +3,7 @@ import { EntryPath } from '../values/entry-path';
 
 export class Entry {
     readonly name: EntryName;
+
     readonly path: EntryPath;
 
     constructor(entryPath: EntryPath) {

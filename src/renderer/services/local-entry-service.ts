@@ -1,4 +1,4 @@
-import { Stats as FsStats, promises as fs } from 'fs';
+import { promises as fs } from 'fs';
 
 import { ipcRenderer } from 'electron';
 

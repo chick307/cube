@@ -90,7 +90,7 @@ describe('EntryIconService type', () => {
             closeController.close();
             const { signal } = closeController;
             const invoke = jest.spyOn(ipcRenderer, 'invoke');
-            invoke.mockImplementation(async (channel, arg) => {
+            invoke.mockImplementation(async () => {
                 return 'data:image/png;base64,CCCC';
             });
             const entry1 = new DirectoryEntry(new EntryPath('/a'));
@@ -108,7 +108,7 @@ describe('EntryIconService type', () => {
             const closeController2 = new CloseController();
             const signal2 = closeController2.signal;
             const invoke = jest.spyOn(ipcRenderer, 'invoke');
-            invoke.mockImplementation(async (channel, arg) => {
+            invoke.mockImplementation(async () => {
                 return 'data:image/png;base64,CCCC';
             });
             const entry1 = new DirectoryEntry(new EntryPath('/a'));

@@ -5,6 +5,7 @@ import { CloseController, CloseSignal } from '../../common/utils/close-controlle
 export type TaskCallback<T> = (signal: CloseSignal) => Promise<T>;
 
 export const useTask = <T>(f: TaskCallback<T>, deps?: React.DependencyList) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [result, setResult] = React.useState<[T] | [undefined, any] | []>(() => []);
 
     React.useEffect(() => {

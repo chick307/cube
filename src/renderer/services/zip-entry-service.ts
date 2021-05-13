@@ -47,13 +47,14 @@ export class ZipEntryServiceImpl implements ZipEntryService {
         container: Container;
         entryService: EntryService;
     }, signal?: CloseSignal | null): Promise<Map<string, {
-        entry: Entry;
-        object: JSZip.JSZipObject;
-    }>> {
+            entry: Entry;
+            object: JSZip.JSZipObject;
+        }>> {
         signal?.throwIfClosed();
         if (this._zipEntries.has(params.container)) {
-            if (signal == null)
+            if (signal == null) // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 return this._zipEntries.get(params.container)!;
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             return signal.wrapPromise(this._zipEntries.get(params.container)!);
         }
         const zipEntriesPromise = (async () => {
@@ -62,7 +63,7 @@ export class ZipEntryServiceImpl implements ZipEntryService {
             const map = new Map<string, { entry: Entry; object: JSZip.JSZipObject; }>();
             for (const object of Object.values(zip.files)) {
                 // Convert a, b/, c/d, e/f/ to /a, /b, /c/d, /e/f
-                const entryPath = new EntryPath('/' + object.name.replace(/\/$/, ''));
+                const entryPath = new EntryPath(`/${object.name.replace(/\/$/, '')}`);
                 const entry = object.dir ? new DirectoryEntry(entryPath) : new FileEntry(entryPath);
                 map.set(entryPath.toString(), { entry, object });
             }
@@ -93,6 +94,7 @@ export class ZipEntryServiceImpl implements ZipEntryService {
             container: params.fileSystem.container,
             entryService: params.entryService,
         }, options?.signal);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const { object } = entries.get(params.entry.path.toString())!;
         const bufferPromise = object.async('nodebuffer');
         const buffer = await (options?.signal?.wrapPromise(bufferPromise) ?? bufferPromise);

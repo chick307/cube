@@ -12,6 +12,7 @@ export type ConstructorParameters = {
 
 export class ZipFileSystem extends FileSystem {
     readonly container: Container;
+
     readonly type = 'zip';
 
     constructor(params: ConstructorParameters) {

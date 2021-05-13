@@ -27,10 +27,10 @@ const electronCommon = (options) => {
         module: {
             rules: [
                 {
-                    test: /\.tsx?$/,
                     exclude: [
                         path.resolve(__dirname, 'node_modules'),
                     ],
+                    test: /\.tsx?$/,
                     use: [
                         {
                             loader: 'ts-loader',
@@ -51,7 +51,7 @@ const electronMain = (options) => {
     return {
         ...base,
         entry: {
-            'main': './src/main/entries/main.ts',
+            main: './src/main/entries/main.ts',
         },
         externalsPresets: {
             ...base.externalsPresets,

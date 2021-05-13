@@ -53,7 +53,7 @@ describe('HistoryController context', () => {
             const Component = () => {
                 try {
                     useHistoryController();
-                } catch(e) {
+                } catch (e) {
                     handleError(e);
                 }
                 return <></>;

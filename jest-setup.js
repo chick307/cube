@@ -8,5 +8,5 @@ jest.mock('electron', () => {
             invoke: notImplemented,
             sendSync: notImplemented,
         },
-    }
+    };
 });

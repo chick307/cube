@@ -4,7 +4,9 @@ export type Observer<State> = {
 
 export class Store<State> {
     private _observers: Observer<State>[] = [];
+
     private _state: State;
+
     private _updating = Promise.resolve();
 
     constructor(initialState: State) {
@@ -38,7 +40,7 @@ export class Store<State> {
                 const index = this._observers.indexOf(observer);
                 if (index !== -1)
                     this._observers.splice(index, 1);
-            }
+            },
         };
     }
 }

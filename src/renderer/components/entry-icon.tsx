@@ -1,5 +1,4 @@
-import { ipcRenderer } from 'electron';
-import React from 'react';
+import type React from 'react';
 
 import { Entry } from '../../common/entities/entry';
 import { useEntryIconService } from '../contexts/entry-icon-service-context';

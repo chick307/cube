@@ -1,5 +1,5 @@
-import { FileSystem } from "./file-system";
-import { LocalFileSystem } from "./local-file-system";
+import { FileSystem } from './file-system';
+import { LocalFileSystem } from './local-file-system';
 
 describe('LocalFileSystem entity class', () => {
     describe('localFileSystem.isLocal() method', () => {

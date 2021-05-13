@@ -1,10 +1,11 @@
 export const get = Symbol('get');
 
 export type Container<T> = {
-    [K in keyof T]:
+    [K in keyof T]: (
         T[K] extends { [get]: (container: Container<Omit<T, K>>) => infer U; } ? U :
-        T[K] extends new (...args: any[]) => infer U ? U :
-        T[K];
+        T[K] extends new (container: Container<Omit<T, K>>) => infer U ? U :
+        T[K]
+    );
 };
 
 export type Factory<T, U> =
@@ -25,7 +26,7 @@ export const createFactory = <T, U>(factory: (container: T) => U): Factory<T, U>
 
 export const createContainer = <T>(services: T): Container<T> => {
     const container = Object.create(null) as Container<T>;
-    const values = Object.create(null) as any;
+    const values = Object.create(null);
     const innerContainer = new Proxy(container, {
         get: (target, key) => {
             const value = Reflect.get(target, key);

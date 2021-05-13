@@ -51,7 +51,7 @@ describe('EntryService context', () => {
             const Component = () => {
                 try {
                     useEntryService();
-                } catch(e) {
+                } catch (e) {
                     handleError(e);
                 }
                 return <></>;

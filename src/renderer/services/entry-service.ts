@@ -42,6 +42,7 @@ export type EntryService = {
 
 export class EntryServiceImpl implements EntryService {
     private _localEntryService: LocalEntryService;
+
     private _zipEntryService: ZipEntryService;
 
     constructor(container: {
@@ -61,8 +62,7 @@ export class EntryServiceImpl implements EntryService {
         }
 
         if (fileSystem.isZip()) {
-            const entryService = this;
-            return this._zipEntryService.readDirectory({ entry, entryService, fileSystem }, { signal });
+            return this._zipEntryService.readDirectory({ entry, entryService: this, fileSystem }, { signal });
         }
 
         throw Error('Unknown file system');
@@ -77,8 +77,7 @@ export class EntryServiceImpl implements EntryService {
         }
 
         if (fileSystem.isZip()) {
-            const entryService = this;
-            return this._zipEntryService.readFile({ entry, entryService, fileSystem }, { signal });
+            return this._zipEntryService.readFile({ entry, entryService: this, fileSystem }, { signal });
         }
 
         throw Error('Unknown file system');

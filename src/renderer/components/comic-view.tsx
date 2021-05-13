@@ -15,7 +15,7 @@ export type Props = {
     fileSystem: FileSystem;
 };
 
-const rootDirectoryEntry = new DirectoryEntry(new EntryPath('/'))
+const rootDirectoryEntry = new DirectoryEntry(new EntryPath('/'));
 
 export const ComicView = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
@@ -105,7 +105,7 @@ export const ComicView = (props: Props) => {
         const loadImage = async (fileEntry: FileEntry) => {
             const buffer = await entryService.readFile({
                 entry: fileEntry,
-                fileSystem: zipFileSystem
+                fileSystem: zipFileSystem,
             }, {
                 signal,
             });
@@ -116,8 +116,12 @@ export const ComicView = (props: Props) => {
             const image = new Image();
             image.src = url;
             await signal.wrapPromise(new Promise<void>((resolve, reject) => {
-                image.onload = () => { resolve(); };
-                image.onerror = () => { reject(Error()); };
+                image.onload = () => {
+                    resolve();
+                };
+                image.onerror = () => {
+                    reject(Error());
+                };
             }).finally(() => {
                 URL.revokeObjectURL(url);
             }));
@@ -128,7 +132,7 @@ export const ComicView = (props: Props) => {
         const width = images.map((image) => Math.floor(image.width * height / image.height)).reduce((a, b) => a + b);
         canvas.width = width;
         canvas.height = height;
-        const ctx = canvas.getContext('2d')!;
+        const ctx = canvas.getContext('2d')!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
         let x = width;
         for (const image of images) {
             const w = Math.floor(image.width * height / image.height);

@@ -39,12 +39,12 @@ const MainWindow = () => {
         });
     }, []);
 
-    return composeElements([
+    return composeElements(
         <EntryIconServiceProvider value={entryIconService} />,
         <EntryServiceProvider value={entryService} />,
         <HistoryControllerProvider value={historyController} />,
         <EntryView className={styles.mainContent} mainContent={true} {...{ historyStore }} />,
-    ]);
+    );
 };
 
 ReactDom.render(<MainWindow />, document.querySelector('#container'));

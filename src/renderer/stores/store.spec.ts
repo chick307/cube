@@ -1,11 +1,14 @@
 import { immediate } from '../../common/utils/immediate';
 import { Store } from './store';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 class TestStore extends Store<any> {
+    // eslint-disable--next-line @typescript-eslint/no-explicit-any
     setState(state: any) {
         super.setState(state);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     updateState(updater: (state: any) => any) {
         super.updateState(updater);
     }

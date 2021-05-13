@@ -1,4 +1,3 @@
-import { EntryName } from './entry-name';
 import { EntryPath } from './entry-path';
 
 describe('EntryPath class', () => {

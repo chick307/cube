@@ -1,17 +1,17 @@
 import * as path from 'path';
 
 export class EntryName {
-    private value: string;
+    private _value: string;
 
     constructor(value: string) {
-        this.value = value;
+        this._value = value;
     }
 
     getExtension(): string {
-        return path.extname(this.value);
+        return path.extname(this._value);
     }
 
     toString(): string {
-        return this.value;
+        return this._value;
     }
 }

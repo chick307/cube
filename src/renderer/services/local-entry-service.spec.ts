@@ -34,7 +34,7 @@ const createSymbolicLinkStats = () => ({
 describe('LocalEntryService type', () => {
     beforeEach(() => {
         const lstat = jest.spyOn(fs, 'lstat');
-        lstat.mockImplementation(async (path: any) => {
+        lstat.mockImplementation(async (path) => {
             if (path === '/a/b')
                 return createFileStats() as any;
             if (path === '/a/c')

@@ -50,7 +50,7 @@ describe('EntryIcon component', () => {
     });
 
     test('it displays the passed placeholder while the icon URL is not resolved', async () => {
-        let resolve = (url: string) => {};
+        let resolve: (url: string) => void = () => {};
         const { getEntryIconUrl } = dummyEntryIconService;
         getEntryIconUrl.mockReturnValue(new Promise((r) => {
             resolve = r;
@@ -79,7 +79,6 @@ describe('EntryIcon component', () => {
     });
 
     test('it displays the image of the passed URL', async () => {
-        const { getEntryIconUrl } = dummyEntryIconService;
         const entry = new FileEntry(new EntryPath('/a/b'));
         const iconPlaceholder = <></>;
         const src = 'data:image/png;base64,CCCC';

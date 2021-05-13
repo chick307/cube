@@ -26,6 +26,7 @@ export class CloseSignal {
     }
 
     async wrapPromise<T>(promise: PromiseLike<T>): Promise<T> {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         const result = await Promise.race([promise, this._signal.defer(() => {})]);
         if (this._signal.closed)
             throw new Closed();
@@ -35,10 +36,13 @@ export class CloseSignal {
 
 class CloseSignalInternal {
     close: () => void;
+
     closed = false;
+
     promise: Promise<void>;
 
     constructor() {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.close = null!;
         this.promise = new Promise((resolve) => {
             this.close = () => {

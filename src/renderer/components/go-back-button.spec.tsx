@@ -33,7 +33,7 @@ afterEach(() => {
 
 const dummyHistoryController: HistoryController = {
     goBack: () => {},
-    goForward: () =>  {},
+    goForward: () => {},
     navigate: () => {},
     replace: () => {},
 };

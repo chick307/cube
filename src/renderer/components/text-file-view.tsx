@@ -18,7 +18,7 @@ export const TextFileView = (props: Props) => {
     const entryService = useEntryService();
 
     const [content] = useTask(async (signal) => {
-        const buffer = await entryService.readFile({ entry, fileSystem  }, { signal });
+        const buffer = await entryService.readFile({ entry, fileSystem }, { signal });
         const text = buffer.toString('utf-8');
         return text;
     }, [entry, fileSystem]);

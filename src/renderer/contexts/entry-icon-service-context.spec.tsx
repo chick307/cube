@@ -51,7 +51,7 @@ describe('EntryIconService context', () => {
             const Component = () => {
                 try {
                     useEntryIconService();
-                } catch(e) {
+                } catch (e) {
                     handleError(e);
                 }
                 return <></>;

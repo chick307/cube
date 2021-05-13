@@ -3,17 +3,17 @@ import * as path from 'path';
 import { EntryName } from './entry-name';
 
 export class EntryPath {
-    private value: string;
+    private _value: string;
 
     readonly name: EntryName;
 
     constructor(value: string) {
-        this.value = value;
+        this._value = value;
         this.name = new EntryName(path.basename(value));
     }
 
     equals(otherEntryPath: EntryPath): boolean {
-        return this.value === otherEntryPath.value;
+        return this._value === otherEntryPath._value;
     }
 
     getExtension(): string {
@@ -21,20 +21,20 @@ export class EntryPath {
     }
 
     getParentPath(): EntryPath | null {
-        if (this.value === '/')
+        if (this._value === '/')
             return null;
-        return new EntryPath(path.join(this.value, '..'));
+        return new EntryPath(path.join(this._value, '..'));
     }
 
     join(entryName: EntryName): EntryPath {
-        return new EntryPath(path.join(this.value, entryName.toString()));
+        return new EntryPath(path.join(this._value, entryName.toString()));
     }
 
     resolve(...paths: EntryPath[]): EntryPath {
-        return new EntryPath(path.resolve(this.value, ...paths.map((p) => p.value)));
+        return new EntryPath(path.resolve(this._value, ...paths.map((p) => p._value)));
     }
 
     toString(): string {
-        return this.value;
+        return this._value;
     }
 }

@@ -2,6 +2,7 @@ import { createContainer, createFactory } from './create-container';
 
 class TestService1 {
     readonly a: number;
+
     readonly b: string;
 
     constructor(container: {
@@ -17,7 +18,7 @@ class TestService2 {
     readonly testService1: TestService1;
 
     constructor(container: {
-        testService1: TestService1,
+        testService1: TestService1;
     }) {
         this.testService1 = container.testService1;
     }
@@ -27,7 +28,7 @@ class TestService3 {
     readonly testService1: TestService1;
 
     constructor(container: {
-        testService1: TestService1,
+        testService1: TestService1;
     }) {
         this.testService1 = container.testService1;
     }
@@ -35,11 +36,12 @@ class TestService3 {
 
 class TestService4 {
     readonly testService2: TestService2;
+
     readonly testService3: TestService3;
 
     constructor(container: {
-        testService2: TestService2,
-        testService3: TestService3,
+        testService2: TestService2;
+        testService3: TestService3;
     }) {
         this.testService2 = container.testService2;
         this.testService3 = container.testService3;

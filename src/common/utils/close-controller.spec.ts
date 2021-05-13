@@ -24,6 +24,7 @@ describe('CloseController class', () => {
             await Promise.resolve();
             expect(callback).toHaveBeenCalledTimes(1);
             callback.mockClear();
+            // eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/no-unused-vars
             for (const _ of new Array(3).fill(null)) {
                 closeController.close();
                 await Promise.resolve();

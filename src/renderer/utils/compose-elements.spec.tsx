@@ -24,11 +24,11 @@ const Context3 = React.createContext<{ c: number; }>({ c: 0 });
 describe('composeElements() function', () => {
     test('it composes elements', () => {
         const Component = () => {
-            return composeElements([
+            return composeElements(
                 <div className={'a'} />,
                 <div className={'b'} />,
                 <div className={'c'} />,
-            ]);
+            );
         };
         TestUtils.act(() => {
             ReactDom.render(<Component />, container);
@@ -39,9 +39,9 @@ describe('composeElements() function', () => {
     });
 
     test('it composes providers', () => {
-        let a: number = 0;
-        let b: number = 0;
-        let c: number = 0;
+        let a = 0;
+        let b = 0;
+        let c = 0;
         const InnerComponent = () => {
             a = React.useContext(Context1).a;
             b = React.useContext(Context2).b;
@@ -49,12 +49,12 @@ describe('composeElements() function', () => {
             return <></>;
         };
         const Component = () => {
-            return composeElements([
+            return composeElements(
                 <Context1.Provider value={{ a: 1 }} />,
                 <Context2.Provider value={{ b: 2 }} />,
                 <Context3.Provider value={{ c: 3 }} />,
-                <InnerComponent />
-            ]);
+                <InnerComponent />,
+            );
         };
         TestUtils.act(() => {
             ReactDom.render(<Component />, container);
