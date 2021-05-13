@@ -7,6 +7,8 @@
 .path {
     display: flex;
     align-items: center;
+    background-color: #FFFFFF;
+    color: #666666;
 }
 
 .main-content > .path {

@@ -8,6 +8,8 @@ body {
     margin: 0;
     height: 100%;
     user-select: none;
+    background-color: #444444;
+    color: #FFFFFF;
 }
 
 :global(#container) {
