@@ -34,10 +34,15 @@ export type ReadLinkOptions = {
     signal?: CloseSignal | null;
 };
 
+export type Link = {
+    entry: Entry | null;
+    linkString: string;
+};
+
 export type EntryService = {
     readDirectory(params: ReadDirectoryParameters, options?: ReadDirectoryOptions | null): Promise<Entry[]>;
     readFile(params: ReadFileParameters, options?: ReadFileOptions | null): Promise<Buffer>;
-    readLink(params: ReadLinkParameters, options?: ReadLinkOptions | null): Promise<Entry>;
+    readLink(params: ReadLinkParameters, options?: ReadLinkOptions | null): Promise<Link>;
 };
 
 export class EntryServiceImpl implements EntryService {
@@ -83,7 +88,7 @@ export class EntryServiceImpl implements EntryService {
         throw Error('Unknown file system');
     }
 
-    async readLink(params: ReadLinkParameters, options?: ReadLinkOptions | null): Promise<Entry> {
+    async readLink(params: ReadLinkParameters, options?: ReadLinkOptions | null): Promise<Link> {
         const { entry, fileSystem } = params;
         const { signal } = options ?? {};
 

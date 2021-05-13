@@ -21,7 +21,10 @@ const dummyLocalEntryService: LocalEntryService = {
         new FileEntry(new EntryPath('/a/c/f')),
     ],
     readFile: async () => Buffer.from('abc'),
-    readLink: async () => new Entry(new EntryPath('/a/e')),
+    readLink: async () => ({
+        entry: new Entry(new EntryPath('/a/e')),
+        linkString: '/a/e',
+    }),
 };
 
 const dummyZipEntryService: ZipEntryService = {
@@ -152,11 +155,17 @@ describe('EntryService type', () => {
             const fileSystem = new LocalFileSystem();
             const entryService = createEntryService();
             const promise1 = entryService.readLink({ entry, fileSystem });
-            await expect(promise1).resolves.toEqual(new Entry(new EntryPath('/a/e')));
+            await expect(promise1).resolves.toEqual({
+                entry: new Entry(new EntryPath('/a/e')),
+                linkString: '/a/e',
+            });
             expect(readLink).toHaveBeenCalledWith({ entry }, { signal: undefined });
             readLink.mockClear();
             const promise2 = entryService.readLink({ entry, fileSystem }, { signal });
-            await expect(promise2).resolves.toEqual(new Entry(new EntryPath('/a/e')));
+            await expect(promise2).resolves.toEqual({
+                entry: new Entry(new EntryPath('/a/e')),
+                linkString: '/a/e',
+            });
             expect(readLink).toHaveBeenCalledWith({ entry }, { signal });
         });
 

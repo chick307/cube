@@ -1,11 +1,40 @@
 .view {}
 
-.dest-path {
-    display: inline-block;
+.link-string {
     margin: 1em;
+}
+
+.dest-container {
+    display: flex;
+    margin: 0 1em 1em;
+    align-items: center;
+}
+
+.arrow {
+    display: inline-block;
+    height: 16px;
+}
+
+.icon-container {
+    display: inline-block;
+    margin: 0 0.5em;
+    height: 16px;
     cursor: pointer;
 }
 
+.icon-placeholder {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+}
+
+.dest-path {
+    display: inline-block;
+    line-height: 16px;
+    cursor: pointer;
+}
+
+.icon-container:hover + .dest-path,
 .dest-path:hover {
     text-decoration: underline;
 }

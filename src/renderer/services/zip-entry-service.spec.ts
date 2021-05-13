@@ -20,7 +20,10 @@ const dummyEntryService: EntryService = {
         const buffer = await fs.readFile(path.resolve(__dirname, './fixtures/a.zip'));
         return buffer;
     },
-    readLink: async () => new Entry(new EntryPath('/a/e')),
+    readLink: async () => ({
+        entry: new Entry(new EntryPath('/a/e')),
+        linkString: '/a/e',
+    }),
 };
 
 const dummyContainer = {

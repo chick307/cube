@@ -5,7 +5,12 @@ import { SymbolicLinkEntry } from '../../common/entities/symbolic-link-entry';
 import { useEntryService } from '../contexts/entry-service-context';
 import { useHistoryController } from '../contexts/history-controller-context';
 import { useTask } from '../hooks/use-task';
+import { EntryIcon } from './entry-icon';
 import styles from './symbolic-link-view.css';
+
+const iconPlaceholder = (
+    <span className={styles.iconPlaceholder} />
+);
 
 export type Props = {
     className?: string;
@@ -20,25 +25,36 @@ export const SymbolicLinkView = (props: Props) => {
 
     const historyController = useHistoryController();
 
-    const [destination] = useTask(async (signal) => {
-        const destination = await entryService.readLink({ entry, fileSystem }, { signal });
-        return destination;
+    const [link] = useTask(async (signal) => {
+        const link = await entryService.readLink({ entry, fileSystem }, { signal });
+        return link;
     }, [entry, entryService, fileSystem]);
 
     const onClick = React.useCallback(() => {
-        if (destination == null)
+        if (link?.entry == null)
             return;
-        historyController.navigate({ entry: destination, fileSystem });
-    }, [destination]);
+        historyController.navigate({ entry: link.entry, fileSystem });
+    }, [link]);
 
-    if (destination == null)
+    if (link == null)
         return <></>;
 
-    return <>
+    return (
         <div className={`${className} ${styles.view}`}>
-            <span className={styles.destPath} onClick={onClick}>
-                {destination.path.toString()}
-            </span>
+            <div className={styles.linkString}>
+                {link.linkString}
+            </div>
+            {link.entry == null ? null : (
+                <div className={styles.destContainer}>
+                    <span className={styles.arrow}>&rarr;</span>
+                    <span className={styles.iconContainer} {...{ onClick }}>
+                        <EntryIcon entry={link.entry} {...{ iconPlaceholder }} />
+                    </span>
+                    <span className={styles.destPath} {...{ onClick }}>
+                        {link.entry.path.toString()}
+                    </span>
+                </div>
+            )}
         </div>
-    </>;
+    );
 };

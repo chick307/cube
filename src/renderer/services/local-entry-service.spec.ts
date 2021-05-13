@@ -148,7 +148,21 @@ describe('LocalEntryService type', () => {
             const linkedEntry = new FileEntry(new EntryPath('/a/b'));
             const entry = new SymbolicLinkEntry(new EntryPath('/a/d'));
             const promise = localEntryService.readLink({ entry });
-            await expect(promise).resolves.toEqual(linkedEntry);
+            await expect(promise).resolves.toEqual({
+                entry: linkedEntry,
+                linkString: '/a/b',
+            });
+        });
+
+        test('it returns null if failed on obtaining status', async () => {
+            jest.spyOn(fs, 'lstat').mockReturnValue(Promise.reject(Error()));
+            const localEntryService = new LocalEntryServiceImpl();
+            const entry = new SymbolicLinkEntry(new EntryPath('/a/d'));
+            const promise = localEntryService.readLink({ entry });
+            await expect(promise).resolves.toEqual({
+                entry: null,
+                linkString: '/a/b',
+            });
         });
 
         test('it throws if the passed signal is closed', async () => {
