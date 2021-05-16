@@ -15,6 +15,7 @@
     "productName": "Cube"
   },
   "dependencies": {
+    "electron-store": "^8.0.0",
     "jszip": "^3.6.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
