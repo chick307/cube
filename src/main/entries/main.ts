@@ -2,8 +2,18 @@ import * as path from 'path';
 
 import { BrowserWindow, app } from 'electron';
 
+import { createContainer } from '../../common/utils/create-container';
 import '../handlers/icon-handler';
 import '../handlers/path-handler';
+import { PersistenceServiceImpl } from '../services/persistence-service';
+import { RestoreWindowStateService, RestoreWindowStateServiceImpl } from '../services/restore-window-state-service';
+
+const container = createContainer({
+    persistenceService: PersistenceServiceImpl,
+    restoreWindowStateService: RestoreWindowStateServiceImpl,
+});
+
+const { restoreWindowStateService } = container;
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -13,7 +23,6 @@ const createMainWindow = () => {
 
     const window = mainWindow = new BrowserWindow({
         frame: false,
-        height: 640,
         show: false,
         titleBarStyle: 'hidden',
         trafficLightPosition: { x: 12, y: 20 },
@@ -21,8 +30,10 @@ const createMainWindow = () => {
             contextIsolation: false,
             nodeIntegration: true,
         },
-        width: 800,
+        ...restoreWindowStateService.getWindowOptions(),
     });
+
+    restoreWindowStateService.observeWindow(window);
 
     window.loadURL(`file://${path.resolve(__dirname, '../views/main-window.html')}`);
 
