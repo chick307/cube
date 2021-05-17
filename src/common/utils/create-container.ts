@@ -2,8 +2,28 @@ export const get = Symbol('get');
 
 export type Container<T> = {
     [K in keyof T]: (
-        T[K] extends { [get]: (container: Container<Omit<T, K>>) => infer U; } ? U :
-        T[K] extends new (container: Container<Omit<T, K>>) => infer U ? U :
+        T[K] extends { [get]: (...args: any[]) => any; } ? (
+            T[K] extends { [get]: () => infer U; } ? U :
+            T[K] extends { [get]: (container: infer C) => infer U; } ? (
+                keyof C extends Exclude<keyof T, K> ? (
+                    C extends Pick<Container<Omit<T, K>>, keyof C> ? U :
+                    never
+                ) :
+                never
+            ) :
+            never
+        ) :
+        T[K] extends new (...args: any[]) => any ? (
+            T[K] extends new () => infer U ? U :
+            T[K] extends new (container: infer C) => infer U ? (
+                keyof C extends Exclude<keyof T, K> ? (
+                    Container<Omit<T, K>> extends C ? U :
+                    never
+                ) :
+                never
+            ) :
+            never
+        ) :
         T[K]
     );
 };
@@ -14,7 +34,7 @@ export type Factory<T, U> =
         [get]: (container: T) => U;
     };
 
-export const createFactory = <T, U>(factory: (container: T) => U): Factory<T, U> => {
+export const createFactory = <U, T = void>(factory: (container: T) => U): Factory<T, U> => {
     const f = (container: T): U => {
         const value = factory(container);
         return value;
@@ -24,7 +44,9 @@ export const createFactory = <T, U>(factory: (container: T) => U): Factory<T, U>
     });
 };
 
-export const createContainer = <T>(services: T): Container<T> => {
+export const createContainer = <T>(services: T): {
+    readonly [K in keyof Container<T>]: Container<T>[K];
+} => {
     const container = Object.create(null) as Container<T>;
     const values = Object.create(null);
     const innerContainer = new Proxy(container, {
