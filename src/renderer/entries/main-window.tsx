@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDom from 'react-dom';
+import * as pdfjsLib from 'pdfjs-dist';
 
 import { LocalFileSystem } from '../../common/entities/local-file-system';
 import { createContainer, createFactory } from '../../common/utils/create-container';
@@ -15,6 +16,8 @@ import { EntryServiceImpl } from '../services/entry-service';
 import { LocalEntryService, LocalEntryServiceImpl } from '../services/local-entry-service';
 import { ZipEntryServiceImpl } from '../services/zip-entry-service';
 import styles from './main-window.css';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = './workers/pdf.worker.min.js';
 
 const MainWindow = () => {
     const {

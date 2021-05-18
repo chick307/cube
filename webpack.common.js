@@ -97,7 +97,13 @@ const electronRenderer = (options) => {
             ],
         },
         plugins: [
-            new CopyPlugin({ patterns: [{ from: 'src/renderer/views', to: 'views' }] }),
+            new CopyPlugin({
+                patterns: [
+                    { from: 'src/renderer/views', to: 'views' },
+                    { from: 'node_modules/pdfjs-dist/build/pdf.worker.min.js', to: 'workers' },
+                    { from: 'node_modules/pdfjs-dist/cmaps', to: 'cmaps' },
+                ],
+            }),
             new MiniCssExtractPlugin({ filename: path.join('styles', '[name].css') }),
         ],
         target: 'electron-renderer',
