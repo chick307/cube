@@ -12,6 +12,7 @@ import { ComicView, isComicEntry } from './comic-view';
 import { CssFileView, isCssEntry } from './css-file-view';
 import { DirectoryView } from './directory-view';
 import styles from './entry-view.css';
+import { isJavaScriptEntry, JavaScriptEntryView } from './entry-views/javascript-entry-view';
 import { GoBackButton } from './go-back-button';
 import { GoForwardButton } from './go-forward-button';
 import { ImageFileView, isImageEntry } from './image-file-view';
@@ -46,28 +47,33 @@ export const EntryView = (props: Props) => {
             return <SymbolicLinkView {...{ entry, ...viewProps }} />;
 
         if (entry.isFile()) {
+            const fileEntryViewProps = { entry, ...viewProps };
+
             if (isImageEntry(entry))
-                return <ImageFileView {...{ entry, ...viewProps }} />;
+                return <ImageFileView {...fileEntryViewProps} />;
 
             if (isComicEntry(entry))
-                return <ComicView {...{ entry, ...viewProps }} />;
+                return <ComicView {...fileEntryViewProps} />;
 
             if (isMediaEntry(entry))
-                return <MediaPlayer {...{ entry, ...viewProps }} />;
+                return <MediaPlayer {...fileEntryViewProps} />;
 
             if (isTextEntry(entry))
-                return <TextFileView {...{ entry, ...viewProps }} />;
+                return <TextFileView {...fileEntryViewProps} />;
 
             if (isPdfEntry(entry))
-                return <PdfFileView {...{ entry, ...viewProps }} />;
+                return <PdfFileView {...fileEntryViewProps} />;
 
             if (isCssEntry(entry))
-                return <CssFileView {...{ entry, ...viewProps }} />;
+                return <CssFileView {...fileEntryViewProps} />;
+
+            if (isJavaScriptEntry(entry))
+                return <JavaScriptEntryView {...fileEntryViewProps} />;
 
             if (isZipEntry(entry))
                 return null;
 
-            return <BinaryFileView {...{ entry, ...viewProps }} />;
+            return <BinaryFileView {...fileEntryViewProps} />;
         }
 
         return null;
