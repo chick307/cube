@@ -90,7 +90,7 @@ export class LocalEntryServiceImpl implements LocalEntryService {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const entryPath = params.entry.path.getParentPath()!.resolve(new EntryPath(linkString));
         const entry = await this._createEntry(entryPath, options?.signal)
-            .catch((e) => null);
+            .catch(() => null);
         return { entry, linkString };
     }
 }

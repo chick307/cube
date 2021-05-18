@@ -6,7 +6,7 @@ import { createContainer } from '../../common/utils/create-container';
 import '../handlers/icon-handler';
 import '../handlers/path-handler';
 import { PersistenceServiceImpl } from '../services/persistence-service';
-import { RestoreWindowStateService, RestoreWindowStateServiceImpl } from '../services/restore-window-state-service';
+import { RestoreWindowStateServiceImpl } from '../services/restore-window-state-service';
 
 const container = createContainer({
     persistenceService: PersistenceServiceImpl,

@@ -1,6 +1,7 @@
 export const get = Symbol('get');
 
 export type Container<T> = {
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     [K in keyof T]: (
         T[K] extends { [get]: (...args: any[]) => any; } ? (
             T[K] extends { [get]: () => infer U; } ? U :
@@ -26,6 +27,7 @@ export type Container<T> = {
         ) :
         T[K]
     );
+    /* eslint-enable */
 };
 
 export type Factory<T, U> =
