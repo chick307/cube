@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { FileEntry } from '../../common/entities/file-entry';
-import { FileSystem } from '../../common/entities/file-system';
-import { useBlobUrl } from '../hooks/use-blob-url';
-import styles from './image-file-view.css';
+import type { FileEntry } from '../../../common/entities/file-entry';
+import type { FileSystem } from '../../../common/entities/file-system';
+import { useBlobUrl } from '../../hooks/use-blob-url';
+import styles from './image-entry-view.css';
 
 export type Props = {
     className?: string;
@@ -11,7 +11,7 @@ export type Props = {
     fileSystem: FileSystem;
 };
 
-export const ImageFileView = (props: Props) => {
+export const ImageEntryView = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
 
     const type = React.useMemo(() => {
@@ -31,9 +31,9 @@ export const ImageFileView = (props: Props) => {
 
     return (
         <div className={`${className} ${styles.view}`}>
-            {url === null ? <></> : <>
+            {url === null ? null : (
                 <img src={url} />
-            </>}
+            )}
         </div>
     );
 };

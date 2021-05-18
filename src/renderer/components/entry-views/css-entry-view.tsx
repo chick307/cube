@@ -1,8 +1,8 @@
-import { FileEntry } from '../../common/entities/file-entry';
-import { FileSystem } from '../../common/entities/file-system';
-import { useEntryText } from '../hooks/use-entry-text';
-import styles from './css-file-view.css';
-import { Highlight } from './highlight';
+import type { FileEntry } from '../../../common/entities/file-entry';
+import type { FileSystem } from '../../../common/entities/file-system';
+import { useEntryText } from '../../hooks/use-entry-text';
+import styles from './css-entry-view.css';
+import { Highlight } from '../highlight';
 
 export type Props = {
     className?: string;
@@ -10,7 +10,7 @@ export type Props = {
     fileSystem: FileSystem;
 };
 
-export const CssFileView = (props: Props) => {
+export const CssEntryView = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
 
     const code = useEntryText({ entry, fileSystem });

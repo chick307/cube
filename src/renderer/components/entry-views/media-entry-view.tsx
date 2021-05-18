@@ -1,7 +1,7 @@
-import { FileEntry } from '../../common/entities/file-entry';
-import { FileSystem } from '../../common/entities/file-system';
-import { useBlobUrl } from '../hooks/use-blob-url';
-import styles from './media-player.css';
+import type { FileEntry } from '../../../common/entities/file-entry';
+import type { FileSystem } from '../../../common/entities/file-system';
+import { useBlobUrl } from '../../hooks/use-blob-url';
+import styles from './media-entry-view.css';
 
 export type Props = {
     className?: string;
@@ -9,22 +9,22 @@ export type Props = {
     fileSystem: FileSystem;
 };
 
-export const MediaPlayer = (props: Props) => {
+export const MediaEntryView = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
 
     const url = useBlobUrl({ entry, fileSystem });
 
     if (url == null) {
-        return <>
-            <div className={`${className} ${styles.player}`} />
-        </>;
+        return (
+            <div className={`${className} ${styles.view}`} />
+        );
     }
 
-    return <>
+    return (
         <div className={`${className} ${styles.player}`}>
             <video className={styles.media} src={url} controls />
         </div>
-    </>;
+    );
 };
 
 export const isMediaEntry = (entry: FileEntry) =>

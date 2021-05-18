@@ -1,11 +1,11 @@
 import * as pdfjs from 'pdfjs-dist';
 import React from 'react';
 
-import { FileEntry } from '../../common/entities/file-entry';
-import { FileSystem } from '../../common/entities/file-system';
-import { useBlobUrl } from '../hooks/use-blob-url';
-import { useTask } from '../hooks/use-task';
-import styles from './pdf-file-view.css';
+import type { FileEntry } from '../../../common/entities/file-entry';
+import type { FileSystem } from '../../../common/entities/file-system';
+import { useBlobUrl } from '../../hooks/use-blob-url';
+import { useTask } from '../../hooks/use-task';
+import styles from './pdf-entry-view.css';
 
 const CMAP_URL = './cmaps/';
 const CMAP_PACKED = true;
@@ -29,7 +29,7 @@ const docCache = new WeakMap<PdfDocumentProxy, {
     };
 }>();
 
-export const PdfFileView = (props: Props) => {
+export const PdfEntryView = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
 
     const canvasRef = React.useRef<HTMLCanvasElement>(null);

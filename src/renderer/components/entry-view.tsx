@@ -7,19 +7,19 @@ import { EntryPath } from '../../common/values/entry-path';
 import { useHistoryController } from '../contexts/history-controller-context';
 import { useStore } from '../hooks/use-store';
 import { HistoryStore } from '../stores/history-store';
-import { BinaryFileView } from './binary-file-view';
-import { ComicView, isComicEntry } from './comic-view';
-import { CssFileView, isCssEntry } from './css-file-view';
-import { DirectoryView } from './directory-view';
 import styles from './entry-view.css';
-import { isJavaScriptEntry, JavaScriptEntryView } from './entry-views/javascript-entry-view';
+import { BinaryEntryView } from './entry-views/binary-entry-view';
+import { ComicEntryView, isComicEntry } from './entry-views/comic-entry-view';
+import { CssEntryView, isCssEntry } from './entry-views/css-entry-view';
+import { DirectoryEntryView } from './entry-views/directory-entry-view';
+import { ImageEntryView, isImageEntry } from './entry-views/image-entry-view';
+import { JavaScriptEntryView, isJavaScriptEntry } from './entry-views/javascript-entry-view';
+import { MediaEntryView, isMediaEntry } from './entry-views/media-entry-view';
+import { PdfEntryView, isPdfEntry } from './entry-views/pdf-entry-view';
+import { SymbolicLinkEntryView } from './entry-views/symbolic-link-entry-view';
+import { TextEntryView, isTextEntry } from './entry-views/text-entry-view';
 import { GoBackButton } from './go-back-button';
 import { GoForwardButton } from './go-forward-button';
-import { ImageFileView, isImageEntry } from './image-file-view';
-import { isMediaEntry, MediaPlayer } from './media-player';
-import { isPdfEntry, PdfFileView } from './pdf-file-view';
-import { SymbolicLinkView } from './symbolic-link-view';
-import { isTextEntry, TextFileView } from './text-file-view';
 
 export type Props = {
     className?: string;
@@ -41,39 +41,30 @@ export const EntryView = (props: Props) => {
         const viewProps = { className: styles.view, fileSystem };
 
         if (entry.isDirectory())
-            return <DirectoryView {...{ entry, ...viewProps }} />;
+            return <DirectoryEntryView {...{ entry, ...viewProps }} />;
 
         if (entry.isSymbolicLink())
-            return <SymbolicLinkView {...{ entry, ...viewProps }} />;
+            return <SymbolicLinkEntryView {...{ entry, ...viewProps }} />;
 
         if (entry.isFile()) {
             const fileEntryViewProps = { entry, ...viewProps };
-
-            if (isImageEntry(entry))
-                return <ImageFileView {...fileEntryViewProps} />;
-
             if (isComicEntry(entry))
-                return <ComicView {...fileEntryViewProps} />;
-
-            if (isMediaEntry(entry))
-                return <MediaPlayer {...fileEntryViewProps} />;
-
-            if (isTextEntry(entry))
-                return <TextFileView {...fileEntryViewProps} />;
-
-            if (isPdfEntry(entry))
-                return <PdfFileView {...fileEntryViewProps} />;
-
+                return <ComicEntryView {...fileEntryViewProps} />;
             if (isCssEntry(entry))
-                return <CssFileView {...fileEntryViewProps} />;
-
+                return <CssEntryView {...fileEntryViewProps} />;
+            if (isImageEntry(entry))
+                return <ImageEntryView {...fileEntryViewProps} />;
             if (isJavaScriptEntry(entry))
                 return <JavaScriptEntryView {...fileEntryViewProps} />;
-
+            if (isMediaEntry(entry))
+                return <MediaEntryView {...fileEntryViewProps} />;
+            if (isPdfEntry(entry))
+                return <PdfEntryView {...fileEntryViewProps} />;
+            if (isTextEntry(entry))
+                return <TextEntryView {...fileEntryViewProps} />;
             if (isZipEntry(entry))
                 return null;
-
-            return <BinaryFileView {...fileEntryViewProps} />;
+            return <BinaryEntryView {...fileEntryViewProps} />;
         }
 
         return null;
@@ -90,7 +81,7 @@ export const EntryView = (props: Props) => {
         }
     }, [entry, fileSystem]);
 
-    return <>
+    return (
         <div className={`${className} ${styles.entryView} ${mainContent ? styles.mainContent : ''}`}>
             <div className={styles.path}>
                 <GoBackButton className={styles.goBackButton} {...{ historyStore }} />
@@ -101,5 +92,5 @@ export const EntryView = (props: Props) => {
                 {view}
             </div>
         </div>
-    </>;
+    );
 };

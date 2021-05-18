@@ -1,10 +1,8 @@
-import React from 'react';
-
-import { FileEntry } from '../../common/entities/file-entry';
-import { FileSystem } from '../../common/entities/file-system';
-import { useEntryService } from '../contexts/entry-service-context';
-import { useTask } from '../hooks/use-task';
-import styles from './binary-file-view.css';
+import type { FileEntry } from '../../../common/entities/file-entry';
+import type { FileSystem } from '../../../common/entities/file-system';
+import { useEntryService } from '../../contexts/entry-service-context';
+import { useTask } from '../../hooks/use-task';
+import styles from './binary-entry-view.css';
 
 export type Props = {
     className?: string;
@@ -12,7 +10,7 @@ export type Props = {
     fileSystem: FileSystem;
 };
 
-export const BinaryFileView = (props: Props) => {
+export const BinaryEntryView = (props: Props) => {
     const { className, entry, fileSystem } = props;
 
     const entryService = useEntryService();
@@ -32,11 +30,11 @@ export const BinaryFileView = (props: Props) => {
         return text;
     }, [entry, fileSystem]);
 
-    return React.useMemo(() => <>
+    return (
         <div className={`${className} ${styles.view}`}>
             <pre className={styles.content}>
                 {text}
             </pre>
         </div>
-    </>, [text]);
+    );
 };

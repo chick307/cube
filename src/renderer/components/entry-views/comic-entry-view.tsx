@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { DirectoryEntry } from '../../common/entities/directory-entry';
-import { FileEntry } from '../../common/entities/file-entry';
-import { FileSystem } from '../../common/entities/file-system';
-import { ZipFileSystem } from '../../common/entities/zip-file-system';
-import { EntryPath } from '../../common/values/entry-path';
-import { useEntryService } from '../contexts/entry-service-context';
-import { useTask } from '../hooks/use-task';
-import styles from './comic-view.css';
+import { DirectoryEntry } from '../../../common/entities/directory-entry';
+import type { FileEntry } from '../../../common/entities/file-entry';
+import type { FileSystem } from '../../../common/entities/file-system';
+import { ZipFileSystem } from '../../../common/entities/zip-file-system';
+import { EntryPath } from '../../../common/values/entry-path';
+import { useEntryService } from '../../contexts/entry-service-context';
+import { useTask } from '../../hooks/use-task';
+import styles from './comic-entry-view.css';
 
 export type Props = {
     className?: string;
@@ -17,7 +17,7 @@ export type Props = {
 
 const rootDirectoryEntry = new DirectoryEntry(new EntryPath('/'));
 
-export const ComicView = (props: Props) => {
+export const ComicEntryView = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
 
     const entryService = useEntryService();
@@ -69,17 +69,13 @@ export const ComicView = (props: Props) => {
             return;
 
         const onKeyDown = (e: KeyboardEvent) => {
-            if (e.keyCode === 35) {
-                // end
+            if (e.key === 'End') {
                 setCurrentSpreadIndex(() => Math.max(spreads.length - 1, 0));
-            } else if (e.keyCode === 36) {
-                // home
+            } else if (e.key === 'Home') {
                 setCurrentSpreadIndex(() => 0);
-            } else if (e.keyCode === 37 || e.keyCode === 40) {
-                // left key or down key
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
                 setCurrentSpreadIndex((n) => Math.min(n + 1, spreads.length - 1));
-            } else if (e.keyCode === 38 || e.keyCode === 39) {
-                // up key or right key
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowRight') {
                 setCurrentSpreadIndex((n) => Math.max(n - 1, 0));
             }
         };
@@ -141,11 +137,11 @@ export const ComicView = (props: Props) => {
         }
     }, [currentSpread]);
 
-    return <>
+    return (
         <div className={`${className} ${styles.view}`}>
             <canvas className={styles.canvas} ref={canvasRef} />
         </div>
-    </>;
+    );
 };
 
 export const isComicEntry = (entry: FileEntry) =>

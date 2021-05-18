@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { FileSystem } from '../../common/entities/file-system';
-import { SymbolicLinkEntry } from '../../common/entities/symbolic-link-entry';
-import { useEntryService } from '../contexts/entry-service-context';
-import { useHistoryController } from '../contexts/history-controller-context';
-import { useTask } from '../hooks/use-task';
-import { EntryIcon } from './entry-icon';
-import styles from './symbolic-link-view.css';
+import type { FileSystem } from '../../../common/entities/file-system';
+import type { SymbolicLinkEntry } from '../../../common/entities/symbolic-link-entry';
+import { useEntryService } from '../../contexts/entry-service-context';
+import { useHistoryController } from '../../contexts/history-controller-context';
+import { useTask } from '../../hooks/use-task';
+import { EntryIcon } from '../entry-icon';
+import styles from './symbolic-link-entry-view.css';
 
 const iconPlaceholder = (
     <span className={styles.iconPlaceholder} />
@@ -18,7 +18,7 @@ export type Props = {
     fileSystem: FileSystem;
 };
 
-export const SymbolicLinkView = (props: Props) => {
+export const SymbolicLinkEntryView = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
 
     const entryService = useEntryService();
