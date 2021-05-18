@@ -1,22 +1,23 @@
 import React from 'react';
 
+import { DirectoryEntry } from '../../common/entities/directory-entry';
 import type { FileEntry } from '../../common/entities/file-entry';
 import { ZipFileSystem } from '../../common/entities/zip-file-system';
+import { EntryPath } from '../../common/values/entry-path';
 import { useHistoryController } from '../contexts/history-controller-context';
 import { useStore } from '../hooks/use-store';
 import { HistoryStore } from '../stores/history-store';
+import { BinaryFileView } from './binary-file-view';
+import { ComicView, isComicEntry } from './comic-view';
 import { DirectoryView } from './directory-view';
 import styles from './entry-view.css';
 import { GoBackButton } from './go-back-button';
 import { GoForwardButton } from './go-forward-button';
-import { SymbolicLinkView } from './symbolic-link-view';
-import { ComicView, isComicEntry } from './comic-view';
 import { ImageFileView, isImageEntry } from './image-file-view';
 import { isMediaEntry, MediaPlayer } from './media-player';
+import { isPdfEntry, PdfFileView } from './pdf-file-view';
+import { SymbolicLinkView } from './symbolic-link-view';
 import { isTextEntry, TextFileView } from './text-file-view';
-import { DirectoryEntry } from '../../common/entities/directory-entry';
-import { EntryPath } from '../../common/values/entry-path';
-import { BinaryFileView } from './binary-file-view';
 
 export type Props = {
     className?: string;
@@ -55,6 +56,9 @@ export const EntryView = (props: Props) => {
 
             if (isTextEntry(entry))
                 return <TextFileView {...{ entry, ...viewProps }} />;
+
+            if (isPdfEntry(entry))
+                return <PdfFileView {...{ entry, ...viewProps }} />;
 
             if (isZipEntry(entry))
                 return null;

@@ -1,0 +1,12 @@
+.view {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.canvas {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
