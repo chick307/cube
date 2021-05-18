@@ -1,7 +1,6 @@
 import { FileEntry } from '../../common/entities/file-entry';
 import { FileSystem } from '../../common/entities/file-system';
-import { useEntryService } from '../contexts/entry-service-context';
-import { useTask } from '../hooks/use-task';
+import { useEntryText } from '../hooks/use-entry-text';
 import styles from './css-file-view.css';
 import { Highlight } from './highlight';
 
@@ -14,14 +13,8 @@ export type Props = {
 export const CssFileView = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
 
-    const entryService = useEntryService();
-
+    const code = useEntryText({ entry, fileSystem });
     const language = 'css';
-    const [code] = useTask(async (signal) => {
-        const buffer = await entryService.readFile({ entry, fileSystem }, { signal });
-        const text = buffer.toString('utf8');
-        return text;
-    }, [entry, entryService, fileSystem]);
 
     return (
         <div className={`${className} ${styles.view}`}>

@@ -1,9 +1,6 @@
-import React from 'react';
-
 import { FileEntry } from '../../common/entities/file-entry';
 import { FileSystem } from '../../common/entities/file-system';
-import { useEntryService } from '../contexts/entry-service-context';
-import { useTask } from '../hooks/use-task';
+import { useEntryText } from '../hooks/use-entry-text';
 import styles from './text-file-view.css';
 
 export type Props = {
@@ -15,23 +12,17 @@ export type Props = {
 export const TextFileView = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
 
-    const entryService = useEntryService();
+    const content = useEntryText({ entry, fileSystem });
 
-    const [content] = useTask(async (signal) => {
-        const buffer = await entryService.readFile({ entry, fileSystem }, { signal });
-        const text = buffer.toString('utf-8');
-        return text;
-    }, [entry, fileSystem]);
-
-    return <>
+    return (
         <div className={`${className} ${styles.view}`}>
-            {content === null ? <></> : <>
+            {content === null ? null : (
                 <pre className={styles.text}>
                     {content}
                 </pre>
-            </>}
+            )}
         </div>
-    </>;
+    );
 };
 
 export const isTextEntry = (entry: FileEntry) =>
