@@ -3,22 +3,7 @@
     overflow: auto;
 }
 
-.code {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-content: start;
+.highlight {
     min-height: 100%;
     box-sizing: border-box;
-}
-
-.line-number {
-    font-family: monospace;
-    text-align: right;
-    margin-right: 0.5em;
-    color: #FFFFFF40;
-}
-
-.line {
-    white-space: pre;
-    font-family: monospace;
 }
