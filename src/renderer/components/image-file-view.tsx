@@ -20,6 +20,10 @@ export const ImageFileView = (props: Props) => {
             return 'image/png';
         if (ext === '.jpg' || ext === '.jpeg')
             return 'image/jpeg';
+        if (ext === '.svg')
+            return 'image/svg+xml';
+        if (ext === '.webp')
+            return 'image/webp';
         return 'application/octet-stream';
     }, [entry]);
 
@@ -35,4 +39,4 @@ export const ImageFileView = (props: Props) => {
 };
 
 export const isImageEntry = (entry: FileEntry) =>
-    /^\.(?:jpe?g|png)$/i.test(entry.path.getExtension());
+    /^\.(?:jpe?g|png|svg|webp)$/i.test(entry.path.getExtension());
