@@ -2,8 +2,7 @@ import React from 'react';
 
 import { FileEntry } from '../../common/entities/file-entry';
 import { FileSystem } from '../../common/entities/file-system';
-import { useEntryService } from '../contexts/entry-service-context';
-import { useTask } from '../hooks/use-task';
+import { useBlobUrl } from '../hooks/use-blob-url';
 import styles from './image-file-view.css';
 
 export type Props = {
@@ -15,9 +14,7 @@ export type Props = {
 export const ImageFileView = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
 
-    const entryService = useEntryService();
-
-    const contentType = React.useMemo(() => {
+    const type = React.useMemo(() => {
         const ext = entry.path.getExtension();
         if (ext === '.png')
             return 'image/png';
@@ -26,15 +23,12 @@ export const ImageFileView = (props: Props) => {
         return 'application/octet-stream';
     }, [entry]);
 
-    const [dataUrl] = useTask(async (signal) => {
-        const buffer = await entryService.readFile({ entry, fileSystem }, { signal });
-        return `data:${contentType};base64,${buffer.toString('base64')}`;
-    }, [entry, entryService, fileSystem]);
+    const url = useBlobUrl({ entry, fileSystem, type });
 
     return (
         <div className={`${className} ${styles.view}`}>
-            {dataUrl === null ? <></> : <>
-                <img src={dataUrl} />
+            {url === null ? <></> : <>
+                <img src={url} />
             </>}
         </div>
     );
