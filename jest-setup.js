@@ -1,8 +1,13 @@
-jest.mock('electron', () => {
-    const notImplemented = () => {
-        throw Error('Not implemented');
-    };
+const notImplemented = () => {
+    throw Error('Not implemented');
+};
 
+global.URL = {
+    createObjectURL: notImplemented,
+    revokeObjectURL: notImplemented,
+};
+
+jest.mock('electron', () => {
     return {
         ipcRenderer: {
             invoke: notImplemented,
