@@ -9,6 +9,7 @@ import { useStore } from '../hooks/use-store';
 import { HistoryStore } from '../stores/history-store';
 import { BinaryFileView } from './binary-file-view';
 import { ComicView, isComicEntry } from './comic-view';
+import { CssFileView, isCssEntry } from './css-file-view';
 import { DirectoryView } from './directory-view';
 import styles from './entry-view.css';
 import { GoBackButton } from './go-back-button';
@@ -59,6 +60,9 @@ export const EntryView = (props: Props) => {
 
             if (isPdfEntry(entry))
                 return <PdfFileView {...{ entry, ...viewProps }} />;
+
+            if (isCssEntry(entry))
+                return <CssFileView {...{ entry, ...viewProps }} />;
 
             if (isZipEntry(entry))
                 return null;
