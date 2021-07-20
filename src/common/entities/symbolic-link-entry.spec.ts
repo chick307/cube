@@ -2,7 +2,23 @@ import { EntryPath } from '../values/entry-path';
 import { Entry } from './entry';
 import { SymbolicLinkEntry } from './symbolic-link-entry';
 
-describe('SymbolicLinkEntey class', () => {
+describe('SymbolicLinkEntry class', () => {
+    describe('SymbolicLinkEntry.fromJson() method', () => {
+        test('it returns SymbolicLinkEntry instance', () => {
+            const entry = SymbolicLinkEntry.fromJson({ type: 'symbolic-link', path: '/a/b/c' });
+            expect(entry).toEqual(new SymbolicLinkEntry(new EntryPath('/a/b/c')));
+        });
+
+        test('it throws an error if invalid value is passed', () => {
+            expect(() => SymbolicLinkEntry.fromJson(null)).toThrow();
+            expect(() => SymbolicLinkEntry.fromJson(undefined)).toThrow();
+            expect(() => SymbolicLinkEntry.fromJson({ type: '' })).toThrow();
+            expect(() => SymbolicLinkEntry.fromJson({ type: 'directory' })).toThrow();
+            expect(() => SymbolicLinkEntry.fromJson({ type: 'symbolic-link' })).toThrow();
+            expect(() => SymbolicLinkEntry.fromJson({ type: 'symbolic-link', path: 1 })).toThrow();
+        });
+    });
+
     describe('symbolicLinkEntry.isSymbolicLink() method', () => {
         test('it returns true', async () => {
             const symbolicLinkEntry = new SymbolicLinkEntry(new EntryPath('/a/c'));

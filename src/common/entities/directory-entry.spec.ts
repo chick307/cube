@@ -2,7 +2,23 @@ import { EntryPath } from '../values/entry-path';
 import { DirectoryEntry } from './directory-entry';
 import { Entry } from './entry';
 
-describe('DirectoryEntey class', () => {
+describe('DirectoryEntry class', () => {
+    describe('DirectoryEntry.fromJson() method', () => {
+        test('it returns DirectoryEntry instance', () => {
+            const entry = DirectoryEntry.fromJson({ type: 'directory', path: '/a/b/c' });
+            expect(entry).toEqual(new DirectoryEntry(new EntryPath('/a/b/c')));
+        });
+
+        test('it throws an error if invalid value is passed', () => {
+            expect(() => DirectoryEntry.fromJson(null)).toThrow();
+            expect(() => DirectoryEntry.fromJson(undefined)).toThrow();
+            expect(() => DirectoryEntry.fromJson({ type: '' })).toThrow();
+            expect(() => DirectoryEntry.fromJson({ type: 'file' })).toThrow();
+            expect(() => DirectoryEntry.fromJson({ type: 'directory' })).toThrow();
+            expect(() => DirectoryEntry.fromJson({ type: 'directory', path: 1 })).toThrow();
+        });
+    });
+
     describe('directoryEntry.isDirectory() method', () => {
         test('it returns true', async () => {
             const directoryEntry = new DirectoryEntry(new EntryPath('/a/c'));
