@@ -8,6 +8,13 @@ describe('LocalFileSystem entity class', () => {
             expect(localFileSystem.isLocal()).toBe(true);
         });
     });
+
+    describe('localFileSystem.toJson() method', () => {
+        test('it returns JSON object', () => {
+            const localFileSystem = new LocalFileSystem();
+            expect(localFileSystem.toJson()).toEqual({ type: 'local' });
+        });
+    });
 });
 
 describe('fileSystme.isLocal() method', () => {

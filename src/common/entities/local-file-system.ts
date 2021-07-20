@@ -6,6 +6,13 @@ export class LocalFileSystem extends FileSystem {
     isLocal(): this is LocalFileSystem {
         return true;
     }
+
+    toJson() {
+        return {
+            ...super.toJson(),
+            type: 'local',
+        };
+    }
 }
 
 declare module './file-system' {

@@ -16,6 +16,29 @@ describe('ZipFileSystem entity class', () => {
             expect(zipFileSystem.isZip()).toBe(true);
         });
     });
+
+    describe('zipFileSystem.toJson() method', () => {
+        test('it returns JSON object', () => {
+            const zipFileSystem = new ZipFileSystem({
+                container: {
+                    entry: new FileEntry(new EntryPath('/a/b')),
+                    fileSystem: new LocalFileSystem(),
+                },
+            });
+            expect(zipFileSystem.toJson()).toEqual({
+                type: 'zip',
+                container: {
+                    entry: {
+                        type: 'file',
+                        path: '/a/b',
+                    },
+                    fileSystem: {
+                        type: 'local',
+                    },
+                },
+            });
+        });
+    });
 });
 
 describe('fileSystme.isZip() method', () => {

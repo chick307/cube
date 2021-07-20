@@ -26,6 +26,17 @@ export class ZipFileSystem extends FileSystem {
     isZip(): this is ZipFileSystem {
         return true;
     }
+
+    toJson() {
+        return {
+            ...super.toJson(),
+            type: 'zip',
+            container: {
+                entry: this.container.entry.toJson(),
+                fileSystem: this.container.fileSystem.toJson(),
+            },
+        };
+    }
 }
 
 declare module './file-system' {
