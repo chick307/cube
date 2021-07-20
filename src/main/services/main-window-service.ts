@@ -8,6 +8,7 @@ const MAIN_WINDOW_URL = `file://${path.resolve(__dirname, '../views/main-window.
 
 export type MainWindowService = {
     activate(): void;
+    close(): void;
 };
 
 export class MainWindowServiceImpl implements MainWindowService {
@@ -63,5 +64,11 @@ export class MainWindowServiceImpl implements MainWindowService {
         } else {
             this._window.show();
         }
+    }
+
+    close() {
+        if (this._window === null)
+            return;
+        this._window.close();
     }
 }
