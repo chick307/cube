@@ -9,6 +9,13 @@ describe('DirectoryEntey class', () => {
             expect(directoryEntry.isDirectory()).toBe(true);
         });
     });
+
+    describe('directoryEntry.toJson() method', () => {
+        test('it return JSON object', () => {
+            const directoryEntry = new DirectoryEntry(new EntryPath('/a/b'));
+            expect(directoryEntry.toJson()).toEqual({ type: 'directory', path: '/a/b' });
+        });
+    });
 });
 
 describe('entry.isDirectory() method', () => {

@@ -6,6 +6,13 @@ export class SymbolicLinkEntry extends Entry {
     isSymbolicLink(): this is SymbolicLinkEntry {
         return true;
     }
+
+    toJson() {
+        return {
+            ...super.toJson(),
+            type: 'symbolic-link',
+        };
+    }
 }
 
 declare module './entry' {

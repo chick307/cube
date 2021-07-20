@@ -6,6 +6,13 @@ export class DirectoryEntry extends Entry {
     isDirectory(): this is DirectoryEntry {
         return true;
     }
+
+    toJson() {
+        return {
+            ...super.toJson(),
+            type: 'directory',
+        };
+    }
 }
 
 declare module './entry' {

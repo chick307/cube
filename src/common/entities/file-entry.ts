@@ -6,6 +6,13 @@ export class FileEntry extends Entry {
     isFile(): this is FileEntry {
         return true;
     }
+
+    toJson() {
+        return {
+            ...super.toJson(),
+            type: 'file',
+        };
+    }
 }
 
 declare module './entry' {

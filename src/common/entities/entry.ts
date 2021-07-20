@@ -10,4 +10,10 @@ export class Entry {
         this.name = entryPath.name;
         this.path = entryPath;
     }
+
+    toJson() {
+        return {
+            path: this.path.toString(),
+        };
+    }
 }

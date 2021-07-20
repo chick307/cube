@@ -9,6 +9,13 @@ describe('FileEntey class', () => {
             expect(fileEntry.isFile()).toBe(true);
         });
     });
+
+    describe('fileEntry.toJson() method', () => {
+        test('it return JSON object', () => {
+            const fileEntry = new FileEntry(new EntryPath('/a/b'));
+            expect(fileEntry.toJson()).toEqual({ type: 'file', path: '/a/b' });
+        });
+    });
 });
 
 describe('entry.isFile() method', () => {

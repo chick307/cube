@@ -9,6 +9,13 @@ describe('SymbolicLinkEntey class', () => {
             expect(symbolicLinkEntry.isSymbolicLink()).toBe(true);
         });
     });
+
+    describe('symbolicLinkEntry.toJson() method', () => {
+        test('it return JSON object', () => {
+            const symbolicLinkEntry = new SymbolicLinkEntry(new EntryPath('/a/b'));
+            expect(symbolicLinkEntry.toJson()).toEqual({ type: 'symbolic-link', path: '/a/b' });
+        });
+    });
 });
 
 describe('entry.isSymbolicLink() method', () => {
