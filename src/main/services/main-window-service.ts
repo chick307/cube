@@ -3,12 +3,20 @@ import * as path from 'path';
 import { BrowserWindow } from 'electron';
 
 import type { RestoreWindowStateService } from './restore-window-state-service';
+import type { Entry } from '../../common/entities/entry';
+import type { FileSystem } from '../../common/entities/file-system';
 
 const MAIN_WINDOW_URL = `file://${path.resolve(__dirname, '../views/main-window.html')}`;
 
 export type MainWindowService = {
     activate(): void;
+
     close(): void;
+
+    navigate(state: {
+        entry: Entry;
+        fileSystem: FileSystem;
+    }): void;
 };
 
 export class MainWindowServiceImpl implements MainWindowService {
@@ -70,5 +78,24 @@ export class MainWindowServiceImpl implements MainWindowService {
         if (this._window === null)
             return;
         this._window.close();
+    }
+
+    navigate(state: {
+        entry: Entry;
+        fileSystem: FileSystem;
+    }) {
+        Promise.resolve().then(async () => {
+            let window = this._window;
+            if (window === null) {
+                window = await this._createWindow();
+            } else {
+                window.show();
+            }
+
+            window.webContents.postMessage('history.navigate', {
+                entry: state.entry.toJson(),
+                fileSystem: state.fileSystem.toJson(),
+            });
+        });
     }
 }
