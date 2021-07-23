@@ -5,6 +5,34 @@ import { LocalFileSystem } from './local-file-system';
 import { ZipFileSystem } from './zip-file-system';
 
 describe('ZipFileSystem entity class', () => {
+    describe('ZipFileSystem.fromJson() method', () => {
+        test('it returns ZipFileSystem instance', () => {
+            const fileSystem = ZipFileSystem.fromJson({
+                type: 'zip',
+                container: {
+                    entry: { type: 'file', path: '/a/b/c' },
+                    fileSystem: { type: 'local' },
+                },
+            });
+            expect(fileSystem).toEqual(new ZipFileSystem({
+                container: {
+                    entry: new FileEntry(new EntryPath('/a/b/c')),
+                    fileSystem: new LocalFileSystem(),
+                },
+            }));
+        });
+
+        test('it throws an error if invalid value is passed', () => {
+            expect(() => ZipFileSystem.fromJson(null)).toThrow();
+            expect(() => ZipFileSystem.fromJson(undefined)).toThrow();
+            expect(() => ZipFileSystem.fromJson({ type: '' })).toThrow();
+            expect(() => ZipFileSystem.fromJson({ type: 'local' })).toThrow();
+            expect(() => ZipFileSystem.fromJson({ type: 'zip' })).toThrow();
+            expect(() => ZipFileSystem.fromJson({ type: 'zip', container: 1 })).toThrow();
+            expect(() => ZipFileSystem.fromJson({ type: 'zip', container: {} })).toThrow();
+        });
+    });
+
     describe('zipFileSystem.isZip() method', () => {
         test('it returns true', () => {
             const zipFileSystem = new ZipFileSystem({
