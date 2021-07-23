@@ -76,6 +76,10 @@ module.exports = {
             { format: ['camelCase'], leadingUnderscore: 'require', modifiers: ['private'], selector: 'memberLike' },
             { format: ['PascalCase'], selector: 'typeLike' },
         ],
+        '@typescript-eslint/no-unused-vars': [
+            'warn',
+            { args: 'none' },
+        ],
         'array-bracket-newline': ['error', 'consistent'],
         'array-bracket-spacing': ['error', 'never'],
         'arrow-parens': ['error', 'always'],

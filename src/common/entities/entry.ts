@@ -11,8 +11,8 @@ export class Entry {
         this.path = entryPath;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-    static fromJson(_json: any): Entry {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    static fromJson(json: any): Entry {
         throw Error();
     }
 
