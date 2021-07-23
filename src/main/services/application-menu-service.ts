@@ -1,22 +1,26 @@
+import { promises as fs } from 'fs';
+
 import { Menu, dialog } from 'electron';
 
-import { FileEntry } from '../../common/entities/file-entry';
-import { LocalFileSystem } from '../../common/entities/local-file-system';
-import { EntryPath } from '../../common/values/entry-path';
 import type { MainWindowService } from './main-window-service';
+import type { LocalFileSystemService } from './local-file-system-service';
 
 export type ApplicationMenuService = {
     initialize(): void;
 };
 
 export class ApplicationMenuServiceImpl implements ApplicationMenuService {
+    private _localFileSystemService: LocalFileSystemService;
+
     private _mainWindowService: MainWindowService;
 
     private _menu: Menu;
 
     constructor(params: {
+        localFileSystemService: LocalFileSystemService;
         mainWindowService: MainWindowService;
     }) {
+        this._localFileSystemService = params.localFileSystemService;
         this._mainWindowService = params.mainWindowService;
         this._menu = Menu.buildFromTemplate([
             {
@@ -30,6 +34,13 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
             {
                 label: 'File',
                 submenu: [
+                    {
+                        label: 'Open',
+                        accelerator: 'Cmd+O',
+                        click: () => {
+                            this.onOpenClicked();
+                        },
+                    },
                     {
                         label: 'Close',
                         accelerator: 'Cmd+W',
@@ -48,5 +59,16 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
 
     async onCloseClicked() {
         this._mainWindowService.close();
+    }
+
+    async onOpenClicked() {
+        const result = await dialog.showOpenDialog({ properties: ['openDirectory', 'openFile'] });
+        if (result.canceled)
+            return;
+        for (const filePath of result.filePaths) {
+            const entry = await this._localFileSystemService.getEntryFromPath(filePath);
+            const fileSystem = this._localFileSystemService.getFileSystem();
+            this._mainWindowService.navigate({ entry, fileSystem });
+        }
     }
 }
