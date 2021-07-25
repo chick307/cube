@@ -8,6 +8,14 @@
       "dist/webpack/prod/**/*.*"
     ],
     "mac": {
+      "extendInfo": {
+        "CFBundleDocumentTypes": [
+          {
+            "CFBundleTypeExtensions": ["*"],
+            "LSHandlerRank": "Alternate"
+          }
+        ]
+      },
       "target": [
         "zip"
       ]
