@@ -2,6 +2,7 @@ const path = require('path');
 
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const webpack = require('webpack');
 
 const common = (options) => {
     return {
@@ -13,6 +14,13 @@ const common = (options) => {
             filename: path.join('entries', '[name].js'),
             path: options.path,
         },
+        plugins: [
+            new webpack.DefinePlugin({
+                /* eslint-disable @typescript-eslint/naming-convention */
+                BUILD_MODE: JSON.stringify(options.mode),
+                /* eslint-enable @typescript-eslint/naming-convention */
+            }),
+        ],
     };
 };
 
@@ -97,6 +105,7 @@ const electronRenderer = (options) => {
             ],
         },
         plugins: [
+            ...base.plugins,
             new CopyPlugin({
                 patterns: [
                     { from: 'src/renderer/views', to: 'views' },
@@ -115,6 +124,7 @@ const assets = (options) => {
     return {
         ...base,
         plugins: [
+            ...base.plugins,
             new CopyPlugin({ patterns: [{ from: 'assets/images', to: 'images' }] }),
         ],
     };
