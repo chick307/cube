@@ -50,6 +50,18 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
                     },
                 ],
             },
+            ...(BUILD_MODE === 'development' ? [{
+                label: 'Dev',
+                submenu: [
+                    {
+                        label: 'Toggle DevTools',
+                        accelerator: 'Cmd+Option+I',
+                        click: () => {
+                            this.onToggleDevToolsClicked();
+                        },
+                    },
+                ],
+            }] : []),
         ]);
     }
 
@@ -70,5 +82,9 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
             const fileSystem = this._localFileSystemService.getFileSystem();
             this._mainWindowService.navigate({ entry, fileSystem });
         }
+    }
+
+    async onToggleDevToolsClicked() {
+        this._mainWindowService.toggleDevTools();
     }
 }

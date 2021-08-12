@@ -17,6 +17,8 @@ export type MainWindowService = {
         entry: Entry;
         fileSystem: FileSystem;
     }): void;
+
+    toggleDevTools(): void;
 };
 
 export class MainWindowServiceImpl implements MainWindowService {
@@ -97,5 +99,12 @@ export class MainWindowServiceImpl implements MainWindowService {
                 fileSystem: state.fileSystem.toJson(),
             });
         });
+    }
+
+    toggleDevTools() {
+        const window = this._window;
+        if (window === null)
+            return;
+        window.webContents.toggleDevTools();
     }
 }
