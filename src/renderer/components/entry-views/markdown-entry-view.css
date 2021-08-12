@@ -1,0 +1,12 @@
+.view {
+    height: 100%;
+    overflow: auto;
+}
+
+.inner-view {
+    margin: 2em;
+}
+
+.inner-view a {
+    color: #88CCFF;
+}

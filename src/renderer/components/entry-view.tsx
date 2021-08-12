@@ -14,6 +14,7 @@ import { CssEntryView, isCssEntry } from './entry-views/css-entry-view';
 import { DirectoryEntryView } from './entry-views/directory-entry-view';
 import { ImageEntryView, isImageEntry } from './entry-views/image-entry-view';
 import { JavaScriptEntryView, isJavaScriptEntry } from './entry-views/javascript-entry-view';
+import { MarkdownEntryView, isMarkdownEntry } from './entry-views/markdown-entry-view';
 import { MediaEntryView, isMediaEntry } from './entry-views/media-entry-view';
 import { PdfEntryView, isPdfEntry } from './entry-views/pdf-entry-view';
 import { SymbolicLinkEntryView } from './entry-views/symbolic-link-entry-view';
@@ -56,6 +57,8 @@ export const EntryView = (props: Props) => {
                 return <ImageEntryView {...fileEntryViewProps} />;
             if (isJavaScriptEntry(entry))
                 return <JavaScriptEntryView {...fileEntryViewProps} />;
+            if (isMarkdownEntry(entry))
+                return <MarkdownEntryView {...fileEntryViewProps} />;
             if (isMediaEntry(entry))
                 return <MediaEntryView {...fileEntryViewProps} />;
             if (isPdfEntry(entry))
