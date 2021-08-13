@@ -1,8 +1,11 @@
-import { highlight } from 'highlight.js';
+import { highlightAuto, registerAliases } from 'highlight.js';
 import highlightStyles from 'highlight.js/styles/solarized-dark.css';
+import { JSDOM } from 'jsdom';
 import React from 'react';
 
 import styles from './highlight.css';
+
+registerAliases('jsonc', { languageName: 'json' });
 
 export type Props = {
     className?: string;
@@ -10,46 +13,87 @@ export type Props = {
     language: string;
 };
 
-const unescapeHtmlEntity = (html: string) => {
-    return html.replace(/&(amp|gt|lt|quot);/g, (text, name) => {
-        switch (name) {
-            case 'amp': return '&';
-            case 'gt': return '>';
-            case 'lt': return '<';
-            case 'quot': return '"';
-            default: return text;
+const highlight = (params: {
+    code: string;
+    language?: string | null;
+}): JSX.Element[] => {
+    const result = highlightAuto(params.code, ...(params.language ? [[params.language]] : []));
+    const fragment = JSDOM.fragment(result.value);
+    const lines = [] as JSX.Element[];
+    let keyCounter = 0;
+    const walk = (node: ChildNode, context: {
+        emitContent(content: React.ReactNode): void;
+        emitLineBreak(): void;
+    }) => {
+        if (node.nodeName === '#text') {
+            (node.textContent ?? '').split('\n').forEach((text, index) => {
+                if (index !== 0)
+                    context.emitLineBreak();
+                context.emitContent(text);
+            });
+        } else if (!node.nodeName.startsWith('#')) {
+            const tagName = node.nodeName.toLowerCase();
+            const className = Array.from((node as HTMLElement).classList)
+                .map((name) => highlightStyles[name])
+                .filter((name) => name)
+                .join(' ');
+            let children = [] as React.ReactNode[];
+            for (const childNode of Array.from(node.childNodes)) {
+                walk(childNode, {
+                    emitContent: (node) => {
+                        children.push(node);
+                    },
+                    emitLineBreak: () => {
+                        if (children.length !== 0) {
+                            const key = keyCounter++;
+                            context.emitContent(React.createElement(tagName, { className, key }, ...children));
+                            children = [];
+                        }
+                        context.emitLineBreak();
+                    },
+                });
+            }
+            if (children.length !== 0) {
+                const key = keyCounter++;
+                context.emitContent(React.createElement(tagName, { className, key }, ...children));
+            }
         }
-    });
+    };
+    {
+        const className = styles.line;
+        let children = [] as React.ReactNode[];
+        for (const childNode of Array.from(fragment.childNodes)) {
+            walk(childNode, {
+                emitContent: (node) => {
+                    children.push(node);
+                },
+                emitLineBreak: () => {
+                    const key = keyCounter++;
+                    children.push('\n');
+                    lines.push(<div {...{ children, className, key }} />);
+                    children = [];
+                },
+            });
+        }
+        if (!(children.length === 1 && children[0] === '') && children.length !== 0) {
+            const key = keyCounter++;
+            lines.push(<div {...{ className, children, key }} />);
+        }
+    }
+    return lines;
 };
 
 export const Highlight = (props: Props) => {
     const { className = '', code, language } = props;
 
     const lines = React.useMemo(() => {
-        const result = highlight(code, { language, ignoreIllegals: true });
-        const lines: React.ReactNode[] = [];
-        const regexp = /\n()|<span\s+class="(.*?)">|<\/span>()|([^<>\n]+)/g;
-        const classList: string[] = [];
-        let line: React.ReactNode[] = [];
-        let match: RegExpExecArray | null;
-        while ((match = regexp.exec(result.value)) !== null) {
-            if (match[1] === '') {
-                const lineNumber = lines.length / 2 + 1;
-                lines.push(<div key={lines.length} className={styles.lineNumber}>{lineNumber.toString()}</div>);
-                lines.push(<div key={lines.length} className={styles.line}>{line}{'\n'}</div>);
-                line = [];
-            } else if (match[2] != null) {
-                classList.push(highlightStyles[match[2]]);
-            } else if (match[3] === '') {
-                classList.pop();
-            } else {
-                line.push((
-                    <span key={line.length} className={classList.join(' ')}>{unescapeHtmlEntity(match[4])}</span>
-                ));
-            }
+        let lineNumber = 1;
+        const lines = [] as React.ReactNode[];
+        for (const line of highlight({ code, language })) {
+            lines.push(<div key={lines.length} className={styles.lineNumber}>{lineNumber.toString()}</div>);
+            lines.push(React.cloneElement(line, { key: lines.length }));
+            lineNumber++;
         }
-        if (line.length !== 0)
-            lines.push(<div key={lines.length} className={styles.line}>{line}</div>);
         return lines;
     }, [code, language]);
 
