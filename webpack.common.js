@@ -10,6 +10,17 @@ const common = (options) => {
         devtool: options.devtool,
         entry: {},
         mode: options.mode,
+        module: {
+            rules: [
+                // See https://github.com/ashtuchkin/iconv-lite/issues/204#issuecomment-432048618
+                {
+                    resolve: {
+                        aliasFields: ['main'],
+                    },
+                    test: /node_modules\/iconv-lite\/.+/,
+                },
+            ],
+        },
         output: {
             filename: path.join('entries', '[name].js'),
             path: options.path,
@@ -33,7 +44,9 @@ const electronCommon = (options) => {
             node: true,
         },
         module: {
+            ...base.module,
             rules: [
+                ...base.module.rules,
                 {
                     exclude: [
                         path.resolve(__dirname, 'node_modules'),
