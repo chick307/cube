@@ -21,6 +21,7 @@ const entry = new FileEntry(new EntryPath('/a/b'));
 const fileSystem = new UnknownFileSystem();
 
 const dummyEntryService: EntryService = {
+    createEntryFromPath: async () => null,
     readDirectory: async () => notImplemented(),
     readFile: async () => Buffer.from('abc'),
     readLink: async () => notImplemented(),

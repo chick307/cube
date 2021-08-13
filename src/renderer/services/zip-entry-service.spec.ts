@@ -14,6 +14,7 @@ import { ZipEntryServiceImpl } from './zip-entry-service';
 const dummyFileSystem = new FileSystem();
 
 const dummyEntryService: EntryService = {
+    createEntryFromPath: async () => null,
     readDirectory: async () => [],
     readFile: async (params) => {
         expect(params.entry.path.toString()).toBe('/path/to/zip');

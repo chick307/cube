@@ -54,6 +54,55 @@ afterEach(() => {
 });
 
 describe('EntryService type', () => {
+    describe('entryService.createEntryFromPath() method', () => {
+        test('it calls localEntryService.createEntryFromPath() method, ' +
+             'if the local file system is passed', async () => {
+            const createEntryFromPath = jest.spyOn(dummyLocalEntryService, 'createEntryFromPath');
+            const closeController = new CloseController();
+            const { signal } = closeController;
+            const entryPath = new EntryPath('/a/b');
+            const entryService = createEntryService();
+            const fileSystem = new LocalFileSystem();
+            const promise1 = entryService.createEntryFromPath({ entryPath, fileSystem });
+            await expect(promise1).resolves.toBeNull();
+            expect(createEntryFromPath).toHaveBeenCalledTimes(1);
+            expect(createEntryFromPath).toHaveBeenCalledWith({ entryPath }, undefined);
+            createEntryFromPath.mockClear();
+            const promise2 = entryService.createEntryFromPath({ entryPath, fileSystem }, { signal });
+            await expect(promise2).resolves.toBeNull();
+            expect(createEntryFromPath).toHaveBeenCalledTimes(1);
+            expect(createEntryFromPath).toHaveBeenCalledWith({ entryPath }, { signal });
+        });
+
+        test('it calls zipEntryService.createEntryFromPath() method, ' +
+             'if the zip file system is passed', async () => {
+            const createEntryFromPath = jest.spyOn(dummyZipEntryService, 'createEntryFromPath');
+            const closeController = new CloseController();
+            const { signal } = closeController;
+            const entryPath = new EntryPath('/d-1');
+            const entryService = createEntryService();
+            const container = dummyContainer;
+            const fileSystem = new ZipFileSystem({ container });
+            const promise1 = entryService.createEntryFromPath({ entryPath, fileSystem });
+            await expect(promise1).resolves.toBeNull();
+            expect(createEntryFromPath).toHaveBeenCalledTimes(1);
+            expect(createEntryFromPath).toHaveBeenCalledWith({ entryPath, entryService, fileSystem }, undefined);
+            createEntryFromPath.mockClear();
+            const promise2 = entryService.createEntryFromPath({ entryPath, fileSystem }, { signal });
+            await expect(promise2).resolves.toBeNull();
+            expect(createEntryFromPath).toHaveBeenCalledTimes(1);
+            expect(createEntryFromPath).toHaveBeenCalledWith({ entryPath, entryService, fileSystem }, { signal });
+        });
+
+        test('it throws an error if the passed file system is unknown', async () => {
+            const entryPath = new EntryPath('/x');
+            const entryService = createEntryService();
+            const fileSystem = new UnknownFileSystem();
+            const promise = entryService.createEntryFromPath({ entryPath, fileSystem });
+            await expect(promise).rejects.toThrow();
+        });
+    });
+
     describe('entryService.readDirectory() method', () => {
         test('it calls localEntryService.readDirectory() method, if the local file system is passed', async () => {
             const closeController = new CloseController();

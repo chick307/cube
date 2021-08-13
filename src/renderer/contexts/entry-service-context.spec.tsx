@@ -8,6 +8,7 @@ const rejectedPromise = Promise.reject(Error());
 rejectedPromise.catch(() => {});
 
 const dummyEntryService: EntryService = {
+    createEntryFromPath: jest.fn().mockReturnValue(rejectedPromise),
     readDirectory: jest.fn().mockReturnValue(rejectedPromise),
     readFile: jest.fn().mockReturnValue(rejectedPromise),
     readLink: jest.fn().mockReturnValue(rejectedPromise),
