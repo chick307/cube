@@ -32,6 +32,65 @@ const dummyContainer = {
 };
 
 describe('ZipEntryService type', () => {
+    describe('zipEntryService.createEntryFromPath() method', () => {
+        test('it returns the entry of the path', async () => {
+            const entryService = dummyEntryService;
+            const fileSystem = new ZipFileSystem({ container: dummyContainer });
+            const zipEntryService = new ZipEntryServiceImpl();
+            await expect(zipEntryService.createEntryFromPath({
+                entryPath: new EntryPath('/d-1/f-1-1'),
+                entryService,
+                fileSystem,
+            })).resolves.toEqual(new FileEntry(new EntryPath('/d-1/f-1-1')));
+            await expect(zipEntryService.createEntryFromPath({
+                entryPath: new EntryPath('/d-1/d-1-1'),
+                entryService,
+                fileSystem,
+            })).resolves.toEqual(new DirectoryEntry(new EntryPath('/d-1/d-1-1')));
+        });
+
+        test('it returns null if the path does not exist', async () => {
+            const entryService = dummyEntryService;
+            const fileSystem = new ZipFileSystem({ container: dummyContainer });
+            const zipEntryService = new ZipEntryServiceImpl();
+            await expect(zipEntryService.createEntryFromPath({
+                entryPath: new EntryPath('/d-1/f-404'),
+                entryService,
+                fileSystem,
+            })).resolves.toEqual(null);
+        });
+
+        test('it throws if the passed signal is closed', async () => {
+            const closeController = new CloseController();
+            closeController.close();
+            const { signal } = closeController;
+            const entryService = dummyEntryService;
+            const fileSystem = new ZipFileSystem({ container: dummyContainer });
+            const zipEntryService = new ZipEntryServiceImpl();
+            const promise = zipEntryService.createEntryFromPath({
+                entryPath: new EntryPath('/d-1/f-404'),
+                entryService,
+                fileSystem,
+            }, { signal });
+            await expect(promise).rejects.toBeInstanceOf(Closed);
+        });
+
+        test('it throws if the passed signal is closed even after called', async () => {
+            const closeController = new CloseController();
+            const { signal } = closeController;
+            const entryService = dummyEntryService;
+            const fileSystem = new ZipFileSystem({ container: dummyContainer });
+            const zipEntryService = new ZipEntryServiceImpl();
+            const promise = zipEntryService.createEntryFromPath({
+                entryPath: new EntryPath('/d-1/f-404'),
+                entryService,
+                fileSystem,
+            }, { signal });
+            closeController.close();
+            await expect(promise).rejects.toBeInstanceOf(Closed);
+        });
+    });
+
     describe('zipEntryService.readDirectory() method', () => {
         test('it returns the entries in the directory', async () => {
             const entry = new DirectoryEntry(new EntryPath('/d-1'));

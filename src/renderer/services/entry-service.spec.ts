@@ -29,6 +29,7 @@ const dummyLocalEntryService: LocalEntryService = {
 };
 
 const dummyZipEntryService: ZipEntryService = {
+    createEntryFromPath: async () => null,
     readDirectory: async () => [
         new FileEntry(new EntryPath('/d-1/f-1-1')),
     ],
