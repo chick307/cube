@@ -43,12 +43,12 @@ describe('LocalEntryService type', () => {
                 return createSymbolicLinkStats() as any;
             if (path === '/a/e')
                 return createStats() as any;
-            return {} as any;
+            return Promise.reject(Object.assign(Error(), { code: 'ENOENT' }));
         });
 
         const readdir = jest.spyOn(fs, 'readdir');
         readdir.mockImplementation(async () => {
-            return ['b', 'c', 'd', 'e'] as any[];
+            return ['b', 'c', 'd', 'e', 'f'] as any[];
         });
 
         const readFile = jest.spyOn(fs, 'readFile');
@@ -64,6 +64,44 @@ describe('LocalEntryService type', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
+    });
+
+    describe('localEntryService.createEntryFromPath() method', () => {
+        test('it returns the entry of the path', async () => {
+            const localEntryService = new LocalEntryServiceImpl();
+            await expect(localEntryService.createEntryFromPath({ entryPath: new EntryPath('/a/b') }))
+                .resolves.toEqual(new FileEntry(new EntryPath('/a/b')));
+            await expect(localEntryService.createEntryFromPath({ entryPath: new EntryPath('/a/c') }))
+                .resolves.toEqual(new DirectoryEntry(new EntryPath('/a/c')));
+            await expect(localEntryService.createEntryFromPath({ entryPath: new EntryPath('/a/d') }))
+                .resolves.toEqual(new SymbolicLinkEntry(new EntryPath('/a/d')));
+            await expect(localEntryService.createEntryFromPath({ entryPath: new EntryPath('/a/e') }))
+                .resolves.toEqual(new Entry(new EntryPath('/a/e')));
+        });
+
+        test('it returns null if the path does not exist', async () => {
+            const localEntryService = new LocalEntryServiceImpl();
+            await expect(localEntryService.createEntryFromPath({ entryPath: new EntryPath('/a/f') }))
+                .resolves.toBeNull();
+        });
+
+        test('it throws if the passed signal is closed', async () => {
+            const closeController = new CloseController();
+            closeController.close();
+            const { signal } = closeController;
+            const localEntryService = new LocalEntryServiceImpl();
+            const promise = localEntryService.createEntryFromPath({ entryPath: new EntryPath('/a/b') }, { signal });
+            await expect(promise).rejects.toBeInstanceOf(Closed);
+        });
+
+        test('it throws if the passed signal is closed even after called', async () => {
+            const closeController = new CloseController();
+            const { signal } = closeController;
+            const localEntryService = new LocalEntryServiceImpl();
+            const promise = localEntryService.createEntryFromPath({ entryPath: new EntryPath('/a/b') }, { signal });
+            closeController.close();
+            await expect(promise).rejects.toBeInstanceOf(Closed);
+        });
     });
 
     describe('localEntryService.getHomeDirectoryEntry() method', () => {
@@ -104,11 +142,11 @@ describe('LocalEntryService type', () => {
 
         test('it throws if the passed signal is closed even after called', async () => {
             const closeController = new CloseController();
-            closeController.close();
             const { signal } = closeController;
             const localEntryService = new LocalEntryServiceImpl();
             const entry = new DirectoryEntry(new EntryPath('/a'));
             const promise = localEntryService.readDirectory({ entry }, { signal });
+            closeController.close();
             await expect(promise).rejects.toBeInstanceOf(Closed);
         });
     });

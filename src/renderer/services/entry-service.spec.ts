@@ -16,6 +16,7 @@ class UnknownFileSystem extends FileSystem {
 }
 
 const dummyLocalEntryService: LocalEntryService = {
+    createEntryFromPath: async () => null,
     getHomeDirectoryEntry: () => new DirectoryEntry(new EntryPath('/a')),
     readDirectory: async () => [
         new FileEntry(new EntryPath('/a/c/f')),

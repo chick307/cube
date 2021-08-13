@@ -11,6 +11,14 @@ import { EntryName } from '../../common/values/entry-name';
 import { EntryPath } from '../../common/values/entry-path';
 import type { Link } from './entry-service';
 
+export type CreateEntryFromPathParameters = {
+    entryPath: EntryPath;
+};
+
+export type CreateEntryFromPathOptions = {
+    signal?: CloseSignal | null;
+};
+
 export type ReadDirectoryParameters = {
     entry: DirectoryEntry;
 };
@@ -36,17 +44,31 @@ export type ReadLinkOptions = {
 };
 
 export type LocalEntryService = {
+    createEntryFromPath(
+        params: CreateEntryFromPathParameters,
+        options?: CreateEntryFromPathOptions,
+    ): Promise<Entry | null>;
+
     getHomeDirectoryEntry(): DirectoryEntry;
+
     readDirectory(params: ReadDirectoryParameters, options?: ReadDirectoryOptions | null): Promise<Entry[]>;
+
     readFile(params: ReadFileParameters, options?: ReadFileOptions | null): Promise<Buffer>;
+
     readLink(params: ReadLinkParameters, options?: ReadLinkOptions | null): Promise<Link>;
 };
 
 export class LocalEntryServiceImpl implements LocalEntryService {
-    private async _createEntry(entryPath: EntryPath, signal?: CloseSignal | null): Promise<Entry> {
+    private async _createEntry(entryPath: EntryPath, signal?: CloseSignal | null): Promise<Entry | null> {
         signal?.throwIfClosed();
         const promise = fs.lstat(entryPath.toString());
-        const stat = await (signal?.wrapPromise(promise) ?? promise);
+        const stat = await (signal?.wrapPromise(promise) ?? promise).catch((e) => {
+            if (e.code === 'ENOENT')
+                return null;
+            throw e;
+        });
+        if (stat === null)
+            return null;
         if (stat.isFile())
             return new FileEntry(entryPath);
         if (stat.isDirectory())
@@ -54,6 +76,14 @@ export class LocalEntryServiceImpl implements LocalEntryService {
         if (stat.isSymbolicLink())
             return new SymbolicLinkEntry(entryPath);
         return new Entry(entryPath);
+    }
+
+    async createEntryFromPath(
+        params: CreateEntryFromPathParameters,
+        options?: CreateEntryFromPathOptions,
+    ): Promise<Entry | null> {
+        const entry = await this._createEntry(params.entryPath, options?.signal);
+        return entry;
     }
 
     getHomeDirectoryEntry(): DirectoryEntry {
@@ -71,6 +101,8 @@ export class LocalEntryServiceImpl implements LocalEntryService {
             const entryName = new EntryName(name);
             const entryPath = params.entry.path.join(entryName);
             const entry = await this._createEntry(entryPath, options?.signal);
+            if (entry === null)
+                continue;
             entries.push(entry);
         }
         return entries;
