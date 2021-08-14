@@ -12,9 +12,11 @@ export const useTask = <T>(f: TaskCallback<T>, deps?: React.DependencyList) => {
         const closeController = new CloseController();
 
         f(closeController.signal).then((r) => {
-            setResult([r]);
+            if (!closeController.signal.closed)
+                setResult([r]);
         }, (e) => {
-            setResult([undefined, e]);
+            if (!closeController.signal.closed)
+                setResult([undefined, e]);
         });
 
         return () => {
