@@ -1,11 +1,11 @@
-import { highlightAuto, registerAliases } from 'highlight.js';
-import highlightStyles from 'highlight.js/styles/solarized-dark.css';
+import hljs from 'highlight.js';
+import highlightStyles from 'highlight.js/styles/base16/solarized-dark.css';
 import { JSDOM } from 'jsdom';
 import React from 'react';
 
 import styles from './highlight.css';
 
-registerAliases('jsonc', { languageName: 'json' });
+hljs.registerAliases('jsonc', { languageName: 'json' });
 
 export type Props = {
     className?: string;
@@ -17,7 +17,7 @@ const highlight = (params: {
     code: string;
     language?: string | null;
 }): JSX.Element[] => {
-    const result = highlightAuto(params.code, ...(params.language ? [[params.language]] : []));
+    const result = hljs.highlightAuto(params.code, ...(params.language ? [[params.language]] : []));
     const fragment = JSDOM.fragment(result.value);
     const lines = [] as JSX.Element[];
     let keyCounter = 0;
