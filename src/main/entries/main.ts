@@ -61,3 +61,36 @@ app.on('ready', () => {
 app.on('activate', () => {
     mainWindowService.activate();
 });
+
+if (BUILD_MODE === 'development') {
+    Promise.resolve().then(async () => {
+        const readline = await import('readline');
+
+        const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+            prompt: '> ',
+        });
+
+        rl.on('line', (line) => {
+            switch (true) {
+                case /^\s*activate\s*/.test(line): {
+                    app.emit('activate');
+                    break;
+                }
+                case /^\s*open-file\s+/.test(line): {
+                    const path = line.replace(/^\s*open-file\s+|\s+$/g, '');
+                    app.emit('open-file', { preventDefault: () => undefined }, path);
+                    break;
+                }
+                case /^\s*quit\s*$/.test(line): {
+                    app.quit();
+                    return;
+                }
+            }
+            rl.prompt();
+        });
+
+        rl.prompt();
+    });
+}
