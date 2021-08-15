@@ -14,6 +14,7 @@
             "CFBundleTypeExtensions": [
               "*"
             ],
+            "CFBundleTypeRole": "Viewer",
             "LSHandlerRank": "Alternate"
           }
         ]
