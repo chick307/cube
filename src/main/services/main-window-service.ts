@@ -125,6 +125,9 @@ export class MainWindowServiceImpl implements MainWindowService {
             fileSystem: new LocalFileSystem(),
         };
 
+        if (BUILD_MODE === 'development')
+            window.webContents.openDevTools();
+
         window.webContents.postMessage('connect', {
             entry: initailState.entry.toJson(),
             fileSystem: initailState.fileSystem.toJson(),
