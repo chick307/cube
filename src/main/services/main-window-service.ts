@@ -11,11 +11,17 @@ import type { RestoreWindowStateService } from './restore-window-state-service';
 
 const MAIN_WINDOW_URL = `file://${path.resolve(__dirname, '../views/main-window.html')}`;
 
+export type CloseEvent = {
+    type: 'close';
+};
+
 export type OpenEvent = {
     type: 'open';
 };
 
 export type MainWindowService = {
+    onClose: EventSignal<CloseEvent>;
+
     onOpen: EventSignal<OpenEvent>;
 
     activate(): void;
@@ -33,6 +39,8 @@ export type MainWindowService = {
 };
 
 export class MainWindowServiceImpl implements MainWindowService {
+    private _onCloseController: EventController<CloseEvent>;
+
     private _onOpenController: EventController<OpenEvent>;
 
     private _restoreWindowStateService: RestoreWindowStateService;
@@ -44,13 +52,17 @@ export class MainWindowServiceImpl implements MainWindowService {
         toggleDevTools(): void;
     } | null = null;
 
+    readonly onClose: EventSignal<CloseEvent>;
+
     readonly onOpen: EventSignal<OpenEvent>;
 
     constructor(params: {
         restoreWindowStateService: RestoreWindowStateService;
     }) {
+        this._onCloseController = new EventController<CloseEvent>();
         this._onOpenController = new EventController<OpenEvent>();
         this._restoreWindowStateService = params.restoreWindowStateService;
+        this.onClose = this._onCloseController.signal;
         this.onOpen = this._onOpenController.signal;
     }
 
@@ -81,6 +93,7 @@ export class MainWindowServiceImpl implements MainWindowService {
 
         window.on('closed', () => {
             this._controller = null;
+            this._onCloseController.emit({ type: 'close' });
         });
 
         const channel = new MessageChannelMain();
