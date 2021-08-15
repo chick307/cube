@@ -1,5 +1,3 @@
-import { promises as fs } from 'fs';
-
 import { Menu, dialog } from 'electron';
 
 import type { MainWindowService } from './main-window-service';
@@ -43,6 +41,7 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
                     },
                     {
                         label: 'Close',
+                        id: 'close',
                         accelerator: 'Cmd+W',
                         click: () => {
                             this.onCloseClicked();
@@ -50,10 +49,12 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
                     },
                 ],
             },
-            ...(BUILD_MODE === 'development' ? [{
+            {
                 label: 'Dev',
+                visible: BUILD_MODE === 'development',
                 submenu: [
                     {
+                        id: 'toggle-devtools',
                         label: 'Toggle DevTools',
                         accelerator: 'Cmd+Option+I',
                         click: () => {
@@ -61,12 +62,30 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
                         },
                     },
                 ],
-            }] : []),
+            },
         ]);
     }
 
     initialize() {
+        /* eslint-disable @typescript-eslint/no-non-null-assertion */
+        const closeMenuItem = this._menu.getMenuItemById('close')!;
+        const toggleDevToolsMenuItem = this._menu.getMenuItemById('toggle-devtools')!;
+        /* eslint-enable @typescript-eslint/no-non-null-assertion */
+
         Menu.setApplicationMenu(this._menu);
+
+        closeMenuItem.enabled = this._mainWindowService.isOpen();
+        toggleDevToolsMenuItem.enabled = this._mainWindowService.isOpen();
+
+        this._mainWindowService.onOpen.addListener(() => {
+            closeMenuItem.enabled = true;
+            toggleDevToolsMenuItem.enabled = true;
+        });
+
+        this._mainWindowService.onClose.addListener(() => {
+            closeMenuItem.enabled = false;
+            toggleDevToolsMenuItem.enabled = false;
+        });
     }
 
     async onCloseClicked() {
