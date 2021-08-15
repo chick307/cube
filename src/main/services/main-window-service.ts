@@ -5,12 +5,19 @@ import { BrowserWindow, MessageChannelMain, app } from 'electron';
 import { DirectoryEntry, LocalFileSystem } from '../../common/entities';
 import type { Entry } from '../../common/entities/entry';
 import type { FileSystem } from '../../common/entities/file-system';
+import { EventController, EventSignal } from '../../common/utils/event-controller';
 import { EntryPath } from '../../common/values/entry-path';
 import type { RestoreWindowStateService } from './restore-window-state-service';
 
 const MAIN_WINDOW_URL = `file://${path.resolve(__dirname, '../views/main-window.html')}`;
 
+export type OpenEvent = {
+    type: 'open';
+};
+
 export type MainWindowService = {
+    onOpen: EventSignal<OpenEvent>;
+
     activate(): void;
 
     close(): void;
@@ -26,6 +33,8 @@ export type MainWindowService = {
 };
 
 export class MainWindowServiceImpl implements MainWindowService {
+    private _onOpenController: EventController<OpenEvent>;
+
     private _restoreWindowStateService: RestoreWindowStateService;
 
     private _controller: {
@@ -35,10 +44,14 @@ export class MainWindowServiceImpl implements MainWindowService {
         toggleDevTools(): void;
     } | null = null;
 
+    readonly onOpen: EventSignal<OpenEvent>;
+
     constructor(params: {
         restoreWindowStateService: RestoreWindowStateService;
     }) {
+        this._onOpenController = new EventController<OpenEvent>();
         this._restoreWindowStateService = params.restoreWindowStateService;
+        this.onOpen = this._onOpenController.signal;
     }
 
     private async _createWindow(params: {
@@ -118,6 +131,8 @@ export class MainWindowServiceImpl implements MainWindowService {
                 }
             }
         });
+
+        this._onOpenController.emit({ type: 'open' });
     }
 
     activate() {
