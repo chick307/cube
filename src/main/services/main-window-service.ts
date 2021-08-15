@@ -15,6 +15,8 @@ export type MainWindowService = {
 
     close(): void;
 
+    isOpen(): boolean;
+
     navigate(state: {
         entry: Entry;
         fileSystem: FileSystem;
@@ -129,6 +131,12 @@ export class MainWindowServiceImpl implements MainWindowService {
 
     close() {
         this._controller?.close();
+    }
+
+    isOpen(): boolean {
+        if (this._controller === null)
+            return false;
+        return true;
     }
 
     navigate(state: {
