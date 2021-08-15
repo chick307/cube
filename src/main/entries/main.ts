@@ -35,7 +35,6 @@ const openEntry = async (pathString: string) => {
 };
 
 app.on('open-file', (event, path) => {
-    console.log(path);
     event.preventDefault();
     if (!ready) {
         startEntryPath = path;

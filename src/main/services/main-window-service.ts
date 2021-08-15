@@ -1,10 +1,12 @@
 import * as path from 'path';
 
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, MessageChannelMain, app } from 'electron';
 
-import type { RestoreWindowStateService } from './restore-window-state-service';
+import { DirectoryEntry, LocalFileSystem } from '../../common/entities';
 import type { Entry } from '../../common/entities/entry';
 import type { FileSystem } from '../../common/entities/file-system';
+import { EntryPath } from '../../common/values/entry-path';
+import type { RestoreWindowStateService } from './restore-window-state-service';
 
 const MAIN_WINDOW_URL = `file://${path.resolve(__dirname, '../views/main-window.html')}`;
 
@@ -24,7 +26,12 @@ export type MainWindowService = {
 export class MainWindowServiceImpl implements MainWindowService {
     private _restoreWindowStateService: RestoreWindowStateService;
 
-    private _window: BrowserWindow | null = null;
+    private _controller: {
+        close(): void;
+        postMessage(message: unknown): void;
+        show(): void;
+        toggleDevTools(): void;
+    } | null = null;
 
     constructor(params: {
         restoreWindowStateService: RestoreWindowStateService;
@@ -32,11 +39,16 @@ export class MainWindowServiceImpl implements MainWindowService {
         this._restoreWindowStateService = params.restoreWindowStateService;
     }
 
-    private async _createWindow(): Promise<BrowserWindow> {
-        if (this._window !== null)
+    private async _createWindow(params: {
+        initialState?: {
+            entry: Entry;
+            fileSystem: FileSystem;
+        };
+    }): Promise<void> {
+        if (this._controller !== null)
             throw Error();
 
-        this._window = new BrowserWindow({
+        const window = new BrowserWindow({
             frame: false,
             show: false,
             titleBarStyle: 'hidden',
@@ -48,63 +60,95 @@ export class MainWindowServiceImpl implements MainWindowService {
             ...this._restoreWindowStateService.getWindowOptions(),
         });
 
-        this._restoreWindowStateService.observeWindow(this._window);
+        this._restoreWindowStateService.observeWindow(window);
 
-        this._window.loadURL(MAIN_WINDOW_URL);
+        window.loadURL(MAIN_WINDOW_URL);
 
-        this._window.on('closed', () => {
-            this._window = null;
+        window.on('closed', () => {
+            this._controller = null;
         });
 
+        const channel = new MessageChannelMain();
+        const port = channel.port1;
+
+        this._controller = {
+            close: () => {
+                window.close();
+            },
+            postMessage: (message) => {
+                port.postMessage(message);
+            },
+            show: () => {
+                window.show();
+            },
+            toggleDevTools: () => {
+                window.webContents.toggleDevTools();
+            },
+        };
+
         await new Promise<void>((resolve) => {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this._window!.once('ready-to-show', () => {
-                if (this._window !== null)
-                    this._window.show();
+            window.once('ready-to-show', () => {
                 resolve();
             });
         });
 
-        return this._window;
+        const initailState = params.initialState ?? {
+            entry: new DirectoryEntry(new EntryPath(app.getPath('home'))),
+            fileSystem: new LocalFileSystem(),
+        };
+
+        window.webContents.postMessage('connect', {
+            entry: initailState.entry.toJson(),
+            fileSystem: initailState.fileSystem.toJson(),
+        }, [channel.port2]);
+
+        port.start();
+        port.on('message', (event) => {
+            const message = event.data;
+            switch (message.type) {
+                case 'window.ready-to-show': {
+                    window.show();
+                    return;
+                }
+                default: {
+                    console.error('unknown message:', message);
+                    return;
+                }
+            }
+        });
     }
 
     activate() {
-        if (this._window === null) {
-            this._createWindow();
-        } else {
-            this._window.show();
+        if (this._controller === null) {
+            this._createWindow({});
+            return;
         }
+
+        this._controller.show();
     }
 
     close() {
-        if (this._window === null)
-            return;
-        this._window.close();
+        this._controller?.close();
     }
 
     navigate(state: {
         entry: Entry;
         fileSystem: FileSystem;
     }) {
-        Promise.resolve().then(async () => {
-            let window = this._window;
-            if (window === null) {
-                window = await this._createWindow();
-            } else {
-                window.show();
-            }
+        if (this._controller === null) {
+            this._createWindow({ initialState: state });
+            return;
+        }
 
-            window.webContents.postMessage('history.navigate', {
-                entry: state.entry.toJson(),
-                fileSystem: state.fileSystem.toJson(),
-            });
+        this._controller.show();
+        this._controller.postMessage({
+            type: 'window.open-file',
+            entry: state.entry.toJson(),
+            fileSystem: state.fileSystem.toJson(),
         });
     }
 
     toggleDevTools() {
-        const window = this._window;
-        if (window === null)
-            return;
-        window.webContents.toggleDevTools();
+        this._controller?.toggleDevTools();
     }
 }
