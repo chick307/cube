@@ -1,5 +1,11 @@
+import { CloseSignal } from '../../common/utils/close-controller';
+
 export type Observer<State> = {
     next: (state: State) => void;
+};
+
+export type SubscribeOptions = {
+    signal?: CloseSignal;
 };
 
 export class Store<State> {
@@ -32,15 +38,17 @@ export class Store<State> {
         return this._state;
     }
 
-    subscribe(observer: Observer<State>) {
+    subscribe(observer: Observer<State>, options?: SubscribeOptions) {
         this._observers.push(observer);
 
-        return {
-            unsubscribe: () => {
-                const index = this._observers.indexOf(observer);
-                if (index !== -1)
-                    this._observers.splice(index, 1);
-            },
+        const unsubscribe = () => {
+            const index = this._observers.indexOf(observer);
+            if (index !== -1)
+                this._observers.splice(index, 1);
         };
+
+        options?.signal?.defer(unsubscribe);
+
+        return { unsubscribe };
     }
 }

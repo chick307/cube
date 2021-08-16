@@ -1,3 +1,4 @@
+import { CloseController } from '../../common/utils/close-controller';
 import { immediate } from '../../common/utils/immediate';
 import { Store } from './store';
 
@@ -70,6 +71,24 @@ describe('Store class', () => {
             expect(next).toHaveBeenCalledWith({ b: 2 });
             next.mockClear();
             subscription.unsubscribe();
+            store.setState({ c: 3 });
+            await immediate();
+            expect(next).not.toHaveBeenCalled();
+            subscription.unsubscribe();
+        });
+
+        test('it unsubscribes when the passed signal closed', async () => {
+            const store = new TestStore({ a: 1 });
+            const next = jest.fn();
+            const closeController = new CloseController();
+            const subscription = store.subscribe({ next }, { signal: closeController.signal });
+            expect(next).not.toHaveBeenCalled();
+            store.setState({ b: 2 });
+            await immediate();
+            expect(next).toHaveBeenCalledTimes(1);
+            expect(next).toHaveBeenCalledWith({ b: 2 });
+            next.mockClear();
+            closeController.close();
             store.setState({ c: 3 });
             await immediate();
             expect(next).not.toHaveBeenCalled();
