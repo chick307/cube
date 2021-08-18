@@ -1,7 +1,10 @@
 import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
+import { Entry, LocalFileSystem } from '../../common/entities';
 
 import { HistoryController } from '../controllers/history-controller';
+import { HistoryStore } from '../stores/history-store';
+import { composeElements } from '../utils/compose-elements';
 import { HistoryControllerProvider, useHistoryController } from './history-controller-context';
 
 let container: HTMLElement;
@@ -29,6 +32,12 @@ describe('HistoryController context', () => {
             };
 
             const historyControllerInstance: HistoryController = {
+                historyStore: new HistoryStore({
+                    historyState: {
+                        entry: Entry.fromJson({ type: 'directory', path: '/a' }),
+                        fileSystem: new LocalFileSystem(),
+                    },
+                }),
                 goBack: () => {},
                 goForward: () => {},
                 navigate: () => {},
@@ -36,10 +45,9 @@ describe('HistoryController context', () => {
             };
 
             TestUtils.act(() => {
-                ReactDom.render((
-                    <HistoryControllerProvider value={historyControllerInstance}>
-                        <Component />
-                    </HistoryControllerProvider>
+                ReactDom.render(composeElements(
+                    <HistoryControllerProvider value={historyControllerInstance}/>,
+                    <Component />,
                 ), container);
             });
 

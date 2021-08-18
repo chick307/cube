@@ -1,19 +1,29 @@
-import type { HistoryState, MutableHistoryStore } from '../stores/history-store';
+import type { HistoryState, MutableHistoryStore, State as HistoryStoreState } from '../stores/history-store';
+import type { Store } from '../stores/store';
 
 export type HistoryController = {
+    historyStore: Store<HistoryStoreState>;
+
     goBack(): void;
+
     goForward(): void;
+
     navigate(state: HistoryState): void;
+
     replace(state: HistoryState): void;
 };
 
 export class HistoryControllerImpl implements HistoryController {
-    private _historyStore: MutableHistoryStore;
+    private _historyStore: MutableHistoryStore & Store<HistoryStoreState>;
 
     constructor(container: {
-        historyStore: MutableHistoryStore;
+        historyStore: MutableHistoryStore & Store<HistoryStoreState>;
     }) {
         this._historyStore = container.historyStore;
+    }
+
+    get historyStore(): Store<HistoryStoreState> {
+        return this._historyStore;
     }
 
     goBack(): void {

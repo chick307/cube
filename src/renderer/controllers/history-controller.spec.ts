@@ -1,26 +1,26 @@
-import { Entry } from '../../common/entities/entry';
-import { FileSystem } from '../../common/entities/file-system';
-import { EntryPath } from '../../common/values/entry-path';
+import { Entry, FileSystem } from '../../common/entities';
+import { HistoryStore } from '../stores/history-store';
 import { HistoryControllerImpl } from './history-controller';
 
-class UnknownFileSystem extends FileSystem {
-    //
-}
+class UnknownFileSystem extends FileSystem {}
 
-const dummyEntry = new Entry(new EntryPath('/a'));
+const dummyEntry = Entry.fromJson({ type: 'directory', path: '/a' });
 
 const dummyFileSystem = new UnknownFileSystem();
 
-const dummyHistoryStore = {
-    push: () => {},
-    replace: () => {},
-    shiftBack: () => {},
-    shiftForward: () => {},
+const createHistoryStore = () => {
+    return new HistoryStore({
+        historyState: {
+            entry: Entry.fromJson({ type: 'directory', path: '/a' }),
+            fileSystem: dummyFileSystem,
+        },
+    });
 };
 
 describe('HistoryContollerImpl class', () => {
     describe('historyController.goBack() method', () => {
         test('it calls historyStore.shiftBack() method', () => {
+            const dummyHistoryStore = createHistoryStore();
             const shiftBack = jest.spyOn(dummyHistoryStore, 'shiftBack');
             const historyController = new HistoryControllerImpl({
                 historyStore: dummyHistoryStore,
@@ -37,6 +37,7 @@ describe('HistoryContollerImpl class', () => {
 
     describe('historyController.goForward() method', () => {
         test('it calls historyStore.shiftForward() method', () => {
+            const dummyHistoryStore = createHistoryStore();
             const shiftForward = jest.spyOn(dummyHistoryStore, 'shiftForward');
             const historyController = new HistoryControllerImpl({
                 historyStore: dummyHistoryStore,
@@ -53,6 +54,7 @@ describe('HistoryContollerImpl class', () => {
 
     describe('historyController.navigate() method', () => {
         test('it calls historyStore.push() method', () => {
+            const dummyHistoryStore = createHistoryStore();
             const push = jest.spyOn(dummyHistoryStore, 'push');
             const historyController = new HistoryControllerImpl({
                 historyStore: dummyHistoryStore,
@@ -76,6 +78,7 @@ describe('HistoryContollerImpl class', () => {
 
     describe('historyController.replace() method', () => {
         test('it calls historyStore.replace() method', () => {
+            const dummyHistoryStore = createHistoryStore();
             const replace = jest.spyOn(dummyHistoryStore, 'replace');
             const historyController = new HistoryControllerImpl({
                 historyStore: dummyHistoryStore,
