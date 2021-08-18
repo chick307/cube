@@ -2,21 +2,17 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-import { DirectoryEntry } from '../../common/entities/directory-entry';
-import { FileSystem } from '../../common/entities/file-system';
+import { Entry, FileSystem } from '../../common/entities';
 import { immediate } from '../../common/utils/immediate';
-import { EntryPath } from '../../common/values/entry-path';
 import { HistoryControllerProvider } from '../contexts/history-controller-context';
 import type { HistoryController } from '../controllers/history-controller';
 import { HistoryStore } from '../stores/history-store';
+import { composeElements } from '../utils/compose-elements';
 import buttonStyles from './button.css';
 import { GoBackButton } from './go-back-button';
 
-class UnknownFileSystem extends FileSystem {
-    //
-}
-
-const fileSystem1 = new UnknownFileSystem();
+class UnknownFileSystem extends FileSystem {}
+const unknownFileSystem = new UnknownFileSystem();
 
 let container: HTMLElement;
 
@@ -31,12 +27,24 @@ afterEach(() => {
     container = null!;
 });
 
-const dummyHistoryController: HistoryController = {
+const createHistoryStore = () => {
+    return new HistoryStore({
+        historyState: {
+            entry: Entry.fromJson({ type: 'directory', path: '/a' }),
+            fileSystem: unknownFileSystem,
+        },
+    });
+};
+
+const createHistoryController = (params: {
+    historyStore?: HistoryStore;
+}): HistoryController => ({
+    historyStore: params.historyStore ?? createHistoryStore(),
     goBack: () => {},
     goForward: () => {},
     navigate: () => {},
     replace: () => {},
-};
+});
 
 afterEach(() => {
     jest.resetAllMocks();
@@ -44,23 +52,18 @@ afterEach(() => {
 
 describe('GoBackButton component', () => {
     test('it calls historyController.goBack() method when clicked', async () => {
-        const goBack = jest.spyOn(dummyHistoryController, 'goBack');
-        const historyStore = new HistoryStore({
-            historyState: {
-                entry: new DirectoryEntry(new EntryPath('/a')),
-                fileSystem: fileSystem1,
-            },
-        });
+        const historyStore = createHistoryStore();
+        const historyController = createHistoryController({ historyStore });
+        const goBack = jest.spyOn(historyController, 'goBack');
         historyStore.push({
-            entry: new DirectoryEntry(new EntryPath('/a/b')),
-            fileSystem: fileSystem1,
+            entry: Entry.fromJson({ type: 'directory', path: '/a/b' }),
+            fileSystem: unknownFileSystem,
         });
         await immediate();
         const Component = () => {
-            return (
-                <HistoryControllerProvider value={dummyHistoryController}>
-                    <GoBackButton historyStore={historyStore} />
-                </HistoryControllerProvider>
+            return composeElements(
+                <HistoryControllerProvider value={historyController} />,
+                <GoBackButton />,
             );
         };
         TestUtils.act(() => {
@@ -71,26 +74,21 @@ describe('GoBackButton component', () => {
     });
 
     test('it does not call historyController.goBack() method if prevented default in onClick handler', async () => {
-        const goBack = jest.spyOn(dummyHistoryController, 'goBack');
-        const historyStore = new HistoryStore({
-            historyState: {
-                entry: new DirectoryEntry(new EntryPath('/a')),
-                fileSystem: fileSystem1,
-            },
-        });
+        const historyStore = createHistoryStore();
+        const historyController = createHistoryController({ historyStore });
+        const goBack = jest.spyOn(historyController, 'goBack');
         historyStore.push({
-            entry: new DirectoryEntry(new EntryPath('/a/b')),
-            fileSystem: fileSystem1,
+            entry: Entry.fromJson({ type: 'directory', path: '/a/b' }),
+            fileSystem: unknownFileSystem,
         });
         await immediate();
         const Component = () => {
             const onClick: React.MouseEventHandler<HTMLButtonElement> = (event) => {
                 event.preventDefault();
             };
-            return (
-                <HistoryControllerProvider value={dummyHistoryController}>
-                    <GoBackButton historyStore={historyStore} onClick={onClick} />
-                </HistoryControllerProvider>
+            return composeElements(
+                <HistoryControllerProvider value={historyController} />,
+                <GoBackButton onClick={onClick} />,
             );
         };
         TestUtils.act(() => {

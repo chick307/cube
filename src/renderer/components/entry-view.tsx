@@ -87,7 +87,7 @@ export const EntryView = (props: Props) => {
     return (
         <div className={`${className} ${styles.entryView} ${mainContent ? styles.mainContent : ''}`}>
             <div className={styles.path}>
-                <GoBackButton className={styles.goBackButton} {...{ historyStore }} />
+                <GoBackButton className={styles.goBackButton} />
                 <GoForwardButton className={styles.goForwardButton} {...{ historyStore }} />
                 <span className={styles.pathString}>{entry.path.toString()}</span>
             </div>

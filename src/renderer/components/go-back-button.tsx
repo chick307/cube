@@ -2,16 +2,12 @@ import React from 'react';
 
 import { useHistoryController } from '../contexts/history-controller-context';
 import { useStore } from '../hooks/use-store';
-import { HistoryStore } from '../stores/history-store';
 import { Button, Props as ButtonProps } from './button';
 
-export type Props = ButtonProps & {
-    historyStore: HistoryStore;
-};
+export type Props = ButtonProps;
 
 export const GoBackButton = (props: Props) => {
     const {
-        historyStore,
         disabled: buttonDisabled,
         onClick: buttonOnClick,
         children: buttonChildren,
@@ -20,7 +16,7 @@ export const GoBackButton = (props: Props) => {
 
     const historyController = useHistoryController();
 
-    const { ableToGoBack } = useStore(historyStore);
+    const { ableToGoBack } = useStore(historyController.historyStore);
 
     const disabled = buttonDisabled || !ableToGoBack;
 
