@@ -23,14 +23,13 @@ import { GoForwardButton } from './go-forward-button';
 
 export type Props = {
     className?: string;
-    mainContent?: boolean;
 };
 
 const isZipEntry = (entry: FileEntry) =>
     /^\.(?:zip)$/.test(entry.path.getExtension());
 
 export const EntryView = (props: Props) => {
-    const { className = '', mainContent = false } = props;
+    const { className = '' } = props;
 
     const historyController = useHistoryController();
 
@@ -83,7 +82,7 @@ export const EntryView = (props: Props) => {
     }, [entry, fileSystem]);
 
     return (
-        <div className={`${className} ${styles.entryView} ${mainContent ? styles.mainContent : ''}`}>
+        <div className={`${className} ${styles.entryView}`}>
             <div className={styles.path}>
                 <GoBackButton className={styles.goBackButton} />
                 <GoForwardButton className={styles.goForwardButton} />

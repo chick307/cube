@@ -9,9 +9,10 @@
     align-items: center;
     background-color: #FFFFFF;
     color: #666666;
+    border-bottom: 1px solid #EEEEEE;
 }
 
-.main-content > .path {
+:global(#container) > .entry-view > .path {
     padding-left: 72px;
     -webkit-app-region: drag;
 }
@@ -26,11 +27,13 @@
     height: 24px;
 }
 
-.main-content > .path > .go-back-button {
+:global(#container) > .entry-view > .path > .go-back-button,
+:global(#container) > .entry-view > .path > .go-forward-button {
     -webkit-app-region: no-drag;
 }
 
-.main-content > .path > .go-back-button:disabled {
+:global(#container) > .entry-view > .path > .go-back-button:disabled,
+:global(#container) > .entry-view > .path > .go-forward-button:disabled {
     -webkit-app-region: drag;
 }
 

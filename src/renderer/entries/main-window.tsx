@@ -79,7 +79,7 @@ const MainWindow = () => {
         <EntryIconServiceProvider value={entryIconService} />,
         <EntryServiceProvider value={entryService} />,
         <HistoryControllerProvider value={historyController} />,
-        <EntryView mainContent={true} />,
+        <EntryView />,
     );
 };
 
