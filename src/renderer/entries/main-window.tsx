@@ -73,14 +73,13 @@ const MainWindow = () => {
         entryIconService,
         entryService,
         historyController,
-        historyStore,
     } = container;
 
     return composeElements(
         <EntryIconServiceProvider value={entryIconService} />,
         <EntryServiceProvider value={entryService} />,
         <HistoryControllerProvider value={historyController} />,
-        <EntryView className={styles.mainContent} mainContent={true} {...{ historyStore }} />,
+        <EntryView className={styles.mainContent} mainContent={true} />,
     );
 };
 

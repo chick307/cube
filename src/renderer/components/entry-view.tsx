@@ -6,7 +6,6 @@ import { ZipFileSystem } from '../../common/entities/zip-file-system';
 import { EntryPath } from '../../common/values/entry-path';
 import { useHistoryController } from '../contexts/history-controller-context';
 import { useStore } from '../hooks/use-store';
-import { HistoryStore } from '../stores/history-store';
 import styles from './entry-view.css';
 import { BinaryEntryView } from './entry-views/binary-entry-view';
 import { ComicEntryView, isComicEntry } from './entry-views/comic-entry-view';
@@ -24,7 +23,6 @@ import { GoForwardButton } from './go-forward-button';
 
 export type Props = {
     className?: string;
-    historyStore: HistoryStore;
     mainContent?: boolean;
 };
 
@@ -32,11 +30,11 @@ const isZipEntry = (entry: FileEntry) =>
     /^\.(?:zip)$/.test(entry.path.getExtension());
 
 export const EntryView = (props: Props) => {
-    const { className = '', mainContent = false, historyStore } = props;
+    const { className = '', mainContent = false } = props;
 
     const historyController = useHistoryController();
 
-    const { current: { entry, fileSystem } } = useStore(historyStore);
+    const { current: { entry, fileSystem } } = useStore(historyController.historyStore);
 
     const view = React.useMemo(() => {
         const viewProps = { className: styles.view, fileSystem };
