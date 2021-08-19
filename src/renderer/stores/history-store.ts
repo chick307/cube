@@ -100,7 +100,7 @@ export class HistoryStore extends Store<State> implements MutableHistoryStore {
         });
     }
 
-    protected updateState(updater: (oldState: State) => State): void {
+    updateState(updater: (oldState: State) => State): void {
         super.updateState((oldState) => {
             const newState = updater(oldState);
             return {

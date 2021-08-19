@@ -19,11 +19,11 @@ export class Store<State> {
         this._state = initialState;
     }
 
-    protected setState(state: State) {
+    setState(state: State) {
         this.updateState(() => state);
     }
 
-    protected updateState(updater: (state: State) => State): void {
+    updateState(updater: (state: State) => State): void {
         const updating = this._updating = this._updating
             .then(() => {
                 this._state = updater(this._state);
