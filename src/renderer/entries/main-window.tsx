@@ -21,7 +21,7 @@ import './main-window.css';
 pdfjsLib.GlobalWorkerOptions.workerSrc = './workers/pdf.worker.min.js';
 
 const MainWindow = () => {
-    const [container] = useTask(async () => {
+    const [container, error] = useTask(async () => {
         const { initailState, port } = await new Promise<{
             initailState: { entry: Entry; fileSystem: FileSystem; };
             port: MessagePort;
@@ -65,6 +65,9 @@ const MainWindow = () => {
 
         return container;
     }, []);
+
+    if (error)
+        console.error(error);
 
     if (container == null)
         return null;
