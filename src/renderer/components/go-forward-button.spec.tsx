@@ -5,6 +5,7 @@ import { Entry } from '../../common/entities';
 
 import { FileSystem } from '../../common/entities/file-system';
 import { immediate } from '../../common/utils/immediate';
+import { State } from '../../common/utils/restate';
 import { HistoryControllerProvider } from '../contexts/history-controller-context';
 import type { HistoryController } from '../controllers/history-controller';
 import { HistoryStore } from '../stores/history-store';
@@ -14,6 +15,10 @@ import { GoForwardButton } from './go-forward-button';
 
 class UnknownFileSystem extends FileSystem {}
 const unknownFileSystem = new UnknownFileSystem();
+const entryA = Entry.fromJson({ type: 'directory', path: '/a' });
+const entryB = Entry.fromJson({ type: 'directory', path: '/a/b' });
+const historyStateA = { entry: entryA, fileSystem: unknownFileSystem };
+const historyStateB = { entry: entryB, fileSystem: unknownFileSystem };
 
 let container: HTMLElement;
 
@@ -30,10 +35,7 @@ afterEach(() => {
 
 const createHistoryStore = () => {
     return new HistoryStore({
-        historyState: {
-            entry: Entry.fromJson({ type: 'directory', path: '/a' }),
-            fileSystem: unknownFileSystem,
-        },
+        historyState: historyStateA,
     });
 };
 
@@ -41,6 +43,13 @@ const createHistoryController = (params: {
     historyStore?: HistoryStore;
 }): HistoryController => ({
     historyStore: params.historyStore ?? createHistoryStore(),
+    state: State.of({
+        ableToGoBack: false,
+        ableToGoForward: false,
+        backHistories: [],
+        current: historyStateA,
+        forwardHistories: [],
+    }),
     goBack: () => {},
     goForward: () => {},
     navigate: () => {},
@@ -56,10 +65,7 @@ describe('GoForwardButton component', () => {
         const historyStore = createHistoryStore();
         const historyController = createHistoryController({ historyStore });
         const goForward = jest.spyOn(historyController, 'goForward');
-        historyStore.push({
-            entry: Entry.fromJson({ type: 'directory', path: '/a/b' }),
-            fileSystem: unknownFileSystem,
-        });
+        historyStore.push(historyStateB);
         historyStore.shiftBack();
         await immediate();
         const Component = () => {
@@ -79,10 +85,7 @@ describe('GoForwardButton component', () => {
         const historyStore = createHistoryStore();
         const historyController = createHistoryController({ historyStore });
         const goForward = jest.spyOn(historyController, 'goForward');
-        historyStore.push({
-            entry: Entry.fromJson({ type: 'directory', path: '/a/b' }),
-            fileSystem: unknownFileSystem,
-        });
+        historyStore.push(historyStateB);
         historyStore.shiftBack();
         await immediate();
         const Component = () => {

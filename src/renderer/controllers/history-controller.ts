@@ -1,8 +1,11 @@
+import { Restate, State } from '../../common/utils/restate';
 import type { HistoryState, MutableHistoryStore, State as HistoryStoreState } from '../stores/history-store';
 import type { Store } from '../stores/store';
 
 export type HistoryController = {
     historyStore: Store<HistoryStoreState>;
+
+    state: State<HistoryStoreState>;
 
     goBack(): void;
 
@@ -14,12 +17,25 @@ export type HistoryController = {
 };
 
 export class HistoryControllerImpl implements HistoryController {
+    #restate: Restate<HistoryStoreState>;
+
     private _historyStore: MutableHistoryStore & Store<HistoryStoreState>;
 
     constructor(container: {
         historyStore: MutableHistoryStore & Store<HistoryStoreState>;
     }) {
         this._historyStore = container.historyStore;
+        this.#restate = new Restate<HistoryStoreState>(this._historyStore.state);
+
+        this._historyStore.subscribe({
+            next: (state) => {
+                this.#restate.set(state);
+            },
+        });
+    }
+
+    get state(): State<HistoryStoreState> {
+        return this.#restate.state;
     }
 
     get historyStore(): Store<HistoryStoreState> {
