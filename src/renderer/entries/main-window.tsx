@@ -16,7 +16,7 @@ import { EntryServiceImpl } from '../services/entry-service';
 import { LocalEntryServiceImpl } from '../services/local-entry-service';
 import { ZipEntryServiceImpl } from '../services/zip-entry-service';
 import { composeElements } from '../utils/compose-elements';
-import styles from './main-window.css';
+import './main-window.css';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = './workers/pdf.worker.min.js';
 
@@ -79,7 +79,7 @@ const MainWindow = () => {
         <EntryIconServiceProvider value={entryIconService} />,
         <EntryServiceProvider value={entryService} />,
         <HistoryControllerProvider value={historyController} />,
-        <EntryView className={styles.mainContent} mainContent={true} />,
+        <EntryView mainContent={true} />,
     );
 };
 
