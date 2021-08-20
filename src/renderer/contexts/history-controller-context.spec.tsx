@@ -4,7 +4,6 @@ import TestUtils from 'react-dom/test-utils';
 import { Entry, LocalFileSystem } from '../../common/entities';
 import { State } from '../../common/utils/restate';
 import { HistoryController } from '../controllers/history-controller';
-import { HistoryStore } from '../stores/history-store';
 import { composeElements } from '../utils/compose-elements';
 import { HistoryControllerProvider, useHistoryController } from './history-controller-context';
 
@@ -33,21 +32,13 @@ describe('HistoryController context', () => {
             };
 
             const historyControllerInstance: HistoryController = {
-                historyStore: new HistoryStore({
-                    historyState: {
-                        entry: Entry.fromJson({ type: 'directory', path: '/a' }),
-                        fileSystem: new LocalFileSystem(),
-                    },
-                }),
                 state: State.of({
                     ableToGoBack: false,
                     ableToGoForward: false,
-                    backHistories: [],
                     current: {
                         entry: Entry.fromJson({ type: 'directory', path: '/a' }),
                         fileSystem: new LocalFileSystem(),
                     },
-                    forwardHistories: [],
                 }),
                 goBack: () => {},
                 goForward: () => {},

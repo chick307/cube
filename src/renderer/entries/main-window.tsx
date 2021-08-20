@@ -10,7 +10,6 @@ import { EntryServiceProvider } from '../contexts/entry-service-context';
 import { HistoryControllerProvider } from '../contexts/history-controller-context';
 import { HistoryControllerImpl } from '../controllers/history-controller';
 import { useTask } from '../hooks/use-task';
-import { HistoryStore } from '../stores/history-store';
 import { EntryIconServiceImpl } from '../services/entry-icon-service';
 import { EntryServiceImpl } from '../services/entry-service';
 import { LocalEntryServiceImpl } from '../services/local-entry-service';
@@ -22,15 +21,15 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = './workers/pdf.worker.min.js';
 
 const MainWindow = () => {
     const [container, error] = useTask(async () => {
-        const { initailState, port } = await new Promise<{
-            initailState: { entry: Entry; fileSystem: FileSystem; };
+        const { initialHistoryItem, port } = await new Promise<{
+            initialHistoryItem: { entry: Entry; fileSystem: FileSystem; };
             port: MessagePort;
         }>((resolve) => {
             ipcRenderer.once('connect', (event, message) => {
                 const [port] = event.ports;
                 const entry = Entry.fromJson(message.entry);
                 const fileSystem = FileSystem.fromJson(message.fileSystem);
-                resolve({ initailState: { entry, fileSystem }, port });
+                resolve({ initialHistoryItem: { entry, fileSystem }, port });
             });
         });
 
@@ -38,8 +37,7 @@ const MainWindow = () => {
             entryIconService: EntryIconServiceImpl,
             entryService: EntryServiceImpl,
             historyController: HistoryControllerImpl,
-            historyStore: HistoryStore,
-            historyState: createFactory(() => initailState),
+            initialHistoryItem: createFactory(() => initialHistoryItem),
             localEntryService: LocalEntryServiceImpl,
             zipEntryService: ZipEntryServiceImpl,
         });
@@ -50,8 +48,8 @@ const MainWindow = () => {
                 case 'window.open-file': {
                     const entry = Entry.fromJson(message.entry);
                     const fileSystem = FileSystem.fromJson(message.fileSystem);
-                    const state = { entry, fileSystem };
-                    container.historyController.navigate(state);
+                    const item = { entry, fileSystem };
+                    container.historyController.navigate(item);
                     return;
                 }
                 default: {

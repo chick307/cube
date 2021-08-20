@@ -1,60 +1,99 @@
+import type { Entry, FileSystem } from '../../common/entities';
 import { Restate, State } from '../../common/utils/restate';
-import type { HistoryState, MutableHistoryStore, State as HistoryStoreState } from '../stores/history-store';
-import type { Store } from '../stores/store';
+
+export type HistoryItem = {
+    entry: Entry;
+    fileSystem: FileSystem;
+};
+
+export type HistoryControllerState = {
+    ableToGoBack: boolean;
+    ableToGoForward: boolean;
+    current: HistoryItem;
+};
 
 export type HistoryController = {
-    historyStore: Store<HistoryStoreState>;
-
-    state: State<HistoryStoreState>;
+    readonly state: State<HistoryControllerState>;
 
     goBack(): void;
 
     goForward(): void;
 
-    navigate(state: HistoryState): void;
+    navigate(item: HistoryItem): void;
 
-    replace(state: HistoryState): void;
+    replace(item: HistoryItem): void;
+};
+
+type InternalState = {
+    backHistories: HistoryItem[];
+    current: HistoryItem;
+    forwardHistories: HistoryItem[];
 };
 
 export class HistoryControllerImpl implements HistoryController {
-    #restate: Restate<HistoryStoreState>;
+    #restate: Restate<InternalState>;
 
-    private _historyStore: MutableHistoryStore & Store<HistoryStoreState>;
+    #state: State<HistoryControllerState>;
 
-    constructor(container: {
-        historyStore: MutableHistoryStore & Store<HistoryStoreState>;
+    constructor(params: {
+        initialHistoryItem: HistoryItem;
     }) {
-        this._historyStore = container.historyStore;
-        this.#restate = new Restate<HistoryStoreState>(this._historyStore.state);
-
-        this._historyStore.subscribe({
-            next: (state) => {
-                this.#restate.set(state);
-            },
+        this.#restate = new Restate<InternalState>({
+            backHistories: [],
+            current: params.initialHistoryItem,
+            forwardHistories: [],
         });
+
+        this.#state = this.#restate.state.map(({
+            backHistories,
+            current,
+            forwardHistories,
+        }) => ({
+            ableToGoBack: backHistories.length > 0,
+            ableToGoForward: forwardHistories.length > 0,
+            current,
+        }));
     }
 
-    get state(): State<HistoryStoreState> {
-        return this.#restate.state;
-    }
-
-    get historyStore(): Store<HistoryStoreState> {
-        return this._historyStore;
+    get state(): State<HistoryControllerState> {
+        return this.#state;
     }
 
     goBack(): void {
-        this._historyStore.shiftBack();
+        this.#restate.update((state) => {
+            const index = state.backHistories.length - 1;
+            if (index < 0)
+                return state;
+            const backHistories = state.backHistories.slice(0, index);
+            const current = state.backHistories[index];
+            const forwardHistories = [state.current, ...state.forwardHistories];
+            return { ...state, backHistories, current, forwardHistories };
+        });
     }
 
     goForward(): void {
-        this._historyStore.shiftForward();
+        this.#restate.update((state) => {
+            if (state.forwardHistories.length === 0)
+                return state;
+            const backHistories = [...state.backHistories, state.current];
+            const current = state.forwardHistories[0];
+            const forwardHistories = state.forwardHistories.slice(1);
+            return { ...state, backHistories, current, forwardHistories };
+        });
     }
 
-    navigate(state: HistoryState): void {
-        this._historyStore.push(state);
+    navigate(item: HistoryItem): void {
+        this.#restate.update((state) => {
+            const backHistories = [...state.backHistories, state.current];
+            const current = { entry: item.entry, fileSystem: item.fileSystem };
+            return { ...state, backHistories, current, forwardHistories: [] };
+        });
     }
 
-    replace(state: HistoryState) {
-        this._historyStore.replace(state);
+    replace(item: HistoryItem): void {
+        this.#restate.update((state) => {
+            const current = { entry: item.entry, fileSystem: item.fileSystem };
+            return { ...state, current };
+        });
     }
 }

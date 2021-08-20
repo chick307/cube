@@ -6,8 +6,7 @@ import { Entry, FileSystem } from '../../common/entities';
 import { immediate } from '../../common/utils/immediate';
 import { State } from '../../common/utils/restate';
 import { HistoryControllerProvider } from '../contexts/history-controller-context';
-import type { HistoryController } from '../controllers/history-controller';
-import { HistoryStore, State as HistoryStoreState } from '../stores/history-store';
+import type { HistoryController, HistoryControllerState } from '../controllers/history-controller';
 import { composeElements } from '../utils/compose-elements';
 import buttonStyles from './button.css';
 import { GoBackButton } from './go-back-button';
@@ -16,8 +15,8 @@ class UnknownFileSystem extends FileSystem {}
 const unknownFileSystem = new UnknownFileSystem();
 const entryA = Entry.fromJson({ type: 'directory', path: '/a' });
 const entryB = Entry.fromJson({ type: 'directory', path: '/a/b' });
-const historyStateA = { entry: entryA, fileSystem: unknownFileSystem };
-const historyStateB = { entry: entryB, fileSystem: unknownFileSystem };
+const historyItemA = { entry: entryA, fileSystem: unknownFileSystem };
+const historyItemB = { entry: entryB, fileSystem: unknownFileSystem };
 
 let container: HTMLElement;
 
@@ -33,15 +32,12 @@ afterEach(() => {
 });
 
 const createHistoryController = (params: {
-    state?: State<HistoryStoreState>;
+    state?: State<HistoryControllerState>;
 }): HistoryController => ({
-    historyStore: new HistoryStore({ historyState: historyStateA }),
     state: params.state ?? State.of({
         ableToGoBack: false,
         ableToGoForward: false,
-        backHistories: [],
-        current: historyStateA,
-        forwardHistories: [],
+        current: historyItemA,
     }),
     goBack: () => {},
     goForward: () => {},
@@ -59,9 +55,7 @@ describe('GoBackButton component', () => {
             state: State.of({
                 ableToGoBack: true,
                 ableToGoForward: false,
-                backHistories: [historyStateA],
-                current: historyStateB,
-                forwardHistories: [],
+                current: historyItemB,
             }),
         });
         const goBack = jest.spyOn(historyController, 'goBack');
@@ -84,9 +78,7 @@ describe('GoBackButton component', () => {
             state: State.of({
                 ableToGoBack: true,
                 ableToGoForward: false,
-                backHistories: [historyStateA],
-                current: historyStateB,
-                forwardHistories: [],
+                current: historyItemB,
             }),
         });
         const goBack = jest.spyOn(historyController, 'goBack');
