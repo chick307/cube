@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useHistoryController } from '../contexts/history-controller-context';
-import { useStore } from '../hooks/use-store';
+import { useRestate } from '../hooks/use-restate';
 import { Button, Props as ButtonProps } from './button';
 
 export type Props = ButtonProps;
@@ -16,7 +16,7 @@ export const GoForwardButton = (props: Props) => {
 
     const historyController = useHistoryController();
 
-    const { ableToGoForward } = useStore(historyController.historyStore);
+    const { ableToGoForward } = useRestate(historyController.state);
 
     const disabled = buttonDisabled || !ableToGoForward;
 

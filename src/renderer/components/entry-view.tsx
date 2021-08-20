@@ -5,7 +5,7 @@ import type { FileEntry } from '../../common/entities/file-entry';
 import { ZipFileSystem } from '../../common/entities/zip-file-system';
 import { EntryPath } from '../../common/values/entry-path';
 import { useHistoryController } from '../contexts/history-controller-context';
-import { useStore } from '../hooks/use-store';
+import { useRestate } from '../hooks/use-restate';
 import styles from './entry-view.css';
 import { BinaryEntryView } from './entry-views/binary-entry-view';
 import { ComicEntryView, isComicEntry } from './entry-views/comic-entry-view';
@@ -33,7 +33,7 @@ export const EntryView = (props: Props) => {
 
     const historyController = useHistoryController();
 
-    const { current: { entry, fileSystem } } = useStore(historyController.historyStore);
+    const { current: { entry, fileSystem } } = useRestate(historyController.state);
 
     const view = React.useMemo(() => {
         const viewProps = { className: styles.view, fileSystem };

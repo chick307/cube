@@ -7,7 +7,7 @@ import { immediate } from '../../common/utils/immediate';
 import { State } from '../../common/utils/restate';
 import { HistoryControllerProvider } from '../contexts/history-controller-context';
 import type { HistoryController } from '../controllers/history-controller';
-import { HistoryStore } from '../stores/history-store';
+import { HistoryStore, State as HistoryStoreState } from '../stores/history-store';
 import { composeElements } from '../utils/compose-elements';
 import buttonStyles from './button.css';
 import { GoBackButton } from './go-back-button';
@@ -32,17 +32,11 @@ afterEach(() => {
     container = null!;
 });
 
-const createHistoryStore = () => {
-    return new HistoryStore({
-        historyState: historyStateA,
-    });
-};
-
 const createHistoryController = (params: {
-    historyStore?: HistoryStore;
+    state?: State<HistoryStoreState>;
 }): HistoryController => ({
-    historyStore: params.historyStore ?? createHistoryStore(),
-    state: State.of({
+    historyStore: new HistoryStore({ historyState: historyStateA }),
+    state: params.state ?? State.of({
         ableToGoBack: false,
         ableToGoForward: false,
         backHistories: [],
@@ -61,10 +55,16 @@ afterEach(() => {
 
 describe('GoBackButton component', () => {
     test('it calls historyController.goBack() method when clicked', async () => {
-        const historyStore = createHistoryStore();
-        const historyController = createHistoryController({ historyStore });
+        const historyController = createHistoryController({
+            state: State.of({
+                ableToGoBack: true,
+                ableToGoForward: false,
+                backHistories: [historyStateA],
+                current: historyStateB,
+                forwardHistories: [],
+            }),
+        });
         const goBack = jest.spyOn(historyController, 'goBack');
-        historyStore.push(historyStateB);
         await immediate();
         const Component = () => {
             return composeElements(
@@ -80,10 +80,16 @@ describe('GoBackButton component', () => {
     });
 
     test('it does not call historyController.goBack() method if prevented default in onClick handler', async () => {
-        const historyStore = createHistoryStore();
-        const historyController = createHistoryController({ historyStore });
+        const historyController = createHistoryController({
+            state: State.of({
+                ableToGoBack: true,
+                ableToGoForward: false,
+                backHistories: [historyStateA],
+                current: historyStateB,
+                forwardHistories: [],
+            }),
+        });
         const goBack = jest.spyOn(historyController, 'goBack');
-        historyStore.push(historyStateB);
         await immediate();
         const Component = () => {
             const onClick: React.MouseEventHandler<HTMLButtonElement> = (event) => {

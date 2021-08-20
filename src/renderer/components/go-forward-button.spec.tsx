@@ -1,14 +1,13 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
-import { Entry } from '../../common/entities';
 
-import { FileSystem } from '../../common/entities/file-system';
+import { Entry, FileSystem } from '../../common/entities';
 import { immediate } from '../../common/utils/immediate';
 import { State } from '../../common/utils/restate';
 import { HistoryControllerProvider } from '../contexts/history-controller-context';
 import type { HistoryController } from '../controllers/history-controller';
-import { HistoryStore } from '../stores/history-store';
+import { HistoryStore, State as HistoryStoreState } from '../stores/history-store';
 import { composeElements } from '../utils/compose-elements';
 import buttonStyles from './button.css';
 import { GoForwardButton } from './go-forward-button';
@@ -33,17 +32,11 @@ afterEach(() => {
     container = null!;
 });
 
-const createHistoryStore = () => {
-    return new HistoryStore({
-        historyState: historyStateA,
-    });
-};
-
 const createHistoryController = (params: {
-    historyStore?: HistoryStore;
+    state?: State<HistoryStoreState>;
 }): HistoryController => ({
-    historyStore: params.historyStore ?? createHistoryStore(),
-    state: State.of({
+    historyStore: new HistoryStore({ historyState: historyStateA }),
+    state: params.state ?? State.of({
         ableToGoBack: false,
         ableToGoForward: false,
         backHistories: [],
@@ -62,11 +55,16 @@ afterEach(() => {
 
 describe('GoForwardButton component', () => {
     test('it calls historyController.goForward() method when clicked', async () => {
-        const historyStore = createHistoryStore();
-        const historyController = createHistoryController({ historyStore });
+        const historyController = createHistoryController({
+            state: State.of({
+                ableToGoBack: false,
+                ableToGoForward: true,
+                backHistories: [],
+                current: historyStateA,
+                forwardHistories: [historyStateB],
+            }),
+        });
         const goForward = jest.spyOn(historyController, 'goForward');
-        historyStore.push(historyStateB);
-        historyStore.shiftBack();
         await immediate();
         const Component = () => {
             return composeElements(
@@ -82,11 +80,16 @@ describe('GoForwardButton component', () => {
     });
 
     test('it does not call historyController.goForward() method if prevented default in onClick handler', async () => {
-        const historyStore = createHistoryStore();
-        const historyController = createHistoryController({ historyStore });
+        const historyController = createHistoryController({
+            state: State.of({
+                ableToGoBack: false,
+                ableToGoForward: true,
+                backHistories: [],
+                current: historyStateA,
+                forwardHistories: [historyStateB],
+            }),
+        });
         const goForward = jest.spyOn(historyController, 'goForward');
-        historyStore.push(historyStateB);
-        historyStore.shiftBack();
         await immediate();
         const Component = () => {
             const onClick: React.MouseEventHandler<HTMLButtonElement> = (event) => {
