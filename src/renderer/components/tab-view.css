@@ -38,7 +38,8 @@
 .tab.active {
     background-color: var(--active-tab-background);
     border-radius: var(--tab-radius) var(--tab-radius) 0 0;
-    color: var(--active-tab-foreground)
+    color: var(--active-tab-foreground);
+    filter: drop-shadow(0 0 2px #00000022);
 }
 
 .tab.active::before,

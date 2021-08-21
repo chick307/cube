@@ -2,17 +2,18 @@ import { ipcRenderer } from 'electron';
 import * as pdfjsLib from 'pdfjs-dist';
 import ReactDom from 'react-dom';
 
-import { Entry, FileSystem } from '../../common/entities';
+import { Entry, FileSystem, LocalFileSystem } from '../../common/entities';
 import { createContainer, createFactory } from '../../common/utils/create-container';
-import { EntryView } from '../components/entry-view';
+import { TabView } from '../components/tab-view';
 import { EntryIconServiceProvider } from '../contexts/entry-icon-service-context';
 import { EntryServiceProvider } from '../contexts/entry-service-context';
-import { HistoryControllerProvider } from '../contexts/history-controller-context';
-import { HistoryControllerImpl } from '../controllers/history-controller';
+import { TabControllerProvider } from '../contexts/tab-controller-context';
+import { TabControllerImpl } from '../controllers/tab-controller';
+import { HistoryControllerFactoryImpl } from '../factories/history-controller-factory';
 import { useTask } from '../hooks/use-task';
 import { EntryIconServiceImpl } from '../services/entry-icon-service';
 import { EntryServiceImpl } from '../services/entry-service';
-import { LocalEntryServiceImpl } from '../services/local-entry-service';
+import { LocalEntryService, LocalEntryServiceImpl } from '../services/local-entry-service';
 import { ZipEntryServiceImpl } from '../services/zip-entry-service';
 import { composeElements } from '../utils/compose-elements';
 import './main-window.css';
@@ -34,13 +35,21 @@ const MainWindow = () => {
         });
 
         const container = createContainer({
+            defaultHistoryItem: createFactory((params: {
+                localEntryService: LocalEntryService;
+            }) => ({
+                entry: params.localEntryService.getHomeDirectoryEntry(),
+                fileSystem: new LocalFileSystem(),
+            })),
             entryIconService: EntryIconServiceImpl,
             entryService: EntryServiceImpl,
-            historyController: HistoryControllerImpl,
-            initialHistoryItem: createFactory(() => initialHistoryItem),
+            historyControllerFactory: HistoryControllerFactoryImpl,
             localEntryService: LocalEntryServiceImpl,
+            tabController: TabControllerImpl,
             zipEntryService: ZipEntryServiceImpl,
         });
+
+        container.tabController.addTab({ active: true, historyItem: initialHistoryItem });
 
         port.onmessage = (event: MessageEvent) => {
             const message = event.data;
@@ -48,8 +57,7 @@ const MainWindow = () => {
                 case 'window.open-file': {
                     const entry = Entry.fromJson(message.entry);
                     const fileSystem = FileSystem.fromJson(message.fileSystem);
-                    const item = { entry, fileSystem };
-                    container.historyController.navigate(item);
+                    container.tabController.addTab({ active: true, historyItem: { entry, fileSystem } });
                     return;
                 }
                 default: {
@@ -73,14 +81,14 @@ const MainWindow = () => {
     const {
         entryIconService,
         entryService,
-        historyController,
+        tabController,
     } = container;
 
     return composeElements(
         <EntryIconServiceProvider value={entryIconService} />,
         <EntryServiceProvider value={entryService} />,
-        <HistoryControllerProvider value={historyController} />,
-        <EntryView />,
+        <TabControllerProvider value={tabController} />,
+        <TabView />,
     );
 };
 

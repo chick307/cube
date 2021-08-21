@@ -79,7 +79,7 @@ export class MainWindowServiceImpl implements MainWindowService {
             frame: false,
             show: false,
             titleBarStyle: 'hidden',
-            trafficLightPosition: { x: 10, y: 10 },
+            trafficLightPosition: { x: 20, y: 13 },
             webPreferences: {
                 contextIsolation: false,
                 nodeIntegration: true,

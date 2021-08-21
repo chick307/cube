@@ -2,15 +2,15 @@ html {
     height: 100%;
     font-size: 12px;
     font-family: system-ui, sans-serif;
-    --traffic-light-width: 72px;
-    --traffic-light-height: 36px;
+    --traffic-light-width: 84px;
+    --traffic-light-height: 42px;
 }
 
 body {
     margin: 0;
     height: 100%;
     user-select: none;
-    background-color: #444444;
+    background-color: #444466;
     color: #FFFFFF;
 }
 
