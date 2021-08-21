@@ -2,6 +2,8 @@ html {
     height: 100%;
     font-size: 12px;
     font-family: system-ui, sans-serif;
+    --traffic-light-width: 72px;
+    --traffic-light-height: 36px;
 }
 
 body {

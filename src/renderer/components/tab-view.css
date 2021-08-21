@@ -1,0 +1,98 @@
+.view {
+    display: flex;
+    flex-direction: column;
+    --tab-height: 34px;
+    --tab-radius: 6px;
+    --tabs-padding-top: 0;
+    --tabs-padding-left: 0;
+    --active-tab-background: #FFFFFF;
+    --active-tab-foreground: #444444;
+    --content-background: #444444;
+    --content-foreground: #FFFFFF;
+}
+
+:global(#container) > .view {
+    --tabs-padding-top: calc(var(--traffic-light-height) - var(--tab-height));
+    --tabs-padding-left: calc(var(--traffic-light-width) + var(--tab-radius) + 4px);
+}
+
+.tabs {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding-top: var(--tabs-padding-top);
+    padding-left: var(--tabs-padding-left);
+    min-height: calc(var(--tabs-padding-top) + var(--tab-height));
+    -webkit-app-region: drag;
+}
+
+.tab {
+    display: flex;
+    align-items: center;
+    position: relative;
+    height: var(--tab-height);
+    padding: 0 1em;
+    -webkit-app-region: no-drag;
+}
+
+.tab.active {
+    background-color: var(--active-tab-background);
+    border-radius: var(--tab-radius) var(--tab-radius) 0 0;
+    color: var(--active-tab-foreground)
+}
+
+.tab.active::before,
+.tab.active::after {
+    display: block;
+    position: absolute;
+    content: '';
+    width: var(--tab-radius);
+    height: var(--tab-radius);
+    bottom: 0;
+}
+
+.tab.active::before {
+    left: calc(var(--tab-radius) * -1);
+    background: radial-gradient(circle at top left,
+        transparent calc(var(--tab-radius) - 1px),
+        var(--active-tab-background) var(--tab-radius),
+        var(--active-tab-background)
+    );
+}
+
+.tab.active::after {
+    right: calc(var(--tab-radius) * -1);
+    background: radial-gradient(
+        circle at top right,
+        transparent calc(var(--tab-radius) - 1px),
+        var(--active-tab-background) var(--tab-radius),
+        var(--active-tab-background)
+    );
+}
+
+.contents {
+    display: flex;
+    flex: 1;
+    background-color: var(--content-background);
+    color: var(--content-foreground);
+    position: relative;
+}
+
+.content {
+    display: none;
+    position: absolute;
+    flex: 1;
+    overflow: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.content.active {
+    display: flex;
+}
+
+.content > * {
+    flex: 1;
+}
