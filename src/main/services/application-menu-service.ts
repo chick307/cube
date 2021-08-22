@@ -68,6 +68,25 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
                 ],
             },
             {
+                label: 'History',
+                submenu: [
+                    {
+                        label: 'Go Back',
+                        accelerator: 'Cmd+[',
+                        click: () => {
+                            this._mainWindowService.goBack();
+                        },
+                    },
+                    {
+                        label: 'Go Forward',
+                        accelerator: 'Cmd+]',
+                        click: () => {
+                            this._mainWindowService.goForward();
+                        },
+                    },
+                ],
+            },
+            {
                 label: 'Tab',
                 submenu: [
                     {

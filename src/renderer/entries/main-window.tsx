@@ -58,6 +58,20 @@ const MainWindow = () => {
         port.onmessage = (event: MessageEvent) => {
             const message = event.data;
             switch (message.type) {
+                case 'history.go-back': {
+                    const tab = container.tabController.state.current.tabs.find((tab) => tab.active);
+                    if (tab == null)
+                        return;
+                    tab.historyController.goBack();
+                    return;
+                }
+                case 'history.go-forward': {
+                    const tab = container.tabController.state.current.tabs.find((tab) => tab.active);
+                    if (tab == null)
+                        return;
+                    tab.historyController.goForward();
+                    return;
+                }
                 case 'window.add-tab': {
                     container.tabController.addTab({ active: true });
                     return;

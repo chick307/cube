@@ -32,6 +32,10 @@ export type MainWindowService = {
 
     closeTab(): void;
 
+    goBack(): void;
+
+    goForward(): void;
+
     isOpen(): boolean;
 
     openFile(params: {
@@ -191,6 +195,14 @@ export class MainWindowServiceImpl implements MainWindowService {
             return;
         this._controller.show();
         this._controller.postMessage({ type: 'window.close-tab' });
+    }
+
+    goBack(): void {
+        this._controller?.postMessage({ type: 'history.go-back' });
+    }
+
+    goForward(): void {
+        this._controller?.postMessage({ type: 'history.go-forward' });
     }
 
     isOpen(): boolean {
