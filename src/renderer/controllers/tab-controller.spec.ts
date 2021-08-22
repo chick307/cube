@@ -44,6 +44,26 @@ afterEach(() => {
 });
 
 describe('TabController type', () => {
+    describe('tabController.onTabAllClosed property', () => {
+        test('it is emitted when all tabs are closed', async () => {
+            const tabController = createTabController();
+            const spy = jest.fn();
+            tabController.onTabAllClosed.addListener(spy);
+            tabController.addTab({ active: true });
+            tabController.addTab({ active: true });
+            tabController.addTab({ active: true });
+            await immediate();
+            expect(spy).not.toHaveBeenCalled();
+            tabController.removeTab({ id: 1 });
+            tabController.removeTab({ id: 2 });
+            await immediate();
+            expect(spy).not.toHaveBeenCalled();
+            tabController.removeTab({ id: 3 });
+            await immediate();
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+    });
+
     describe('tabController.addTab() method', () => {
         test('it adds a new tab', async () => {
             const tabController = createTabController();

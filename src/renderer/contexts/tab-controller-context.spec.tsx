@@ -33,6 +33,9 @@ describe('TabController context', () => {
 
             const tabControllerInstance: TabController = {
                 state: State.of({ tabs: [] }),
+                onTabAllClosed: new EventSignal<TabAllClosedEvent>({
+                    addListener: () => ({ removeListener: () => {} }),
+                }),
                 addTab: () => {},
                 removeTab: () => {},
                 selectNextTab: () => {},

@@ -1,5 +1,6 @@
 import type { Entry, FileSystem } from '../../common/entities';
 import { CloseController } from '../../common/utils/close-controller';
+import { EventController, EventSignal } from '../../common/utils/event-controller';
 import { Restate, State } from '../../common/utils/restate';
 import type { HistoryControllerFactory } from '../factories/history-controller-factory';
 import type { HistoryController, HistoryItem } from './history-controller';
@@ -17,6 +18,8 @@ export type TabControllerState = {
 
 export type TabController = {
     readonly state: State<TabControllerState>;
+
+    readonly onTabAllClosed: EventSignal<TabAllClosedEvent>;
 
     addTab(params: AddTabParameters): void;
 
@@ -69,6 +72,8 @@ export class TabControllerImpl implements TabController {
 
     #state: State<TabControllerState>;
 
+    #onTabAllClosedController = new EventController<TabAllClosedEvent>();
+
     constructor(params: {
         defaultHistoryItem: HistoryItem;
         historyControllerFactory: HistoryControllerFactory;
@@ -91,6 +96,10 @@ export class TabControllerImpl implements TabController {
 
     get state(): State<TabControllerState> {
         return this.#state;
+    }
+
+    get onTabAllClosed(): EventSignal<TabAllClosedEvent> {
+        return this.#onTabAllClosedController.signal;
     }
 
     addTab(params: AddTabParameters): void {
@@ -126,6 +135,8 @@ export class TabControllerImpl implements TabController {
             const tabs = state.tabs
                 .filter((tab) => tab.id !== id)
                 .map((tab, index) => ({ ...tab, active: index === activeIndex }));
+            if (tabs.length === 0)
+                this.#onTabAllClosedController.emit({ type: 'tab-all-closed' });
             return { ...state, tabs };
         });
     }
