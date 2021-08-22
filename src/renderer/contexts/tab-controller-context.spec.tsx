@@ -34,6 +34,7 @@ describe('TabController context', () => {
             const tabControllerInstance: TabController = {
                 state: State.of({ tabs: [] }),
                 addTab: () => {},
+                removeTab: () => {},
                 selectNextTab: () => {},
                 selectTab: () => {},
                 selectPreviousTab: () => {},
