@@ -19,6 +19,8 @@ export type TabControllerState = {
 export type TabController = {
     readonly state: State<TabControllerState>;
 
+    readonly onActiveTabChanged: EventSignal<ActiveTabChangedEvent>;
+
     readonly onTabAllClosed: EventSignal<TabAllClosedEvent>;
 
     addTab(params: AddTabParameters): void;
@@ -48,6 +50,11 @@ export type SelectTabParameters = {
     id: number;
 };
 
+export type ActiveTabChangedEvent = {
+    type: 'active-tab-changed';
+    tabId: number;
+};
+
 export type TabAllClosedEvent = {
     type: 'tab-all-closed';
 };
@@ -72,6 +79,8 @@ export class TabControllerImpl implements TabController {
 
     #state: State<TabControllerState>;
 
+    #onActiveTabChangedController = new EventController<ActiveTabChangedEvent>();
+
     #onTabAllClosedController = new EventController<TabAllClosedEvent>();
 
     constructor(params: {
@@ -92,10 +101,24 @@ export class TabControllerImpl implements TabController {
                 title: tab.title,
             })),
         }));
+
+        let activeTab: InternalState['tabs'][number] | null = null;
+        this.#restate.state.forEach((state) => {
+            for (const tab of state.tabs) {
+                if (tab.active && tab.id !== activeTab?.id) {
+                    activeTab = tab;
+                    this.#onActiveTabChangedController.emit({ type: 'active-tab-changed', tabId: tab.id });
+                }
+            }
+        });
     }
 
     get state(): State<TabControllerState> {
         return this.#state;
+    }
+
+    get onActiveTabChanged(): EventSignal<ActiveTabChangedEvent> {
+        return this.#onActiveTabChangedController.signal;
     }
 
     get onTabAllClosed(): EventSignal<TabAllClosedEvent> {
@@ -131,7 +154,9 @@ export class TabControllerImpl implements TabController {
                 return state;
             const tab = state.tabs[tabIndex];
             tab.closeController.close();
-            const activeIndex = Math.min(state.tabs.length - 2, state.tabs.findIndex((tab) => tab.active));
+            let activeIndex = Math.min(state.tabs.length - 2, state.tabs.findIndex((tab) => tab.active));
+            if (tabIndex < activeIndex)
+                activeIndex = Math.max(0, activeIndex - 1);
             const tabs = state.tabs
                 .filter((tab) => tab.id !== id)
                 .map((tab, index) => ({ ...tab, active: index === activeIndex }));

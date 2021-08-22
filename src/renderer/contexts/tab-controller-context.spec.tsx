@@ -3,7 +3,7 @@ import TestUtils from 'react-dom/test-utils';
 
 import { EventSignal } from '../../common/utils/event-controller';
 import { State } from '../../common/utils/restate';
-import { TabAllClosedEvent, TabController } from '../controllers/tab-controller';
+import { ActiveTabChangedEvent, TabAllClosedEvent, TabController } from '../controllers/tab-controller';
 import { composeElements } from '../utils/compose-elements';
 import { TabControllerProvider, useTabController } from './tab-controller-context';
 
@@ -33,6 +33,9 @@ describe('TabController context', () => {
 
             const tabControllerInstance: TabController = {
                 state: State.of({ tabs: [] }),
+                onActiveTabChanged: new EventSignal<ActiveTabChangedEvent>({
+                    addListener: () => ({ removeListener: () => {} }),
+                }),
                 onTabAllClosed: new EventSignal<TabAllClosedEvent>({
                     addListener: () => ({ removeListener: () => {} }),
                 }),

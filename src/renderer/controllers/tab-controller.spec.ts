@@ -44,6 +44,51 @@ afterEach(() => {
 });
 
 describe('TabController type', () => {
+    describe('tabController.onActiveTabChanged property', () => {
+        test('it is emitted when the active tab is changed', async () => {
+            const tabController = createTabController();
+            const spy = jest.fn();
+            tabController.onActiveTabChanged.addListener(spy);
+            tabController.addTab({ active: true });
+            await immediate();
+            expect(spy).toHaveBeenCalledTimes(1);
+            expect(spy).toHaveBeenCalledWith({ type: 'active-tab-changed', tabId: 1 });
+            spy.mockClear();
+            tabController.addTab({ active: false });
+            tabController.addTab({ active: false });
+            tabController.addTab({ active: false });
+            tabController.addTab({ active: false });
+            tabController.selectNextTab();
+            await immediate();
+            expect(spy).toHaveBeenCalledTimes(1);
+            expect(spy).toHaveBeenCalledWith({ type: 'active-tab-changed', tabId: 2 });
+            spy.mockClear();
+            tabController.selectTab({ id: 4 });
+            await immediate();
+            expect(spy).toHaveBeenCalledTimes(1);
+            expect(spy).toHaveBeenCalledWith({ type: 'active-tab-changed', tabId: 4 });
+            spy.mockClear();
+            tabController.selectPreviousTab();
+            await immediate();
+            expect(spy).toHaveBeenCalledTimes(1);
+            expect(spy).toHaveBeenCalledWith({ type: 'active-tab-changed', tabId: 3 });
+            spy.mockClear();
+            tabController.removeTab({ id: 3 });
+            await immediate();
+            expect(spy).toHaveBeenCalledTimes(1);
+            expect(spy).toHaveBeenCalledWith({ type: 'active-tab-changed', tabId: 4 });
+            spy.mockClear();
+            tabController.removeTab({ id: 2 });
+            await immediate();
+            expect(spy).not.toHaveBeenCalled();
+            tabController.removeTab({ id: 4 });
+            await immediate();
+            expect(spy).toHaveBeenCalledTimes(1);
+            expect(spy).toHaveBeenCalledWith({ type: 'active-tab-changed', tabId: 5 });
+            spy.mockClear();
+        });
+    });
+
     describe('tabController.onTabAllClosed property', () => {
         test('it is emitted when all tabs are closed', async () => {
             const tabController = createTabController();
