@@ -31,7 +31,7 @@ applicationMenuService.initialize();
 const openEntry = async (pathString: string) => {
     const entry = await localFileSystemService.getEntryFromPath(pathString);
     const fileSystem = localFileSystemService.getFileSystem();
-    mainWindowService.navigate({ entry, fileSystem });
+    mainWindowService.openFile({ entry, fileSystem });
 };
 
 app.on('open-file', (event, path) => {

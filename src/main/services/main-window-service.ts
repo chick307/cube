@@ -30,7 +30,7 @@ export type MainWindowService = {
 
     isOpen(): boolean;
 
-    navigate(state: {
+    openFile(params: {
         entry: Entry;
         fileSystem: FileSystem;
     }): void;
@@ -174,20 +174,20 @@ export class MainWindowServiceImpl implements MainWindowService {
         return true;
     }
 
-    navigate(state: {
+    openFile(params: {
         entry: Entry;
         fileSystem: FileSystem;
     }) {
         if (this._controller === null) {
-            this._createWindow({ initialState: state });
+            this._createWindow({ initialState: { entry: params.entry, fileSystem: params.fileSystem } });
             return;
         }
 
         this._controller.show();
         this._controller.postMessage({
             type: 'window.open-file',
-            entry: state.entry.toJson(),
-            fileSystem: state.fileSystem.toJson(),
+            entry: params.entry.toJson(),
+            fileSystem: params.fileSystem.toJson(),
         });
     }
 

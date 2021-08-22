@@ -118,7 +118,7 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
         for (const filePath of result.filePaths) {
             const entry = await this._localFileSystemService.getEntryFromPath(filePath);
             const fileSystem = this._localFileSystemService.getFileSystem();
-            this._mainWindowService.navigate({ entry, fileSystem });
+            this._mainWindowService.openFile({ entry, fileSystem });
         }
     }
 
