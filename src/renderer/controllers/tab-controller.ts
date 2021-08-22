@@ -19,6 +19,8 @@ export type TabController = {
 
     addTab(params: AddTabParameters): void;
 
+    selectNextTab(): void;
+
     selectTab(params: SelectTabParameters): void;
 };
 
@@ -102,6 +104,17 @@ export class TabControllerImpl implements TabController {
             const tabs = !active ? [...state.tabs] : state.tabs.map((tab) => ({ ...tab, active: false }));
             tabs.push({ active, historyController, id, title: titleState.current });
             return { ...state, idCounter, tabs };
+        });
+    }
+
+    selectNextTab(): void {
+        this.#restate.update((state) => {
+            const activeIndex = state.tabs.findIndex((tab) => tab.active);
+            if (activeIndex === -1 || state.tabs.length <= 1)
+                return state;
+            const index = ((activeIndex + 1) % state.tabs.length + state.tabs.length) % state.tabs.length;
+            const tabs = state.tabs.map((tab, i) => ({ ...tab, active: i === index }));
+            return { ...state, tabs };
         });
     }
 
