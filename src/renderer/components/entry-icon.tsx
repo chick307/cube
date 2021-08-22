@@ -3,14 +3,19 @@ import type React from 'react';
 import { Entry } from '../../common/entities/entry';
 import { useEntryIconService } from '../contexts/entry-icon-service-context';
 import { useTask } from '../hooks/use-task';
+import styles from './entry-icon.css';
 
 export type Props = React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement> & {
     entry: Entry;
-    iconPlaceholder: React.ReactNode;
+    iconPlaceholder?: React.ReactNode;
 };
 
+const defaultPlaceholder = (
+    <span className={styles.defaultPlaceholder} />
+);
+
 export const EntryIcon = (props: Props) => {
-    const { entry, iconPlaceholder, src, ...imageProps } = props;
+    const { entry, iconPlaceholder = defaultPlaceholder, src, ...imageProps } = props;
 
     const entryIconService = useEntryIconService();
 
