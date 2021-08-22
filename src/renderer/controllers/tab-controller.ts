@@ -18,6 +18,8 @@ export type TabController = {
     readonly state: State<TabControllerState>;
 
     addTab(params: AddTabParameters): void;
+
+    selectTab(params: SelectTabParameters): void;
 };
 
 export type AddTabParameters = {
@@ -100,6 +102,16 @@ export class TabControllerImpl implements TabController {
             const tabs = !active ? [...state.tabs] : state.tabs.map((tab) => ({ ...tab, active: false }));
             tabs.push({ active, historyController, id, title: titleState.current });
             return { ...state, idCounter, tabs };
+        });
+    }
+
+    selectTab(params: SelectTabParameters): void {
+        this.#restate.update((state) => {
+            const index = state.tabs.findIndex((tab) => tab.id === params.id);
+            if (index === -1)
+                return state;
+            const tabs = state.tabs.map((tab, i) => ({ ...tab, active: i === index }));
+            return { ...state, tabs };
         });
     }
 }

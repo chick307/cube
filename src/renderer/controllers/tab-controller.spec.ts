@@ -147,7 +147,7 @@ describe('TabController type', () => {
                 current: historyItemB,
             });
             const historyController = { ...defaultHistoryController, state: restate.state };
-            historyControllerFactory.create.mockReturnValue(historyController);
+            historyControllerFactory.create.mockReturnValueOnce(historyController);
             tabController.addTab({ active: true, historyItem: historyItemB });
             await immediate();
             expect(tabController.state.current).toEqual({
@@ -162,6 +162,76 @@ describe('TabController type', () => {
                 tabs: [
                     { active: false, historyController, id: 1, title: 'a' },
                     { active: true, historyController, id: 2, title: 'c' },
+                ],
+            });
+        });
+    });
+
+    describe('tabController.selectTab() method', () => {
+        test('it changes the active tab', async () => {
+            const tabController = createTabController();
+            tabController.addTab({ active: true });
+            tabController.addTab({ active: true });
+            tabController.addTab({ active: true });
+            await immediate();
+            const historyControllers = historyControllerFactory.create.mock.results.map(({ value }) => value);
+            expect(tabController.state.current).toEqual({
+                tabs: [
+                    { active: false, historyController: historyControllers[0], id: 1, title: 'a' },
+                    { active: false, historyController: historyControllers[1], id: 2, title: 'a' },
+                    { active: true, historyController: historyControllers[2], id: 3, title: 'a' },
+                ],
+            });
+            tabController.selectTab({ id: 1 });
+            await immediate();
+            expect(tabController.state.current).toEqual({
+                tabs: [
+                    { active: true, historyController: historyControllers[0], id: 1, title: 'a' },
+                    { active: false, historyController: historyControllers[1], id: 2, title: 'a' },
+                    { active: false, historyController: historyControllers[2], id: 3, title: 'a' },
+                ],
+            });
+            tabController.selectTab({ id: 2 });
+            await immediate();
+            expect(tabController.state.current).toEqual({
+                tabs: [
+                    { active: false, historyController: historyControllers[0], id: 1, title: 'a' },
+                    { active: true, historyController: historyControllers[1], id: 2, title: 'a' },
+                    { active: false, historyController: historyControllers[2], id: 3, title: 'a' },
+                ],
+            });
+        });
+
+        test('it ignores non-exist ids', async () => {
+            const tabController = createTabController();
+            tabController.addTab({ active: true });
+            tabController.addTab({ active: true });
+            tabController.addTab({ active: true });
+            await immediate();
+            const historyControllers = historyControllerFactory.create.mock.results.map(({ value }) => value);
+            expect(tabController.state.current).toEqual({
+                tabs: [
+                    { active: false, historyController: historyControllers[0], id: 1, title: 'a' },
+                    { active: false, historyController: historyControllers[1], id: 2, title: 'a' },
+                    { active: true, historyController: historyControllers[2], id: 3, title: 'a' },
+                ],
+            });
+            tabController.selectTab({ id: 4 });
+            await immediate();
+            expect(tabController.state.current).toEqual({
+                tabs: [
+                    { active: false, historyController: historyControllers[0], id: 1, title: 'a' },
+                    { active: false, historyController: historyControllers[1], id: 2, title: 'a' },
+                    { active: true, historyController: historyControllers[2], id: 3, title: 'a' },
+                ],
+            });
+            tabController.selectTab({ id: 3 });
+            await immediate();
+            expect(tabController.state.current).toEqual({
+                tabs: [
+                    { active: false, historyController: historyControllers[0], id: 1, title: 'a' },
+                    { active: false, historyController: historyControllers[1], id: 2, title: 'a' },
+                    { active: true, historyController: historyControllers[2], id: 3, title: 'a' },
                 ],
             });
         });
