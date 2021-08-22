@@ -51,6 +51,10 @@ const MainWindow = () => {
 
         container.tabController.addTab({ active: true, historyItem: initialHistoryItem });
 
+        container.tabController.onTabAllClosed.addListener(() => {
+            port.postMessage({ type: 'window.close' });
+        });
+
         port.onmessage = (event: MessageEvent) => {
             const message = event.data;
             switch (message.type) {

@@ -145,6 +145,10 @@ export class MainWindowServiceImpl implements MainWindowService {
         port.on('message', (event) => {
             const message = event.data;
             switch (message.type) {
+                case 'window.close': {
+                    window.close();
+                    return;
+                }
                 case 'window.ready-to-show': {
                     window.show();
                     return;
