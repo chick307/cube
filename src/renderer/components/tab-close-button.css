@@ -1,0 +1,11 @@
+.tab-close-button {
+    display: inline-flex;
+    padding: 2px;
+    width: 14px;
+    height: 14px;
+    background-color: var(--close-button-background, #FFFFFF);
+    fill: var(--close-button-foreground, #000000);
+    border: none;
+    border-radius: 50%;
+    text-align: center;
+}
