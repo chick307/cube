@@ -6,12 +6,15 @@
     width: 20px;
     height: 20px;
     background-color: transparent;
+    fill: #FFFFFF;
     border: none;
     border-radius: 50%;
     text-align: center;
+    transition: background-color 0.1s, fill 0.1s;
 }
 
 .tab-add-button:hover {
     opacity: 100%;
-    background-color: #00000022;
+    background-color: #FFFFFF44;
+    fill: #444444DD;
 }

@@ -30,14 +30,18 @@ export const TabView = (props: Props) => {
     const tabElements = tabs.map((tab) => {
         return (
             <div key={tab.id} className={`${styles.tab} ${tab.active ? styles.active : ''}`}
-                data-tab-id={tab.id} onClick={onTabClick}>
+                data-tab-id={tab.id} onClick={onTabClick} title={tab.title}>
+                <span className={styles.tabMargin} />
                 <span className={styles.tabIcon}>
                     <EntryIcon entry={tab.historyController.state.current.current.entry} />
                 </span>
-                <span>
+                <span className={styles.tabMargin} />
+                <span className={styles.tabTitle}>
                     {tab.title}
                 </span>
+                <span className={styles.tabMargin} />
                 <TabCloseButton className={styles.closeButton} tabId={tab.id} />
+                <span className={styles.tabMargin} />
             </div>
         );
     });

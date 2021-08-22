@@ -27,26 +27,38 @@
 }
 
 .tab {
+    flex: 1 1;
     display: flex;
     align-items: center;
     position: relative;
+    border-radius: var(--tab-radius) var(--tab-radius) 0 0;
+    width: 0;
+    max-width: 240px;
     height: var(--tab-height);
+    background-color: var(--tab-background);
     -webkit-app-region: no-drag;
     --close-button-background: var(--content-foreground);
     --close-button-foreground: var(--content-background);
+    --tab-background: transparent;
+    transition: background-color 0.1s;
+}
+
+.tab:not(.active):hover {
+    --tab-background: #FFFFFF44;
 }
 
 .tab.active {
-    background-color: var(--active-tab-background);
-    border-radius: var(--tab-radius) var(--tab-radius) 0 0;
     color: var(--active-tab-foreground);
     filter: drop-shadow(0 0 2px #00000022);
+    z-index: 1;
     --close-button-background: var(--content-foreground);
     --close-button-foreground: var(--content-background);
+    --tab-background: var(--active-tab-background);
+    transition: none;
 }
 
-.tab.active::before,
-.tab.active::after {
+.tab::before,
+.tab::after {
     display: block;
     position: absolute;
     content: '';
@@ -55,32 +67,47 @@
     bottom: 0;
 }
 
-.tab.active::before {
+.tab::before {
     left: calc(var(--tab-radius) * -1);
     background: radial-gradient(circle at top left,
         transparent calc(var(--tab-radius) - 1px),
-        var(--active-tab-background) var(--tab-radius),
-        var(--active-tab-background)
+        var(--tab-background) var(--tab-radius),
+        var(--tab-background)
     );
 }
 
-.tab.active::after {
+.tab::after {
     right: calc(var(--tab-radius) * -1);
     background: radial-gradient(
         circle at top right,
         transparent calc(var(--tab-radius) - 1px),
-        var(--active-tab-background) var(--tab-radius),
-        var(--active-tab-background)
+        var(--tab-background) var(--tab-radius),
+        var(--tab-background)
     );
 }
 
+.tab-margin {
+    display: inline-block;
+    flex: 1;
+    width: 0;
+    max-width: 6px;
+}
+
 .tab-icon {
-    margin: 0 6px;
+    flex: 1 1 16px;
+    overflow: hidden;
+    max-width: 16px;
+    height: 16px;
+}
+
+.tab-title {
+    flex: 1 1 0;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .close-button {
     opacity: 0;
-    margin: 0 6px;
 }
 
 .tab.active > .close-button,
@@ -98,6 +125,7 @@
     background-color: var(--content-background);
     color: var(--content-foreground);
     position: relative;
+    z-index: 2;
 }
 
 .content {
