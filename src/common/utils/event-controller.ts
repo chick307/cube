@@ -9,6 +9,16 @@ export type EventSignalLike<Event> = {
 export class EventSignal<Event> implements EventSignalLike<Event> {
     constructor(private _signal: EventSignalLike<Event>) {}
 
+    static never<Event>(): EventSignal<Event> {
+        return new EventSignal({
+            addListener: () => {
+                return {
+                    removeListener: () => undefined,
+                };
+            },
+        });
+    }
+
     addListener(listener: EventListener<Event>): {
         removeListener(): void;
     } {

@@ -1,4 +1,4 @@
-import { EventController } from './event-controller';
+import { EventController, EventSignal } from './event-controller';
 
 describe('EventController class', () => {
     describe('eventController.emit() method', () => {
@@ -45,6 +45,16 @@ describe('EventController class', () => {
             eventController.emit(event);
             await Promise.resolve();
             expect(listener).toHaveBeenCalledTimes(0);
+        });
+    });
+});
+
+describe('EventSignal class', () => {
+    describe('EventSignal.never() method', () => {
+        test('it creates a new event signal that does nothing', () => {
+            const signal = EventSignal.never();
+            expect(signal).toBeInstanceOf(EventSignal);
+            signal.addListener(() => {}).removeListener();
         });
     });
 });
