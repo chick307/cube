@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { HistoryControllerProvider } from '../contexts/history-controller-context';
 import { useTabController } from '../contexts/tab-controller-context';
 import { useRestate } from '../hooks/use-restate';
@@ -15,9 +17,18 @@ export const TabView = (props: Props) => {
 
     const { tabs } = useRestate(tabController.state);
 
+    const onTabClick = React.useCallback((event: React.MouseEvent) => {
+        const tab = (event.target as HTMLElement).closest<HTMLElement>('[data-tab-id]');
+        const id = parseInt(tab?.dataset.tabId ?? '0', 10);
+        if (!id)
+            return;
+        tabController.selectTab({ id });
+    }, [tabController]);
+
     const tabElements = tabs.map((tab) => {
         return (
-            <div key={tab.id} className={`${styles.tab} ${tab.active ? styles.active : ''}`}>
+            <div key={tab.id} className={`${styles.tab} ${tab.active ? styles.active : ''}`}
+                data-tab-id={tab.id} onClick={onTabClick}>
                 <span>
                     {tab.title}
                 </span>
