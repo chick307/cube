@@ -40,9 +40,9 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
                         },
                     },
                     {
-                        label: 'Close',
+                        label: 'Close Window',
                         id: 'close',
-                        accelerator: 'Cmd+W',
+                        accelerator: 'Cmd+Shift+W',
                         click: () => {
                             this.onCloseClicked();
                         },
