@@ -36,6 +36,7 @@ describe('TabController context', () => {
                 addTab: () => {},
                 selectNextTab: () => {},
                 selectTab: () => {},
+                selectPreviousTab: () => {},
             };
 
             TestUtils.act(() => {

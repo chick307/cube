@@ -292,4 +292,60 @@ describe('TabController type', () => {
             });
         });
     });
+
+    describe('tabController.selectPreviousTab() method', () => {
+        test('it changes the active tab', async () => {
+            const tabController = createTabController();
+            tabController.addTab({ active: true });
+            tabController.addTab({ active: true });
+            tabController.addTab({ active: true });
+            await immediate();
+            const historyControllers = historyControllerFactory.create.mock.results.map(({ value }) => value);
+            expect(tabController.state.current).toEqual({
+                tabs: [
+                    { active: false, historyController: historyControllers[0], id: 1, title: 'a' },
+                    { active: false, historyController: historyControllers[1], id: 2, title: 'a' },
+                    { active: true, historyController: historyControllers[2], id: 3, title: 'a' },
+                ],
+            });
+            tabController.selectPreviousTab();
+            await immediate();
+            expect(tabController.state.current).toEqual({
+                tabs: [
+                    { active: false, historyController: historyControllers[0], id: 1, title: 'a' },
+                    { active: true, historyController: historyControllers[1], id: 2, title: 'a' },
+                    { active: false, historyController: historyControllers[2], id: 3, title: 'a' },
+                ],
+            });
+            tabController.selectPreviousTab();
+            await immediate();
+            expect(tabController.state.current).toEqual({
+                tabs: [
+                    { active: true, historyController: historyControllers[0], id: 1, title: 'a' },
+                    { active: false, historyController: historyControllers[1], id: 2, title: 'a' },
+                    { active: false, historyController: historyControllers[2], id: 3, title: 'a' },
+                ],
+            });
+        });
+
+        test('it does nothing if no or only one tab exists', async () => {
+            const tabController = createTabController();
+            await immediate();
+            expect(tabController.state.current).toEqual({ tabs: [] });
+            tabController.selectPreviousTab();
+            await immediate();
+            expect(tabController.state.current).toEqual({ tabs: [] });
+            tabController.addTab({ active: true });
+            await immediate();
+            const historyController = historyControllerFactory.create.mock.results[0].value;
+            expect(tabController.state.current).toEqual({
+                tabs: [{ active: true, historyController, id: 1, title: 'a' }],
+            });
+            tabController.selectPreviousTab();
+            await immediate();
+            expect(tabController.state.current).toEqual({
+                tabs: [{ active: true, historyController, id: 1, title: 'a' }],
+            });
+        });
+    });
 });
