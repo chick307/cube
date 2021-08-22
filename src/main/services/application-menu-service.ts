@@ -47,6 +47,17 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
                         },
                     },
                     {
+                        type: 'separator',
+                    },
+                    {
+                        label: 'Close Tab',
+                        id: 'close',
+                        accelerator: 'Cmd+W',
+                        click: () => {
+                            this.onCloseTabClicked();
+                        },
+                    },
+                    {
                         label: 'Close Window',
                         id: 'close',
                         accelerator: 'Cmd+Shift+W',
@@ -116,6 +127,10 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
 
     async onCloseClicked() {
         this._mainWindowService.close();
+    }
+
+    onCloseTabClicked() {
+        this._mainWindowService.closeTab();
     }
 
     onNewTabClicked() {

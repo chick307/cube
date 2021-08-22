@@ -58,6 +58,13 @@ const MainWindow = () => {
                     container.tabController.addTab({ active: true });
                     return;
                 }
+                case 'window.close-tab': {
+                    const tab = container.tabController.state.current.tabs.find((tab) => tab.active);
+                    if (tab == null)
+                        return;
+                    container.tabController.removeTab({ id: tab.id });
+                    return;
+                }
                 case 'window.open-file': {
                     const entry = Entry.fromJson(message.entry);
                     const fileSystem = FileSystem.fromJson(message.fileSystem);

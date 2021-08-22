@@ -30,6 +30,8 @@ export type MainWindowService = {
 
     close(): void;
 
+    closeTab(): void;
+
     isOpen(): boolean;
 
     openFile(params: {
@@ -178,6 +180,13 @@ export class MainWindowServiceImpl implements MainWindowService {
 
     close() {
         this._controller?.close();
+    }
+
+    closeTab() {
+        if (this._controller === null)
+            return;
+        this._controller.show();
+        this._controller.postMessage({ type: 'window.close-tab' });
     }
 
     isOpen(): boolean {
