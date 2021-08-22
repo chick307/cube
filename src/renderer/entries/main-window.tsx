@@ -54,6 +54,10 @@ const MainWindow = () => {
         port.onmessage = (event: MessageEvent) => {
             const message = event.data;
             switch (message.type) {
+                case 'window.add-tab': {
+                    container.tabController.addTab({ active: true });
+                    return;
+                }
                 case 'window.open-file': {
                     const entry = Entry.fromJson(message.entry);
                     const fileSystem = FileSystem.fromJson(message.fileSystem);

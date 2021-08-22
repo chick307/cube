@@ -26,6 +26,8 @@ export type MainWindowService = {
 
     activate(): void;
 
+    addTab(): void;
+
     close(): void;
 
     isOpen(): boolean;
@@ -162,6 +164,16 @@ export class MainWindowServiceImpl implements MainWindowService {
         }
 
         this._controller.show();
+    }
+
+    addTab() {
+        if (this._controller === null) {
+            this._createWindow({});
+            return;
+        }
+
+        this._controller.show();
+        this._controller.postMessage({ type: 'window.add-tab' });
     }
 
     close() {

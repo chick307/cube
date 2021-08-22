@@ -33,6 +33,13 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
                 label: 'File',
                 submenu: [
                     {
+                        label: 'New Tab',
+                        accelerator: 'Cmd+T',
+                        click: () => {
+                            this.onNewTabClicked();
+                        },
+                    },
+                    {
                         label: 'Open',
                         accelerator: 'Cmd+O',
                         click: () => {
@@ -109,6 +116,10 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
 
     async onCloseClicked() {
         this._mainWindowService.close();
+    }
+
+    onNewTabClicked() {
+        this._mainWindowService.addTab();
     }
 
     async onOpenClicked() {
