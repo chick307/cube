@@ -34,6 +34,19 @@ describe('FileSystem class', () => {
         });
     });
 
+    describe('fileSystem.equals() method', () => {
+        test('it returns if the passed file system equals self', () => {
+            const fileSystemA = new FileSystem();
+            const fileSystemB = new FileSystem();
+            expect(fileSystemA.equals(fileSystemA)).toBe(true);
+            expect(fileSystemB.equals(fileSystemB)).toBe(true);
+            expect(fileSystemA.equals(fileSystemB)).toBe(false);
+            expect(fileSystemB.equals(fileSystemA)).toBe(false);
+            expect(fileSystemA.equals(new FileSystem())).toBe(false);
+            expect(fileSystemB.equals(new FileSystem())).toBe(false);
+        });
+    });
+
     describe('fileSystem.toJson() method', () => {
         test('it returns JSON object', () => {
             const fileSystem = new FileSystem();

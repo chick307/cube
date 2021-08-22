@@ -16,6 +16,21 @@ describe('LocalFileSystem entity class', () => {
         });
     });
 
+    describe('localFileSystem.equals() method', () => {
+        test('it returns if the passed file system equals self', () => {
+            const localFileSystemA = new LocalFileSystem();
+            const localFileSystemB = new LocalFileSystem();
+            expect(localFileSystemA.equals(localFileSystemA)).toBe(true);
+            expect(localFileSystemB.equals(localFileSystemB)).toBe(true);
+            expect(localFileSystemA.equals(localFileSystemB)).toBe(true);
+            expect(localFileSystemB.equals(localFileSystemA)).toBe(true);
+            expect(localFileSystemA.equals(new LocalFileSystem())).toBe(true);
+            expect(localFileSystemB.equals(new LocalFileSystem())).toBe(true);
+            expect(localFileSystemA.equals(new FileSystem())).toBe(false);
+            expect(localFileSystemB.equals(new FileSystem())).toBe(false);
+        });
+    });
+
     describe('localFileSystem.isLocal() method', () => {
         test('it returns true', () => {
             const localFileSystem = new LocalFileSystem();

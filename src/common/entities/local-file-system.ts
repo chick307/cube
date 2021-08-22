@@ -12,6 +12,10 @@ export class LocalFileSystem extends FileSystem {
         return new LocalFileSystem();
     }
 
+    equals(otherFileSystem: FileSystem): boolean {
+        return otherFileSystem instanceof LocalFileSystem && otherFileSystem.type === this.type;
+    }
+
     isLocal(): this is LocalFileSystem {
         return true;
     }

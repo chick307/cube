@@ -4,6 +4,10 @@ export class FileSystem {
         throw Error();
     }
 
+    equals(otherFileSystem: FileSystem): boolean {
+        return this === otherFileSystem;
+    }
+
     toJson() {
         return {};
     }

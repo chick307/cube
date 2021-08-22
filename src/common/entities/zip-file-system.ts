@@ -40,6 +40,13 @@ export class ZipFileSystem extends FileSystem {
         return fileSystem;
     }
 
+    equals(otherFileSystem: FileSystem): boolean {
+        return otherFileSystem instanceof ZipFileSystem &&
+            otherFileSystem.type === this.type &&
+            otherFileSystem.container.entry.equals(otherFileSystem.container.entry) &&
+            otherFileSystem.container.fileSystem.equals(otherFileSystem.container.fileSystem);
+    }
+
     isZip(): this is ZipFileSystem {
         return true;
     }
