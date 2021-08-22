@@ -89,6 +89,42 @@ describe('TabController type', () => {
         });
     });
 
+    describe('tabController.onHistoryStateChanged property', () => {
+        test('it is emitted when the history state is changed', async () => {
+            const restate = new Restate({
+                ableToGoBack: false,
+                ableToGoForward: false,
+                current: historyItemA,
+            });
+            historyControllerFactory.create.mockReturnValueOnce({
+                state: restate.state,
+                goBack: () => {},
+                goForward: () => {},
+                navigate: () => {},
+                replace: () => {},
+            });
+            const tabController = createTabController();
+            const spy = jest.fn();
+            tabController.onHistoryStateChanged.addListener(spy);
+            tabController.addTab({ active: false });
+            await immediate();
+            expect(spy).not.toHaveBeenCalled();
+            restate.set({
+                ableToGoBack: true,
+                ableToGoForward: false,
+                current: historyItemB,
+            });
+            await immediate();
+            expect(spy).toHaveBeenCalledTimes(1);
+            expect(spy).toHaveBeenCalledWith({ type: 'history-state-changed', tabId: 1 });
+            spy.mockClear();
+            restate.update((state) => ({ ...state, current: historyItemC }));
+            restate.update((state) => ({ ...state, current: historyItemB }));
+            await immediate();
+            expect(spy).not.toHaveBeenCalled();
+        });
+    });
+
     describe('tabController.onTabAllClosed property', () => {
         test('it is emitted when all tabs are closed', async () => {
             const tabController = createTabController();

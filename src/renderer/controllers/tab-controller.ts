@@ -21,6 +21,8 @@ export type TabController = {
 
     readonly onActiveTabChanged: EventSignal<ActiveTabChangedEvent>;
 
+    readonly onHistoryStateChanged: EventSignal<HistoryStateChangedEvent>;
+
     readonly onTabAllClosed: EventSignal<TabAllClosedEvent>;
 
     addTab(params: AddTabParameters): void;
@@ -55,6 +57,11 @@ export type ActiveTabChangedEvent = {
     tabId: number;
 };
 
+export type HistoryStateChangedEvent = {
+    type: 'history-state-changed';
+    tabId: number;
+};
+
 export type TabAllClosedEvent = {
     type: 'tab-all-closed';
 };
@@ -80,6 +87,8 @@ export class TabControllerImpl implements TabController {
     #state: State<TabControllerState>;
 
     #onActiveTabChangedController = new EventController<ActiveTabChangedEvent>();
+
+    #onHistoryStateChangedController = new EventController<HistoryStateChangedEvent>();
 
     #onTabAllClosedController = new EventController<TabAllClosedEvent>();
 
@@ -121,6 +130,10 @@ export class TabControllerImpl implements TabController {
         return this.#onActiveTabChangedController.signal;
     }
 
+    get onHistoryStateChanged(): EventSignal<HistoryStateChangedEvent> {
+        return this.#onHistoryStateChangedController.signal;
+    }
+
     get onTabAllClosed(): EventSignal<TabAllClosedEvent> {
         return this.#onTabAllClosedController.signal;
     }
@@ -133,6 +146,24 @@ export class TabControllerImpl implements TabController {
             const closeController = new CloseController();
             const initialHistoryItem = params.historyItem ?? this.#defaultHistoryItem;
             const historyController = this.#historyControllerFactory.create({ initialHistoryItem });
+            const historyState = {
+                ableToGoBack: historyController.state.current.ableToGoBack,
+                ableToGoForward: historyController.state.current.ableToGoForward,
+                current: historyController.state.current.current,
+            };
+            historyController.state.forEach((state) => {
+                if (
+                    historyState.ableToGoBack !== state.ableToGoBack ||
+                    historyState.ableToGoForward !== state.ableToGoForward ||
+                    !historyState.current.fileSystem.equals(state.current.fileSystem) ||
+                    !historyState.current.entry.equals(state.current.entry)
+                ) {
+                    historyState.ableToGoBack = state.ableToGoBack;
+                    historyState.ableToGoForward = state.ableToGoForward;
+                    historyState.current = state.current;
+                    this.#onHistoryStateChangedController.emit({ type: 'history-state-changed', tabId: id });
+                }
+            }, { signal: closeController.signal });
             const titleState = historyController.state.map(({ current }) => current.entry.name.toString());
             titleState.forEach((title) => {
                 this.#restate.update((state) => ({
