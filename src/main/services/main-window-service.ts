@@ -20,7 +20,13 @@ export type OpenEvent = {
 };
 
 export type MainWindowService = {
+    readonly ableToGoBack: boolean;
+
+    readonly ableToGoForward: boolean;
+
     onClose: EventSignal<CloseEvent>;
+
+    readonly onHistoryStateChanged: EventSignal<HistoryStateChangedEvent>;
 
     onOpen: EventSignal<OpenEvent>;
 
@@ -50,7 +56,18 @@ export type MainWindowService = {
     toggleDevTools(): void;
 };
 
+export type HistoryStateChangedEvent = {
+    type: 'history-state-changed';
+};
+
 export class MainWindowServiceImpl implements MainWindowService {
+    #historyState = {
+        ableToGoBack: false,
+        ableToGoForward: false,
+    };
+
+    #onHistoryStateChangedController = new EventController<HistoryStateChangedEvent>();
+
     private _onCloseController: EventController<CloseEvent>;
 
     private _onOpenController: EventController<OpenEvent>;
@@ -66,6 +83,10 @@ export class MainWindowServiceImpl implements MainWindowService {
 
     readonly onClose: EventSignal<CloseEvent>;
 
+    get onHistoryStateChanged(): EventSignal<HistoryStateChangedEvent> {
+        return this.#onHistoryStateChangedController.signal;
+    }
+
     readonly onOpen: EventSignal<OpenEvent>;
 
     constructor(params: {
@@ -76,6 +97,14 @@ export class MainWindowServiceImpl implements MainWindowService {
         this._restoreWindowStateService = params.restoreWindowStateService;
         this.onClose = this._onCloseController.signal;
         this.onOpen = this._onOpenController.signal;
+    }
+
+    get ableToGoBack() {
+        return this.#historyState.ableToGoBack;
+    }
+
+    get ableToGoForward() {
+        return this.#historyState.ableToGoForward;
     }
 
     private async _createWindow(params: {
@@ -104,6 +133,10 @@ export class MainWindowServiceImpl implements MainWindowService {
         window.loadURL(MAIN_WINDOW_URL);
 
         window.on('closed', () => {
+            this.#historyState = {
+                ableToGoBack: false,
+                ableToGoForward: false,
+            };
             this._controller = null;
             this._onCloseController.emit({ type: 'close' });
         });
@@ -149,6 +182,14 @@ export class MainWindowServiceImpl implements MainWindowService {
         port.on('message', (event) => {
             const message = event.data;
             switch (message.type) {
+                case 'history.state-changed': {
+                    this.#historyState = {
+                        ableToGoBack: message.ableToGoBack,
+                        ableToGoForward: message.ableToGoForward,
+                    };
+                    this.#onHistoryStateChangedController.emit({ type: 'history-state-changed' });
+                    return;
+                }
                 case 'window.close': {
                     window.close();
                     return;

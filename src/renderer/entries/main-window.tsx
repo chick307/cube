@@ -55,6 +55,20 @@ const MainWindow = () => {
             port.postMessage({ type: 'window.close' });
         });
 
+        const onStateChanged = (event: { tabId: number; }) => {
+            const tab = container.tabController.state.current.tabs.find((tab) => tab.id === event.tabId);
+            if (tab == null || !tab.active)
+                return;
+            port.postMessage({
+                type: 'history.state-changed',
+                ableToGoBack: tab.historyController.state.current.ableToGoBack,
+                ableToGoForward: tab.historyController.state.current.ableToGoForward,
+            });
+        };
+
+        container.tabController.onActiveTabChanged.addListener(onStateChanged);
+        container.tabController.onHistoryStateChanged.addListener(onStateChanged);
+
         port.onmessage = (event: MessageEvent) => {
             const message = event.data;
             switch (message.type) {

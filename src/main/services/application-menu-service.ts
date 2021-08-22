@@ -59,7 +59,7 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
                     },
                     {
                         label: 'Close Window',
-                        id: 'close',
+                        id: 'close-window',
                         accelerator: 'Cmd+Shift+W',
                         click: () => {
                             this.onCloseClicked();
@@ -72,6 +72,7 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
                 submenu: [
                     {
                         label: 'Go Back',
+                        id: 'go-back',
                         accelerator: 'Cmd+[',
                         click: () => {
                             this._mainWindowService.goBack();
@@ -79,6 +80,7 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
                     },
                     {
                         label: 'Go Forward',
+                        id: 'go-forward',
                         accelerator: 'Cmd+]',
                         click: () => {
                             this._mainWindowService.goForward();
@@ -125,22 +127,39 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
     initialize() {
         /* eslint-disable @typescript-eslint/no-non-null-assertion */
         const closeMenuItem = this._menu.getMenuItemById('close')!;
+        const closeWindowMenuItem = this._menu.getMenuItemById('close-window')!;
+        const goBackMenuItem = this._menu.getMenuItemById('go-back')!;
+        const goForwardMenuItem = this._menu.getMenuItemById('go-forward')!;
         const toggleDevToolsMenuItem = this._menu.getMenuItemById('toggle-devtools')!;
         /* eslint-enable @typescript-eslint/no-non-null-assertion */
 
         Menu.setApplicationMenu(this._menu);
 
         closeMenuItem.enabled = this._mainWindowService.isOpen();
+        closeWindowMenuItem.enabled = this._mainWindowService.isOpen();
+        goBackMenuItem.enabled = this._mainWindowService.ableToGoBack;
+        goForwardMenuItem.enabled = this._mainWindowService.ableToGoForward;
         toggleDevToolsMenuItem.enabled = this._mainWindowService.isOpen();
 
         this._mainWindowService.onOpen.addListener(() => {
             closeMenuItem.enabled = true;
+            closeWindowMenuItem.enabled = true;
+            goBackMenuItem.enabled = this._mainWindowService.ableToGoBack;
+            goForwardMenuItem.enabled = this._mainWindowService.ableToGoForward;
             toggleDevToolsMenuItem.enabled = true;
         });
 
         this._mainWindowService.onClose.addListener(() => {
             closeMenuItem.enabled = false;
+            closeWindowMenuItem.enabled = false;
+            goBackMenuItem.enabled = false;
+            goForwardMenuItem.enabled = false;
             toggleDevToolsMenuItem.enabled = false;
+        });
+
+        this._mainWindowService.onHistoryStateChanged.addListener(() => {
+            goBackMenuItem.enabled = this._mainWindowService.ableToGoBack;
+            goForwardMenuItem.enabled = this._mainWindowService.ableToGoForward;
         });
     }
 
