@@ -6,6 +6,7 @@ import { useRestate } from '../hooks/use-restate';
 import { composeElements } from '../utils/compose-elements';
 import { EntryView } from './entry-view';
 import { TabAddButton } from './tab-add-button';
+import { TabCloseButton } from './tab-close-button';
 import styles from './tab-view.css';
 
 export type Props = {
@@ -32,6 +33,7 @@ export const TabView = (props: Props) => {
                 <span>
                     {tab.title}
                 </span>
+                <TabCloseButton className={styles.closeButton} tabId={tab.id} />
             </div>
         );
     });

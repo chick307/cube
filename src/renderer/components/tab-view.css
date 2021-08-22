@@ -31,8 +31,10 @@
     align-items: center;
     position: relative;
     height: var(--tab-height);
-    padding: 0 1em;
+    padding: 0 0 0 1em;
     -webkit-app-region: no-drag;
+    --close-button-background: var(--content-foreground);
+    --close-button-foreground: var(--content-background);
 }
 
 .tab.active {
@@ -40,6 +42,8 @@
     border-radius: var(--tab-radius) var(--tab-radius) 0 0;
     color: var(--active-tab-foreground);
     filter: drop-shadow(0 0 2px #00000022);
+    --close-button-background: var(--content-foreground);
+    --close-button-foreground: var(--content-background);
 }
 
 .tab.active::before,
@@ -69,6 +73,20 @@
         var(--active-tab-background) var(--tab-radius),
         var(--active-tab-background)
     );
+}
+
+.close-button {
+    opacity: 0;
+    margin: 0 6px;
+}
+
+.tab.active > .close-button,
+.close-button:hover {
+    opacity: 0.5;
+}
+
+.tab.active > .close-button:hover {
+    filter: brightness(0.8);
 }
 
 .contents {
