@@ -19,6 +19,25 @@ describe('SymbolicLinkEntry class', () => {
         });
     });
 
+    describe('symbolicLinkEntry.equals() method', () => {
+        test('it returns if the passed entry equals self', () => {
+            const symbolicLinkEntryA = new SymbolicLinkEntry(new EntryPath('/a'));
+            const symbolicLinkEntryB = new SymbolicLinkEntry(new EntryPath('/a/b'));
+            const entryA = new Entry(new EntryPath('/a'));
+            const entryB = new Entry(new EntryPath('/a/b'));
+            expect(symbolicLinkEntryA.equals(symbolicLinkEntryA)).toBe(true);
+            expect(symbolicLinkEntryA.equals(new SymbolicLinkEntry(new EntryPath('/a')))).toBe(true);
+            expect(symbolicLinkEntryB.equals(symbolicLinkEntryB)).toBe(true);
+            expect(symbolicLinkEntryB.equals(new SymbolicLinkEntry(new EntryPath('/a/b')))).toBe(true);
+            expect(symbolicLinkEntryA.equals(entryA)).toBe(false);
+            expect(symbolicLinkEntryA.equals(entryB)).toBe(false);
+            expect(symbolicLinkEntryA.equals(symbolicLinkEntryB)).toBe(false);
+            expect(symbolicLinkEntryB.equals(entryA)).toBe(false);
+            expect(symbolicLinkEntryB.equals(entryB)).toBe(false);
+            expect(symbolicLinkEntryB.equals(symbolicLinkEntryA)).toBe(false);
+        });
+    });
+
     describe('symbolicLinkEntry.isSymbolicLink() method', () => {
         test('it returns true', async () => {
             const symbolicLinkEntry = new SymbolicLinkEntry(new EntryPath('/a/c'));

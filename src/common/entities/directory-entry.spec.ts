@@ -19,6 +19,25 @@ describe('DirectoryEntry class', () => {
         });
     });
 
+    describe('directoryEntry.equals() method', () => {
+        test('it returns if the passed entry equals self', () => {
+            const directoryEntryA = new DirectoryEntry(new EntryPath('/a'));
+            const directoryEntryB = new DirectoryEntry(new EntryPath('/a/b'));
+            const entryA = new Entry(new EntryPath('/a'));
+            const entryB = new Entry(new EntryPath('/a/b'));
+            expect(directoryEntryA.equals(directoryEntryA)).toBe(true);
+            expect(directoryEntryA.equals(new DirectoryEntry(new EntryPath('/a')))).toBe(true);
+            expect(directoryEntryB.equals(directoryEntryB)).toBe(true);
+            expect(directoryEntryB.equals(new DirectoryEntry(new EntryPath('/a/b')))).toBe(true);
+            expect(directoryEntryA.equals(entryA)).toBe(false);
+            expect(directoryEntryA.equals(entryB)).toBe(false);
+            expect(directoryEntryA.equals(directoryEntryB)).toBe(false);
+            expect(directoryEntryB.equals(entryA)).toBe(false);
+            expect(directoryEntryB.equals(entryB)).toBe(false);
+            expect(directoryEntryB.equals(directoryEntryA)).toBe(false);
+        });
+    });
+
     describe('directoryEntry.isDirectory() method', () => {
         test('it returns true', async () => {
             const directoryEntry = new DirectoryEntry(new EntryPath('/a/c'));

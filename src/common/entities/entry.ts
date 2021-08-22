@@ -16,6 +16,10 @@ export class Entry {
         throw Error();
     }
 
+    equals(otherEntry: Entry): boolean {
+        return this.path.equals(otherEntry.path);
+    }
+
     toJson() {
         return {
             path: this.path.toString(),

@@ -17,6 +17,10 @@ export class FileEntry extends Entry {
         return entry;
     }
 
+    equals(otherEntry: Entry): boolean {
+        return otherEntry instanceof FileEntry && this.type === otherEntry.type && super.equals(otherEntry);
+    }
+
     isFile(): this is FileEntry {
         return true;
     }

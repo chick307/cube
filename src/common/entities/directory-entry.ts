@@ -17,6 +17,10 @@ export class DirectoryEntry extends Entry {
         return entry;
     }
 
+    equals(otherEntry: Entry): boolean {
+        return otherEntry instanceof DirectoryEntry && this.type === otherEntry.type && super.equals(otherEntry);
+    }
+
     isDirectory(): this is DirectoryEntry {
         return true;
     }

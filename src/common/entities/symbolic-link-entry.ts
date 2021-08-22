@@ -17,6 +17,10 @@ export class SymbolicLinkEntry extends Entry {
         return entry;
     }
 
+    equals(otherEntry: Entry): boolean {
+        return otherEntry instanceof SymbolicLinkEntry && this.type === otherEntry.type && super.equals(otherEntry);
+    }
+
     isSymbolicLink(): this is SymbolicLinkEntry {
         return true;
     }
