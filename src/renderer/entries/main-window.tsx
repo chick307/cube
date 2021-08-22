@@ -60,6 +60,14 @@ const MainWindow = () => {
                     container.tabController.addTab({ active: true, historyItem: { entry, fileSystem } });
                     return;
                 }
+                case 'window.select-next-tab': {
+                    container.tabController.selectNextTab();
+                    return;
+                }
+                case 'window.select-previous-tab': {
+                    container.tabController.selectPreviousTab();
+                    return;
+                }
                 default: {
                     console.error('unknown message:', event.data);
                     return;

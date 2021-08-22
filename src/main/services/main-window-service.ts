@@ -35,6 +35,10 @@ export type MainWindowService = {
         fileSystem: FileSystem;
     }): void;
 
+    selectNextTab(): void;
+
+    selectPreviousTab(): void;
+
     toggleDevTools(): void;
 };
 
@@ -185,6 +189,14 @@ export class MainWindowServiceImpl implements MainWindowService {
             entry: state.entry.toJson(),
             fileSystem: state.fileSystem.toJson(),
         });
+    }
+
+    selectNextTab() {
+        this._controller?.postMessage({ type: 'window.select-next-tab' });
+    }
+
+    selectPreviousTab() {
+        this._controller?.postMessage({ type: 'window.select-previous-tab' });
     }
 
     toggleDevTools() {

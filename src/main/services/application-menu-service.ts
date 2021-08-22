@@ -50,6 +50,25 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
                 ],
             },
             {
+                label: 'Tab',
+                submenu: [
+                    {
+                        label: 'Select Next Tab',
+                        accelerator: 'Ctrl+Tab',
+                        click: () => {
+                            this.onSelectNextTabClicked();
+                        },
+                    },
+                    {
+                        label: 'Select Previous Tab',
+                        accelerator: 'Ctrl+Shift+Tab',
+                        click: () => {
+                            this.onSelectPreviousTabClicked();
+                        },
+                    },
+                ],
+            },
+            {
                 label: 'Dev',
                 visible: BUILD_MODE === 'development',
                 submenu: [
@@ -101,6 +120,14 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
             const fileSystem = this._localFileSystemService.getFileSystem();
             this._mainWindowService.navigate({ entry, fileSystem });
         }
+    }
+
+    async onSelectNextTabClicked() {
+        this._mainWindowService.selectNextTab();
+    }
+
+    async onSelectPreviousTabClicked() {
+        this._mainWindowService.selectPreviousTab();
     }
 
     async onToggleDevToolsClicked() {
