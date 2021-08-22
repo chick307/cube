@@ -31,7 +31,6 @@
     align-items: center;
     position: relative;
     height: var(--tab-height);
-    padding: 0 0 0 1em;
     -webkit-app-region: no-drag;
     --close-button-background: var(--content-foreground);
     --close-button-foreground: var(--content-background);
@@ -73,6 +72,10 @@
         var(--active-tab-background) var(--tab-radius),
         var(--active-tab-background)
     );
+}
+
+.tab-icon {
+    margin: 0 6px;
 }
 
 .close-button {

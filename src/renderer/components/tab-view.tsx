@@ -4,6 +4,7 @@ import { HistoryControllerProvider } from '../contexts/history-controller-contex
 import { useTabController } from '../contexts/tab-controller-context';
 import { useRestate } from '../hooks/use-restate';
 import { composeElements } from '../utils/compose-elements';
+import { EntryIcon } from './entry-icon';
 import { EntryView } from './entry-view';
 import { TabAddButton } from './tab-add-button';
 import { TabCloseButton } from './tab-close-button';
@@ -30,6 +31,9 @@ export const TabView = (props: Props) => {
         return (
             <div key={tab.id} className={`${styles.tab} ${tab.active ? styles.active : ''}`}
                 data-tab-id={tab.id} onClick={onTabClick}>
+                <span className={styles.tabIcon}>
+                    <EntryIcon entry={tab.historyController.state.current.current.entry} />
+                </span>
                 <span>
                     {tab.title}
                 </span>
