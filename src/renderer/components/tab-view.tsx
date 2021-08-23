@@ -2,6 +2,7 @@ import React from 'react';
 
 import { HistoryControllerProvider } from '../contexts/history-controller-context';
 import { useTabController } from '../contexts/tab-controller-context';
+import { useStatusBar } from '../gateways/status-bar-gateway';
 import { useRestate } from '../hooks/use-restate';
 import { composeElements } from '../utils/compose-elements';
 import { EntryIcon } from './entry-icon';
@@ -16,6 +17,8 @@ export type Props = {
 
 export const TabView = (props: Props) => {
     const tabController = useTabController();
+
+    const { StatusBarProvider, StatusBarExit } = useStatusBar();
 
     const { tabs } = useRestate(tabController.state);
 
@@ -54,13 +57,17 @@ export const TabView = (props: Props) => {
         );
     });
 
-    return (
+    return composeElements(
+        <StatusBarProvider />,
         <div className={`${styles.view} ${props.className ?? ''}`}>
             <div className={styles.tabs}>
                 {tabElements}
                 <TabAddButton />
             </div>
             <div className={styles.contents}>{contents}</div>
-        </div>
+            <div className={styles.statusBar}>
+                <StatusBarExit />
+            </div>
+        </div>,
     );
 };

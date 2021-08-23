@@ -5,6 +5,7 @@ import type { FileEntry } from '../../common/entities/file-entry';
 import { ZipFileSystem } from '../../common/entities/zip-file-system';
 import { EntryPath } from '../../common/values/entry-path';
 import { useHistoryController } from '../contexts/history-controller-context';
+import { useStatusBar, useStatusBarGateway } from '../gateways/status-bar-gateway';
 import { useRestate } from '../hooks/use-restate';
 import styles from './entry-view.css';
 import { BinaryEntryView } from './entry-views/binary-entry-view';
@@ -81,6 +82,10 @@ export const EntryView = (props: Props) => {
         }
     }, [entry, fileSystem]);
 
+    const { StatusBarExit, StatusBarProvider } = useStatusBar();
+
+    const StatusBarGateway = useStatusBarGateway();
+
     return (
         <div className={`${className} ${styles.entryView}`}>
             <div className={styles.path}>
@@ -89,8 +94,15 @@ export const EntryView = (props: Props) => {
                 <span className={styles.pathString}>{entry.path.toString()}</span>
             </div>
             <div className={styles.viewContainer}>
-                {view}
+                <StatusBarProvider>
+                    {view}
+                </StatusBarProvider>
             </div>
+            <StatusBarGateway>
+                <div className={styles.entryViewStatusBar}>
+                    <StatusBarExit />
+                </div>
+            </StatusBarGateway>
         </div>
     );
 };
