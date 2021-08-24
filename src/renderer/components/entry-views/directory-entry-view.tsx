@@ -5,9 +5,10 @@ import type { Entry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
 import { useEntryService } from '../../contexts/entry-service-context';
 import { useHistoryController } from '../../contexts/history-controller-context';
+import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
 import { useTask } from '../../hooks/use-task';
-import styles from './directory-entry-view.css';
 import { EntryIcon } from '../entry-icon';
+import styles from './directory-entry-view.css';
 
 export type Props = {
     className?: string;
@@ -49,6 +50,14 @@ export const DirectoryEntryView = (props: Props) => {
         return entries.filter((entry) => !entry.path.name.toString().startsWith('.'));
     }, [entry, entryService, fileSystem]);
 
+    const itemCount = React.useMemo(() => {
+        if (entries.length === 1)
+            return '1 item';
+        return `${entries.length} items`;
+    }, [entries.length]);
+
+    const StatusBarGateway = useStatusBarGateway();
+
     return (
         <div className={`${className} ${styles.view}`}>
             <ul className={styles.list}>
@@ -58,6 +67,9 @@ export const DirectoryEntryView = (props: Props) => {
                     </li>
                 ))}
             </ul>
+            <StatusBarGateway>
+                <span className={styles.itemCount}>{itemCount}</span>
+            </StatusBarGateway>
         </div>
     );
 };
