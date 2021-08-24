@@ -143,10 +143,19 @@ export const ComicEntryView = (props: Props) => {
         target.blur();
     }, [entry, fileSystem, historyController, pageDisplay]);
 
+    const currentPages = React.useMemo(() => {
+        const currentPages = currentSpread == null ? ['-'] : currentSpread.map(({ name }) => name.toString());
+        return currentPages.join(' ');
+    }, [currentSpread]);
+
     return (
         <div className={`${className} ${styles.view}`}>
             <canvas className={styles.canvas} ref={canvasRef} />
             <StatusBarGateway>
+                <div className={styles.statusBarSpace}></div>
+                <div>
+                    {currentPages}
+                </div>
                 <div className={styles.statusBarSpace}></div>
                 <div className={styles.pageStyleContainer}>
                     <span className={styles.pageStyle}>
