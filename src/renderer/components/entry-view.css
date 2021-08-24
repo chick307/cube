@@ -54,8 +54,20 @@
     position: relative;
 }
 
-.view {
+.view-container > * {
     flex: 1;
+}
+
+.entry-view-name-container {
+    display: flex;
+    align-items: center;
+    align-self: stretch;
+    padding: 0 12px;
+}
+
+.entry-view-name {
+    font-size: smaller;
+    color: #666666;
 }
 
 .entry-view-status-bar {
