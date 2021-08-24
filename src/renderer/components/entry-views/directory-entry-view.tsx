@@ -6,6 +6,7 @@ import { HistoryItem } from '../../../common/entities/history-item';
 import { useEntryService } from '../../contexts/entry-service-context';
 import { useHistoryController } from '../../contexts/history-controller-context';
 import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
+import { useContextMenu } from '../../hooks/use-context-menu';
 import { useTask } from '../../hooks/use-task';
 import { EntryIcon } from '../entry-icon';
 import styles from './directory-entry-view.css';
@@ -58,6 +59,22 @@ export const DirectoryEntryView = (props: Props) => {
 
     const StatusBarGateway = useStatusBarGateway();
 
+    const historyController = useHistoryController();
+
+    const ItemCountContextMenu = useContextMenu(() => {
+        return [
+            {
+                label: 'Random',
+                enabled: entries.length !== 0,
+                onClicked: () => {
+                    const entry = entries[Math.random() * entries.length | 0];
+                    const historyItem = new HistoryItem({ entry, fileSystem });
+                    historyController.navigate(historyItem);
+                },
+            },
+        ];
+    }, [entries, fileSystem, historyController]);
+
     return (
         <div className={`${className} ${styles.view}`}>
             <ul className={styles.list}>
@@ -68,7 +85,9 @@ export const DirectoryEntryView = (props: Props) => {
                 ))}
             </ul>
             <StatusBarGateway>
-                <span className={styles.itemCount}>{itemCount}</span>
+                <ItemCountContextMenu>
+                    <span className={styles.itemCount}>{itemCount}</span>
+                </ItemCountContextMenu>
             </StatusBarGateway>
         </div>
     );
