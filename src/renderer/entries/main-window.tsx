@@ -2,8 +2,7 @@ import { ipcRenderer } from 'electron';
 import * as pdfjsLib from 'pdfjs-dist';
 import ReactDom from 'react-dom';
 
-import { Entry } from '../../common/entities/entry';
-import { FileSystem, LocalFileSystem } from '../../common/entities/file-system';
+import { LocalFileSystem } from '../../common/entities/file-system';
 import { createContainer, createFactory } from '../../common/utils/create-container';
 import { TabView } from '../components/tab-view';
 import { EntryIconServiceProvider } from '../contexts/entry-icon-service-context';
@@ -12,9 +11,11 @@ import { TabControllerProvider } from '../contexts/tab-controller-context';
 import { TabControllerImpl } from '../controllers/tab-controller';
 import { HistoryControllerFactoryImpl } from '../factories/history-controller-factory';
 import { useTask } from '../hooks/use-task';
+import { ApplicationServiceImpl } from '../services/application-service';
 import { EntryIconServiceImpl } from '../services/entry-icon-service';
 import { EntryServiceImpl } from '../services/entry-service';
 import { LocalEntryService, LocalEntryServiceImpl } from '../services/local-entry-service';
+import { MainChannelServiceImpl } from '../services/main-channel-service';
 import { ZipEntryServiceImpl } from '../services/zip-entry-service';
 import { composeElements } from '../utils/compose-elements';
 import './main-window.css';
@@ -23,19 +24,14 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = './workers/pdf.worker.min.js';
 
 const MainWindow = () => {
     const [container, error] = useTask(async () => {
-        const { initialHistoryItem, port } = await new Promise<{
-            initialHistoryItem: { entry: Entry; fileSystem: FileSystem; };
-            port: MessagePort;
-        }>((resolve) => {
-            ipcRenderer.once('connect', (event, message) => {
-                const [port] = event.ports;
-                const entry = Entry.fromJson(message.entry);
-                const fileSystem = FileSystem.fromJson(message.fileSystem);
-                resolve({ initialHistoryItem: { entry, fileSystem }, port });
+        const port = await new Promise<MessagePort>((resolve) => {
+            ipcRenderer.once('connect', (event) => {
+                resolve(event.ports[0]);
             });
         });
 
         const container = createContainer({
+            applicationService: ApplicationServiceImpl,
             defaultHistoryItem: createFactory((params: {
                 localEntryService: LocalEntryService;
             }) => ({
@@ -46,80 +42,13 @@ const MainWindow = () => {
             entryService: EntryServiceImpl,
             historyControllerFactory: HistoryControllerFactoryImpl,
             localEntryService: LocalEntryServiceImpl,
+            mainChannelService: MainChannelServiceImpl,
+            messagePort: createFactory(() => port),
             tabController: TabControllerImpl,
             zipEntryService: ZipEntryServiceImpl,
         });
 
-        container.tabController.addTab({ active: true, historyItem: initialHistoryItem });
-
-        container.tabController.onTabAllClosed.addListener(() => {
-            window.close();
-        });
-
-        const onStateChanged = (event: { tabId: number; }) => {
-            const tab = container.tabController.state.current.tabs.find((tab) => tab.id === event.tabId);
-            if (tab == null || !tab.active)
-                return;
-            port.postMessage({
-                type: 'history.state-changed',
-                ableToGoBack: tab.historyController.state.current.ableToGoBack,
-                ableToGoForward: tab.historyController.state.current.ableToGoForward,
-            });
-        };
-
-        container.tabController.onActiveTabChanged.addListener(onStateChanged);
-        container.tabController.onHistoryStateChanged.addListener(onStateChanged);
-
-        port.onmessage = (event: MessageEvent) => {
-            const message = event.data;
-            switch (message.type) {
-                case 'history.go-back': {
-                    const tab = container.tabController.state.current.tabs.find((tab) => tab.active);
-                    if (tab == null)
-                        return;
-                    tab.historyController.goBack();
-                    return;
-                }
-                case 'history.go-forward': {
-                    const tab = container.tabController.state.current.tabs.find((tab) => tab.active);
-                    if (tab == null)
-                        return;
-                    tab.historyController.goForward();
-                    return;
-                }
-                case 'window.add-tab': {
-                    container.tabController.addTab({ active: true });
-                    return;
-                }
-                case 'window.close-tab': {
-                    const tab = container.tabController.state.current.tabs.find((tab) => tab.active);
-                    if (tab == null)
-                        return;
-                    container.tabController.removeTab({ id: tab.id });
-                    return;
-                }
-                case 'window.open-file': {
-                    const entry = Entry.fromJson(message.entry);
-                    const fileSystem = FileSystem.fromJson(message.fileSystem);
-                    container.tabController.addTab({ active: true, historyItem: { entry, fileSystem } });
-                    return;
-                }
-                case 'window.select-next-tab': {
-                    container.tabController.selectNextTab();
-                    return;
-                }
-                case 'window.select-previous-tab': {
-                    container.tabController.selectPreviousTab();
-                    return;
-                }
-                default: {
-                    console.error('unknown message:', event.data);
-                    return;
-                }
-            }
-        };
-
-        port.postMessage({ type: 'window.ready-to-show' });
+        container.applicationService.initialize();
 
         return container;
     }, []);

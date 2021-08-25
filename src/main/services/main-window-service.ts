@@ -166,7 +166,7 @@ export class MainWindowServiceImpl implements MainWindowService {
             });
         });
 
-        const initailState = params.initialState ?? {
+        const initialState = params.initialState ?? {
             entry: new DirectoryEntry(new EntryPath(app.getPath('home'))),
             fileSystem: new LocalFileSystem(),
         };
@@ -174,10 +174,13 @@ export class MainWindowServiceImpl implements MainWindowService {
         if (BUILD_MODE === 'development')
             window.webContents.openDevTools();
 
-        window.webContents.postMessage('connect', {
-            entry: initailState.entry.toJson(),
-            fileSystem: initailState.fileSystem.toJson(),
-        }, [channel.port2]);
+        window.webContents.postMessage('connect', {}, [channel.port2]);
+
+        port.postMessage({
+            type: 'window.initialize',
+            entry: initialState.entry.toJson(),
+            fileSystem: initialState.fileSystem.toJson(),
+        });
 
         port.start();
         port.on('message', (event) => {
@@ -191,18 +194,19 @@ export class MainWindowServiceImpl implements MainWindowService {
                     this.#onHistoryStateChangedController.emit({ type: 'history-state-changed' });
                     return;
                 }
+
                 case 'window.ready-to-show': {
+                    this._onOpenController.emit({ type: 'open' });
                     window.show();
                     return;
                 }
+
                 default: {
                     console.error('unknown message:', message);
                     return;
                 }
             }
         });
-
-        this._onOpenController.emit({ type: 'open' });
     }
 
     activate() {
