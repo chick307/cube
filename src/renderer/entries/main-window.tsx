@@ -52,7 +52,7 @@ const MainWindow = () => {
         container.tabController.addTab({ active: true, historyItem: initialHistoryItem });
 
         container.tabController.onTabAllClosed.addListener(() => {
-            port.postMessage({ type: 'window.close' });
+            window.close();
         });
 
         const onStateChanged = (event: { tabId: number; }) => {

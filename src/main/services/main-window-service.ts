@@ -190,10 +190,6 @@ export class MainWindowServiceImpl implements MainWindowService {
                     this.#onHistoryStateChangedController.emit({ type: 'history-state-changed' });
                     return;
                 }
-                case 'window.close': {
-                    window.close();
-                    return;
-                }
                 case 'window.ready-to-show': {
                     window.show();
                     return;
