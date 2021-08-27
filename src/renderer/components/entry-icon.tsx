@@ -1,6 +1,6 @@
 import type React from 'react';
 
-import { Entry } from '../../common/entities/entry';
+import type { Entry } from '../../common/entities/entry';
 import { useEntryIconService } from '../contexts/entry-icon-service-context';
 import { useTask } from '../hooks/use-task';
 import styles from './entry-icon.css';

@@ -1,4 +1,4 @@
-import { EntryPath } from '../values/entry-path';
+import { EntryPath } from '../../values/entry-path';
 import { Entry } from './entry';
 import { FileEntry } from './file-entry';
 

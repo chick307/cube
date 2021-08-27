@@ -1,8 +1,5 @@
-import type { DirectoryEntry } from '../../common/entities/directory-entry';
-import type { Entry } from '../../common/entities/entry';
-import type { FileEntry } from '../../common/entities/file-entry';
+import type { DirectoryEntry, Entry, FileEntry, SymbolicLinkEntry } from '../../common/entities/entry';
 import type { FileSystem } from '../../common/entities/file-system';
-import type { SymbolicLinkEntry } from '../../common/entities/symbolic-link-entry';
 import type { CloseSignal } from '../../common/utils/close-controller';
 import type { EntryPath } from '../../common/values/entry-path';
 import type { LocalEntryService } from './local-entry-service';

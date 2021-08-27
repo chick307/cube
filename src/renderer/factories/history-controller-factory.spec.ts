@@ -1,4 +1,5 @@
-import { Entry, FileSystem } from '../../common/entities';
+import { FileSystem } from '../../common/entities';
+import { Entry } from '../../common/entities/entry';
 import { HistoryControllerImpl } from '../controllers/history-controller';
 import { HistoryControllerFactoryImpl } from './history-controller-factory';
 

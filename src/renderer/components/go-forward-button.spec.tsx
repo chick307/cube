@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-import { Entry, FileSystem } from '../../common/entities';
+import { FileSystem } from '../../common/entities';
+import { Entry } from '../../common/entities/entry';
 import { immediate } from '../../common/utils/immediate';
 import { State } from '../../common/utils/restate';
 import { HistoryControllerProvider } from '../contexts/history-controller-context';

@@ -1,50 +1,50 @@
-import { EntryPath } from '../values/entry-path';
+import { EntryPath } from '../../values/entry-path';
 import { Entry } from './entry';
 
-export class SymbolicLinkEntry extends Entry {
-    readonly type = 'symbolic-link';
+export class FileEntry extends Entry {
+    readonly type = 'file';
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    static fromJson(json: any): SymbolicLinkEntry {
+    static fromJson(json: any): FileEntry {
         if (json === null || typeof json !== 'object')
             throw Error();
-        if (json.type !== 'symbolic-link')
+        if (json.type !== 'file')
             throw Error();
         if (typeof json.path !== 'string')
             throw Error();
         const entryPath = new EntryPath(json.path);
-        const entry = new SymbolicLinkEntry(entryPath);
+        const entry = new FileEntry(entryPath);
         return entry;
     }
 
     equals(otherEntry: Entry): boolean {
-        return otherEntry instanceof SymbolicLinkEntry && this.type === otherEntry.type && super.equals(otherEntry);
+        return otherEntry instanceof FileEntry && this.type === otherEntry.type && super.equals(otherEntry);
     }
 
-    isSymbolicLink(): this is SymbolicLinkEntry {
+    isFile(): this is FileEntry {
         return true;
     }
 
     toJson() {
         return {
             ...super.toJson(),
-            type: 'symbolic-link',
+            type: 'file',
         };
     }
 }
 
 declare module './entry' {
     interface Entry {
-        isSymbolicLink(): this is SymbolicLinkEntry;
+        isFile(): this is FileEntry;
     }
 }
 
-Entry.prototype.isSymbolicLink = () => false;
+Entry.prototype.isFile = () => false;
 
 const fromJson = Entry.fromJson;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 Entry.fromJson = (json: any): Entry => {
-    if (json?.type === 'symbolic-link')
-        return SymbolicLinkEntry.fromJson(json);
+    if (json?.type === 'file')
+        return FileEntry.fromJson(json);
     return fromJson(json);
 };

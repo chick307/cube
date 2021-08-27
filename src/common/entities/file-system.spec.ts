@@ -1,5 +1,5 @@
 import { EntryPath } from '../values/entry-path';
-import { FileEntry } from './file-entry';
+import { FileEntry } from './entry';
 import { FileSystem } from './file-system';
 import { LocalFileSystem } from './local-file-system';
 import { ZipFileSystem } from './zip-file-system';

@@ -1,7 +1,8 @@
 import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-import { Entry, LocalFileSystem } from '../../common/entities';
+import { LocalFileSystem } from '../../common/entities';
+import { Entry } from '../../common/entities/entry';
 import { State } from '../../common/utils/restate';
 import { HistoryController } from '../controllers/history-controller';
 import { composeElements } from '../utils/compose-elements';

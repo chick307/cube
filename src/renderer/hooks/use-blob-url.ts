@@ -1,4 +1,4 @@
-import { FileEntry } from '../../common/entities/file-entry';
+import type { FileEntry } from '../../common/entities/entry';
 import { FileSystem } from '../../common/entities/file-system';
 import { useEntryService } from '../contexts/entry-service-context';
 import { useTask } from './use-task';

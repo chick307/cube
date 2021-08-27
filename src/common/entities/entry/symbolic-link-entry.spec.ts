@@ -1,4 +1,4 @@
-import { EntryPath } from '../values/entry-path';
+import { EntryPath } from '../../values/entry-path';
 import { Entry } from './entry';
 import { SymbolicLinkEntry } from './symbolic-link-entry';
 

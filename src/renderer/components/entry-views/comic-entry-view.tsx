@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { DirectoryEntry } from '../../../common/entities/directory-entry';
-import type { FileEntry } from '../../../common/entities/file-entry';
+import { DirectoryEntry } from '../../../common/entities/entry';
+import type { FileEntry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
 import { ZipFileSystem } from '../../../common/entities/zip-file-system';
 import { EntryPath } from '../../../common/values/entry-path';

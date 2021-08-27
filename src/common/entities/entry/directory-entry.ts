@@ -1,4 +1,4 @@
-import { EntryPath } from '../values/entry-path';
+import { EntryPath } from '../../values/entry-path';
 import { Entry } from './entry';
 
 export class DirectoryEntry extends Entry {

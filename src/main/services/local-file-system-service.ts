@@ -1,10 +1,7 @@
 import { promises as fs } from 'fs';
 
-import { DirectoryEntry } from '../../common/entities/directory-entry';
-import { Entry } from '../../common/entities/entry';
-import { FileEntry } from '../../common/entities/file-entry';
+import { DirectoryEntry, Entry, FileEntry, SymbolicLinkEntry } from '../../common/entities/entry';
 import { LocalFileSystem } from '../../common/entities/local-file-system';
-import { SymbolicLinkEntry } from '../../common/entities/symbolic-link-entry';
 import { EntryPath } from '../../common/values/entry-path';
 
 export type LocalFileSystemService = {

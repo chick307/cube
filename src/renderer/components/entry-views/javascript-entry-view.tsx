@@ -1,4 +1,4 @@
-import type { FileEntry } from '../../../common/entities/file-entry';
+import type { FileEntry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
 import { useEntryText } from '../../hooks/use-entry-text';
 import styles from './javascript-entry-view.css';

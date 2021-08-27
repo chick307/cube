@@ -2,7 +2,8 @@ import { ipcRenderer } from 'electron';
 import * as pdfjsLib from 'pdfjs-dist';
 import ReactDom from 'react-dom';
 
-import { Entry, FileSystem, LocalFileSystem } from '../../common/entities';
+import { FileSystem, LocalFileSystem } from '../../common/entities';
+import { Entry } from '../../common/entities/entry';
 import { createContainer, createFactory } from '../../common/utils/create-container';
 import { TabView } from '../components/tab-view';
 import { EntryIconServiceProvider } from '../contexts/entry-icon-service-context';

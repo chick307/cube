@@ -1,7 +1,6 @@
 import { ipcRenderer } from 'electron';
 
-import { DirectoryEntry } from '../../common/entities/directory-entry';
-import { FileEntry } from '../../common/entities/file-entry';
+import { DirectoryEntry, FileEntry } from '../../common/entities/entry';
 import { CloseController, Closed } from '../../common/utils/close-controller';
 import { EntryPath } from '../../common/values/entry-path';
 import { EntryIconServiceImpl } from './entry-icon-service';

@@ -1,4 +1,5 @@
-import type { Entry, FileSystem } from '../../common/entities';
+import type { FileSystem } from '../../common/entities';
+import type { Entry } from '../../common/entities/entry';
 import { Restate, State } from '../../common/utils/restate';
 
 export type HistoryItem = {

@@ -1,7 +1,7 @@
 import React from 'react';
 
+import type { SymbolicLinkEntry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
-import type { SymbolicLinkEntry } from '../../../common/entities/symbolic-link-entry';
 import { useEntryService } from '../../contexts/entry-service-context';
 import { useHistoryController } from '../../contexts/history-controller-context';
 import { useTask } from '../../hooks/use-task';

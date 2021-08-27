@@ -1,7 +1,6 @@
 import React from 'react';
 
-import type { DirectoryEntry } from '../../../common/entities/directory-entry';
-import type { Entry } from '../../../common/entities/entry';
+import type { DirectoryEntry, Entry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
 import { useEntryService } from '../../contexts/entry-service-context';
 import { useHistoryController } from '../../contexts/history-controller-context';

@@ -1,8 +1,7 @@
 import JSZip from 'jszip';
 
-import { DirectoryEntry } from '../../common/entities/directory-entry';
+import { DirectoryEntry, FileEntry } from '../../common/entities/entry';
 import type { Entry } from '../../common/entities/entry';
-import { FileEntry } from '../../common/entities/file-entry';
 import type { Container, ZipFileSystem } from '../../common/entities/zip-file-system';
 import type { CloseSignal } from '../../common/utils/close-controller';
 import { EntryPath } from '../../common/values/entry-path';

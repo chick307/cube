@@ -1,7 +1,7 @@
 import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-import { FileEntry } from '../../common/entities/file-entry';
+import { FileEntry } from '../../common/entities/entry';
 import { immediate } from '../../common/utils/immediate';
 import { EntryPath } from '../../common/values/entry-path';
 import { EntryIconServiceProvider } from '../contexts/entry-icon-service-context';

@@ -1,4 +1,4 @@
-import { FileEntry } from './file-entry';
+import { FileEntry } from './entry';
 import { FileSystem } from './file-system';
 
 export type Container = {

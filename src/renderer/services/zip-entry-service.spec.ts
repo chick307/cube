@@ -1,9 +1,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 
-import { DirectoryEntry } from '../../common/entities/directory-entry';
-import { Entry } from '../../common/entities/entry';
-import { FileEntry } from '../../common/entities/file-entry';
+import { DirectoryEntry, Entry, FileEntry } from '../../common/entities/entry';
 import { FileSystem } from '../../common/entities/file-system';
 import { ZipFileSystem } from '../../common/entities/zip-file-system';
 import { CloseController, Closed } from '../../common/utils/close-controller';

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Entry } from '../../common/entities';
-import { DirectoryEntry } from '../../common/entities/directory-entry';
+import { DirectoryEntry } from '../../common/entities/entry';
+import type { Entry } from '../../common/entities/entry';
 import { ZipFileSystem } from '../../common/entities/zip-file-system';
 import { EntryPath } from '../../common/values/entry-path';
 import { useHistoryController } from '../contexts/history-controller-context';

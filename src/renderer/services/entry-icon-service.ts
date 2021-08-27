@@ -1,7 +1,6 @@
 import { ipcRenderer } from 'electron';
 
-import { DirectoryEntry } from '../../common/entities/directory-entry';
-import { Entry } from '../../common/entities/entry';
+import type { DirectoryEntry, Entry } from '../../common/entities/entry';
 import { CloseSignal } from '../../common/utils/close-controller';
 
 export type GetDirectoryEntryIconUrlOptions = {

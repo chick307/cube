@@ -2,10 +2,7 @@ import { promises as fs } from 'fs';
 
 import { ipcRenderer } from 'electron';
 
-import { DirectoryEntry } from '../../common/entities/directory-entry';
-import { Entry } from '../../common/entities/entry';
-import { FileEntry } from '../../common/entities/file-entry';
-import { SymbolicLinkEntry } from '../../common/entities/symbolic-link-entry';
+import { DirectoryEntry, Entry, FileEntry, SymbolicLinkEntry } from '../../common/entities/entry';
 import { CloseSignal } from '../../common/utils/close-controller';
 import { EntryName } from '../../common/values/entry-name';
 import { EntryPath } from '../../common/values/entry-path';
