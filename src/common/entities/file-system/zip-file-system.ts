@@ -1,17 +1,17 @@
-import { FileEntry } from './entry';
+import { FileEntry } from '../entry';
 import { FileSystem } from './file-system';
 
-export type Container = {
+export type ZipContainer = {
     readonly entry: FileEntry;
     readonly fileSystem: FileSystem;
 };
 
 export type ConstructorParameters = {
-    container: Container;
+    container: ZipContainer;
 };
 
 export class ZipFileSystem extends FileSystem {
-    readonly container: Container;
+    readonly container: ZipContainer;
 
     readonly type = 'zip';
 

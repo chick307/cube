@@ -2,7 +2,7 @@ import JSZip from 'jszip';
 
 import { DirectoryEntry, FileEntry } from '../../common/entities/entry';
 import type { Entry } from '../../common/entities/entry';
-import type { Container, ZipFileSystem } from '../../common/entities/zip-file-system';
+import type { ZipContainer, ZipFileSystem } from '../../common/entities/file-system';
 import type { CloseSignal } from '../../common/utils/close-controller';
 import { EntryPath } from '../../common/values/entry-path';
 import type { EntryService } from './entry-service';
@@ -49,7 +49,7 @@ export type ZipEntryService = {
 };
 
 export class ZipEntryServiceImpl implements ZipEntryService {
-    private _zipEntries = new WeakMap<Container, Promise<Map<string, {
+    private _zipEntries = new WeakMap<ZipContainer, Promise<Map<string, {
         entry: Entry;
         object: JSZip.JSZipObject;
     }>>>();
@@ -59,7 +59,7 @@ export class ZipEntryServiceImpl implements ZipEntryService {
     }
 
     private _getZipEntries(params: {
-        container: Container;
+        container: ZipContainer;
         entryService: EntryService;
     }, signal?: CloseSignal | null): Promise<Map<string, {
             entry: Entry;

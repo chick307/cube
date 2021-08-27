@@ -1,7 +1,5 @@
 import { DirectoryEntry, Entry, FileEntry, SymbolicLinkEntry } from '../../common/entities/entry';
-import { FileSystem } from '../../common/entities/file-system';
-import { LocalFileSystem } from '../../common/entities/local-file-system';
-import { Container, ZipFileSystem } from '../../common/entities/zip-file-system';
+import { FileSystem, LocalFileSystem, ZipContainer, ZipFileSystem } from '../../common/entities/file-system';
 import { CloseController } from '../../common/utils/close-controller';
 import { EntryPath } from '../../common/values/entry-path';
 import { EntryServiceImpl } from './entry-service';
@@ -33,7 +31,7 @@ const dummyZipEntryService: ZipEntryService = {
     readFile: async () => Buffer.from('def'),
 };
 
-const dummyContainer: Container = {
+const dummyContainer: ZipContainer = {
     entry: new FileEntry(new EntryPath('/a/b')),
     fileSystem: new UnknownFileSystem(),
 };

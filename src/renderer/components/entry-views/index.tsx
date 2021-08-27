@@ -1,5 +1,5 @@
-import { FileSystem } from '../../../common/entities';
 import type { DirectoryEntry, Entry, FileEntry, SymbolicLinkEntry } from '../../../common/entities/entry';
+import type { FileSystem } from '../../../common/entities/file-system';
 import { BinaryEntryView } from './binary-entry-view';
 import { ComicEntryView, isComicEntry } from './comic-entry-view';
 import { CssEntryView, isCssEntry } from './css-entry-view';

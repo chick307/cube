@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-import { FileSystem } from '../../common/entities';
 import { Entry } from '../../common/entities/entry';
+import { FileSystem } from '../../common/entities/file-system';
 import { immediate } from '../../common/utils/immediate';
 import { State } from '../../common/utils/restate';
 import { HistoryControllerProvider } from '../contexts/history-controller-context';
@@ -12,12 +12,11 @@ import { composeElements } from '../utils/compose-elements';
 import buttonStyles from './button.css';
 import { GoBackButton } from './go-back-button';
 
-class UnknownFileSystem extends FileSystem {}
-const unknownFileSystem = new UnknownFileSystem();
 const entryA = Entry.fromJson({ type: 'directory', path: '/a' });
 const entryB = Entry.fromJson({ type: 'directory', path: '/a/b' });
-const historyItemA = { entry: entryA, fileSystem: unknownFileSystem };
-const historyItemB = { entry: entryB, fileSystem: unknownFileSystem };
+const fileSystem = new FileSystem();
+const historyItemA = { entry: entryA, fileSystem };
+const historyItemB = { entry: entryB, fileSystem };
 
 let container: HTMLElement;
 

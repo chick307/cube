@@ -2,9 +2,9 @@ import * as path from 'path';
 
 import { BrowserWindow, MessageChannelMain, app } from 'electron';
 
-import { LocalFileSystem } from '../../common/entities';
 import { DirectoryEntry } from '../../common/entities/entry';
 import type { Entry } from '../../common/entities/entry';
+import { LocalFileSystem } from '../../common/entities/file-system';
 import type { FileSystem } from '../../common/entities/file-system';
 import { EventController, EventSignal } from '../../common/utils/event-controller';
 import { EntryPath } from '../../common/values/entry-path';

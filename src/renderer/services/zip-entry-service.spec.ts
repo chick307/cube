@@ -3,7 +3,7 @@ import path from 'path';
 
 import { DirectoryEntry, Entry, FileEntry } from '../../common/entities/entry';
 import { FileSystem } from '../../common/entities/file-system';
-import { ZipFileSystem } from '../../common/entities/zip-file-system';
+import { ZipFileSystem } from '../../common/entities/file-system';
 import { CloseController, Closed } from '../../common/utils/close-controller';
 import { EntryPath } from '../../common/values/entry-path';
 import { EntryService } from './entry-service';
