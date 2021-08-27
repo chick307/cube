@@ -1,4 +1,4 @@
-export { DirectoryEntry } from './directory-entry';
-export { Entry } from './entry';
-export { FileEntry } from './file-entry';
-export { SymbolicLinkEntry } from './symbolic-link-entry';
+export { DirectoryEntry, DirectoryEntryJson } from './directory-entry';
+export { Entry, EntryJson } from './entry';
+export { FileEntry, FileEntryJson } from './file-entry';
+export { SymbolicLinkEntry, SymbolicLinkEntryJson } from './symbolic-link-entry';

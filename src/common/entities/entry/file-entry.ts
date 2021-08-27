@@ -1,8 +1,16 @@
 import { EntryPath } from '../../values/entry-path';
-import { Entry } from './entry';
+import { Entry, EntryJson, EntryJsonBase } from './entry';
+
+export type FileEntryJson = EntryJsonBase & {
+    type: 'file';
+};
 
 export class FileEntry extends Entry {
     readonly type = 'file';
+
+    static fromJson(json: FileEntryJson): FileEntry;
+
+    static fromJson(json: unknown): never;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static fromJson(json: any): FileEntry {
@@ -25,7 +33,7 @@ export class FileEntry extends Entry {
         return true;
     }
 
-    toJson() {
+    toJson(): FileEntryJson {
         return {
             ...super.toJson(),
             type: 'file',
@@ -37,14 +45,17 @@ declare module './entry' {
     interface Entry {
         isFile(): this is FileEntry;
     }
+
+    interface EntryJsonTypes {
+        fileEntry: FileEntryJson;
+    }
 }
 
 Entry.prototype.isFile = () => false;
 
 const fromJson = Entry.fromJson;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-Entry.fromJson = (json: any): Entry => {
-    if (json?.type === 'file')
+Entry.fromJson = ((json: EntryJson | null | undefined): Entry => {
+    if (json != null && 'type' in json && json.type === 'file')
         return FileEntry.fromJson(json);
     return fromJson(json);
-};
+}) as typeof fromJson;

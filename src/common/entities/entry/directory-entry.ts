@@ -1,8 +1,16 @@
 import { EntryPath } from '../../values/entry-path';
-import { Entry } from './entry';
+import { Entry, EntryJson, EntryJsonBase } from './entry';
+
+export type DirectoryEntryJson = EntryJsonBase & {
+    type: 'directory';
+};
 
 export class DirectoryEntry extends Entry {
     readonly type = 'directory';
+
+    static fromJson(json: DirectoryEntryJson): DirectoryEntry;
+
+    static fromJson(json: unknown): never;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static fromJson(json: any): DirectoryEntry {
@@ -25,7 +33,7 @@ export class DirectoryEntry extends Entry {
         return true;
     }
 
-    toJson() {
+    toJson(): DirectoryEntryJson {
         return {
             ...super.toJson(),
             type: 'directory',
@@ -38,6 +46,10 @@ declare module './entry' {
         isDirectory(): this is DirectoryEntry;
 
         getParentEntry(): DirectoryEntry | null;
+    }
+
+    interface EntryJsonTypes {
+        directoryEntry: DirectoryEntryJson;
     }
 }
 
@@ -52,9 +64,8 @@ Entry.prototype.getParentEntry = function getParentEntry(this: Entry): Directory
 Entry.prototype.isDirectory = () => false;
 
 const fromJson = Entry.fromJson;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-Entry.fromJson = (json: any): Entry => {
-    if (json?.type === 'directory')
+Entry.fromJson = ((json: EntryJson | null | undefined): Entry => {
+    if (json != null && 'type' in json && json.type === 'directory')
         return DirectoryEntry.fromJson(json);
     return fromJson(json);
-};
+}) as typeof fromJson;

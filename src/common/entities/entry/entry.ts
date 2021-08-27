@@ -1,6 +1,15 @@
 import { EntryName } from '../../values/entry-name';
 import { EntryPath } from '../../values/entry-path';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface EntryJsonTypes {}
+
+export type EntryJsonBase = {
+    path: string;
+};
+
+export type EntryJson = EntryJsonTypes[keyof EntryJsonTypes];
+
 export class Entry {
     readonly name: EntryName;
 
@@ -11,8 +20,12 @@ export class Entry {
         this.path = entryPath;
     }
 
+    static fromJson(json: EntryJson): Entry;
+
+    static fromJson(json: unknown): never;
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    static fromJson(json: any): Entry {
+    static fromJson(_json: any): Entry {
         throw Error();
     }
 
@@ -20,9 +33,9 @@ export class Entry {
         return this.path.equals(otherEntry.path);
     }
 
-    toJson() {
+    toJson(): EntryJson {
         return {
             path: this.path.toString(),
-        };
+        } as never;
     }
 }

@@ -1,5 +1,5 @@
-import { FileEntry } from '../entry';
-import { FileSystem } from './file-system';
+import { FileEntry, FileEntryJson } from '../entry';
+import { FileSystem, FileSystemJson, FileSystemJsonBase } from './file-system';
 
 export type ZipContainer = {
     readonly entry: FileEntry;
@@ -8,6 +8,14 @@ export type ZipContainer = {
 
 export type ConstructorParameters = {
     container: ZipContainer;
+};
+
+export type ZipFileSystemJson = FileSystemJsonBase & {
+    type: 'zip';
+    container: {
+        entry: FileEntryJson;
+        fileSystem: FileSystemJson;
+    };
 };
 
 export class ZipFileSystem extends FileSystem {
@@ -22,6 +30,10 @@ export class ZipFileSystem extends FileSystem {
             fileSystem: params.container.fileSystem,
         };
     }
+
+    static fromJson(json: ZipFileSystemJson): ZipFileSystem;
+
+    static fromJson(json: unknown): never;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static fromJson(json: any): ZipFileSystem {
@@ -51,7 +63,7 @@ export class ZipFileSystem extends FileSystem {
         return true;
     }
 
-    toJson() {
+    toJson(): ZipFileSystemJson {
         return {
             ...super.toJson(),
             type: 'zip',
@@ -67,14 +79,17 @@ declare module './file-system' {
     interface FileSystem {
         isZip(): this is ZipFileSystem;
     }
+
+    interface FileSystemJsonTypes {
+        zipFileSystem: ZipFileSystemJson;
+    }
 }
 
 FileSystem.prototype.isZip = () => false;
 
 const fromJson = FileSystem.fromJson;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-FileSystem.fromJson = (json: any) => {
-    if (json?.type === 'zip')
+FileSystem.fromJson = ((json: FileSystemJson | null | undefined) => {
+    if (json != null && 'type' in json && json.type === 'zip')
         return ZipFileSystem.fromJson(json);
     return fromJson(json);
-};
+}) as typeof fromJson;
