@@ -5,6 +5,7 @@ import ReactDom from 'react-dom';
 import { LocalFileSystem } from '../../common/entities/file-system';
 import { createContainer, createFactory } from '../../common/utils/create-container';
 import { TabView } from '../components/tab-view';
+import { ContextMenuServiceProvider } from '../contexts/context-menu-service-context';
 import { EntryIconServiceProvider } from '../contexts/entry-icon-service-context';
 import { EntryServiceProvider } from '../contexts/entry-service-context';
 import { TabControllerProvider } from '../contexts/tab-controller-context';
@@ -12,6 +13,7 @@ import { TabControllerImpl } from '../controllers/tab-controller';
 import { HistoryControllerFactoryImpl } from '../factories/history-controller-factory';
 import { useTask } from '../hooks/use-task';
 import { ApplicationServiceImpl } from '../services/application-service';
+import { ContextMenuServiceImpl } from '../services/context-menu-service';
 import { EntryIconServiceImpl } from '../services/entry-icon-service';
 import { EntryServiceImpl } from '../services/entry-service';
 import { LocalEntryService, LocalEntryServiceImpl } from '../services/local-entry-service';
@@ -32,6 +34,7 @@ const MainWindow = () => {
 
         const container = createContainer({
             applicationService: ApplicationServiceImpl,
+            contextMenuService: ContextMenuServiceImpl,
             defaultHistoryItem: createFactory((params: {
                 localEntryService: LocalEntryService;
             }) => ({
@@ -59,16 +62,11 @@ const MainWindow = () => {
     if (container == null)
         return null;
 
-    const {
-        entryIconService,
-        entryService,
-        tabController,
-    } = container;
-
     return composeElements(
-        <EntryIconServiceProvider value={entryIconService} />,
-        <EntryServiceProvider value={entryService} />,
-        <TabControllerProvider value={tabController} />,
+        <ContextMenuServiceProvider value={container.contextMenuService} />,
+        <EntryIconServiceProvider value={container.entryIconService} />,
+        <EntryServiceProvider value={container.entryService} />,
+        <TabControllerProvider value={container.tabController} />,
         <TabView />,
     );
 };
