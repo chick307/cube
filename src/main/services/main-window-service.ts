@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import { BrowserWindow, MessageChannelMain, app } from 'electron';
+import { BrowserWindow, Menu, MenuItemConstructorOptions, MessageChannelMain, app } from 'electron';
 
 import { DirectoryEntry } from '../../common/entities/entry';
 import type { Entry } from '../../common/entities/entry';
@@ -192,6 +192,30 @@ export class MainWindowServiceImpl implements MainWindowService {
                         ableToGoForward: message.ableToGoForward,
                     };
                     this.#onHistoryStateChangedController.emit({ type: 'history-state-changed' });
+                    return;
+                }
+
+                case 'window.context-menu': {
+                    const menuId = message.menuId;
+                    const convert = (item: MenuItemConstructorOptions): MenuItemConstructorOptions => {
+                        const menuItemId = item.id;
+                        const click = item.id == null ? undefined : () => {
+                            port.postMessage({ type: 'window.context-menu-clicked', menuId, menuItemId });
+                        };
+                        if ('submenu' in item && Array.isArray(item.submenu))
+                            return { ...item, click, submenu: item.submenu.map(convert) };
+                        return { ...item, click };
+                    };
+                    const template = message.template.map(convert);
+                    const menu = Menu.buildFromTemplate(template);
+                    menu.popup({
+                        window,
+                        x: message.x,
+                        y: message.y,
+                        callback: () => {
+                            port.postMessage({ type: 'window.context-menu-closed', menuId });
+                        },
+                    });
                     return;
                 }
 
