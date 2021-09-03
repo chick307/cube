@@ -61,6 +61,11 @@ export type HistoryStateChangedEvent = {
     type: 'history-state-changed';
 };
 
+const defaultHistoryItem = {
+    entry: new DirectoryEntry(new EntryPath(app.getPath('home'))),
+    fileSystem: new LocalFileSystem(),
+};
+
 export class MainWindowServiceImpl implements MainWindowService {
     #historyState = {
         ableToGoBack: false,
@@ -142,15 +147,15 @@ export class MainWindowServiceImpl implements MainWindowService {
             this._onCloseController.emit({ type: 'close' });
         });
 
-        const channel = new MessageChannelMain();
-        const port = channel.port1;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const messageQueue = [] as any[];
 
-        this._controller = {
+        const controller = this._controller = {
             close: () => {
                 window.close();
             },
             postMessage: (message) => {
-                port.postMessage(message);
+                messageQueue.push(message);
             },
             show: () => {
                 window.show();
@@ -160,76 +165,88 @@ export class MainWindowServiceImpl implements MainWindowService {
             },
         };
 
-        await new Promise<void>((resolve) => {
-            window.once('ready-to-show', () => {
-                resolve();
-            });
-        });
-
-        const initialState = params.initialState ?? {
-            entry: new DirectoryEntry(new EntryPath(app.getPath('home'))),
-            fileSystem: new LocalFileSystem(),
-        };
-
         if (BUILD_MODE === 'development')
             window.webContents.openDevTools();
 
-        window.webContents.postMessage('connect', {}, [channel.port2]);
+        let initialHistoryItem = params.initialState ?? defaultHistoryItem;
+        let channel: MessageChannelMain | null = null;
 
-        port.postMessage({
-            type: 'window.initialize',
-            entry: initialState.entry.toJson(),
-            fileSystem: initialState.fileSystem.toJson(),
-        });
+        window.on('ready-to-show', () => {
+            if (channel !== null)
+                channel.port1.close();
+            channel = new MessageChannelMain();
 
-        port.start();
-        port.on('message', (event) => {
-            const message = event.data;
-            switch (message.type) {
-                case 'history.state-changed': {
-                    this.#historyState = {
-                        ableToGoBack: message.ableToGoBack,
-                        ableToGoForward: message.ableToGoForward,
-                    };
-                    this.#onHistoryStateChangedController.emit({ type: 'history-state-changed' });
-                    return;
-                }
+            const port = channel.port1;
 
-                case 'window.context-menu': {
-                    const menuId = message.menuId;
-                    const convert = (item: MenuItemConstructorOptions): MenuItemConstructorOptions => {
-                        const menuItemId = item.id;
-                        const click = item.id == null ? undefined : () => {
-                            port.postMessage({ type: 'window.context-menu-clicked', menuId, menuItemId });
+            while (messageQueue.length > 0)
+                port.postMessage(messageQueue.shift());
+
+            this._controller = {
+                ...controller,
+                postMessage: (message) => {
+                    port.postMessage(message);
+                },
+            };
+
+            window.webContents.postMessage('connect', {}, [channel.port2]);
+
+            port.postMessage({
+                type: 'window.initialize',
+                entry: initialHistoryItem.entry.toJson(),
+                fileSystem: initialHistoryItem.fileSystem.toJson(),
+            });
+
+            initialHistoryItem = defaultHistoryItem;
+
+            port.start();
+            port.on('message', (event) => {
+                const message = event.data;
+                switch (message.type) {
+                    case 'history.state-changed': {
+                        this.#historyState = {
+                            ableToGoBack: message.ableToGoBack,
+                            ableToGoForward: message.ableToGoForward,
                         };
-                        if ('submenu' in item && Array.isArray(item.submenu))
-                            return { ...item, click, submenu: item.submenu.map(convert) };
-                        return { ...item, click };
-                    };
-                    const template = message.template.map(convert);
-                    const menu = Menu.buildFromTemplate(template);
-                    menu.popup({
-                        window,
-                        x: message.x,
-                        y: message.y,
-                        callback: () => {
-                            port.postMessage({ type: 'window.context-menu-closed', menuId });
-                        },
-                    });
-                    return;
-                }
+                        this.#onHistoryStateChangedController.emit({ type: 'history-state-changed' });
+                        return;
+                    }
 
-                case 'window.ready-to-show': {
-                    this._onOpenController.emit({ type: 'open' });
-                    window.show();
-                    return;
-                }
+                    case 'window.context-menu': {
+                        const menuId = message.menuId;
+                        const convert = (item: MenuItemConstructorOptions): MenuItemConstructorOptions => {
+                            const menuItemId = item.id;
+                            const click = item.id == null ? undefined : () => {
+                                port.postMessage({ type: 'window.context-menu-clicked', menuId, menuItemId });
+                            };
+                            if ('submenu' in item && Array.isArray(item.submenu))
+                                return { ...item, click, submenu: item.submenu.map(convert) };
+                            return { ...item, click };
+                        };
+                        const template = message.template.map(convert);
+                        const menu = Menu.buildFromTemplate(template);
+                        menu.popup({
+                            window,
+                            x: message.x,
+                            y: message.y,
+                            callback: () => {
+                                port.postMessage({ type: 'window.context-menu-closed', menuId });
+                            },
+                        });
+                        return;
+                    }
 
-                default: {
-                    console.error('unknown message:', message);
-                    return;
+                    case 'window.ready-to-show': {
+                        this._onOpenController.emit({ type: 'open' });
+                        window.show();
+                        return;
+                    }
+
+                    default: {
+                        console.error('unknown message:', message);
+                        return;
+                    }
                 }
-            }
+            });
         });
     }
 
