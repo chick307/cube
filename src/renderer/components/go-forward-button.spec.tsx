@@ -4,6 +4,7 @@ import TestUtils from 'react-dom/test-utils';
 
 import { Entry } from '../../common/entities/entry';
 import { FileSystem } from '../../common/entities/file-system';
+import { HistoryItem } from '../../common/entities/history-item';
 import { immediate } from '../../common/utils/immediate';
 import { State } from '../../common/utils/restate';
 import { HistoryControllerProvider } from '../contexts/history-controller-context';
@@ -14,7 +15,7 @@ import { GoForwardButton } from './go-forward-button';
 
 const entryA = Entry.fromJson({ type: 'directory', path: '/a' });
 const fileSystem = new FileSystem();
-const historyItemA = { entry: entryA, fileSystem };
+const historyItemA = new HistoryItem({ entry: entryA, fileSystem });
 
 let container: HTMLElement;
 

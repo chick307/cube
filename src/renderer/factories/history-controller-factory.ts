@@ -1,4 +1,5 @@
-import { HistoryController, HistoryControllerImpl, HistoryItem } from '../controllers/history-controller';
+import type { HistoryItem } from '../../common/entities/history-item';
+import { HistoryController, HistoryControllerImpl } from '../controllers/history-controller';
 
 export type HistoryControllerFactory = {
     create(params: CreateParameters): HistoryController;

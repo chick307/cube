@@ -2,6 +2,7 @@ import React from 'react';
 
 import type { DirectoryEntry, Entry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
+import { HistoryItem } from '../../../common/entities/history-item';
 import { useEntryService } from '../../contexts/entry-service-context';
 import { useHistoryController } from '../../contexts/history-controller-context';
 import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
@@ -26,7 +27,7 @@ const DirectoryItemView = (props: {
     const historyController = useHistoryController();
 
     const onClick = React.useCallback(() => {
-        historyController.navigate({ entry, fileSystem });
+        historyController.navigate(new HistoryItem({ entry, fileSystem }));
     }, [entry, fileSystem]);
 
     return (

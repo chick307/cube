@@ -1,4 +1,5 @@
 import { app } from 'electron';
+import { HistoryItem } from '../../common/entities/history-item';
 
 import { createContainer } from '../../common/utils/create-container';
 import '../handlers/icon-handler';
@@ -31,7 +32,8 @@ applicationMenuService.initialize();
 const openEntry = async (pathString: string) => {
     const entry = await localFileSystemService.getEntryFromPath(pathString);
     const fileSystem = localFileSystemService.getFileSystem();
-    mainWindowService.openFile({ entry, fileSystem });
+    const historyItem = new HistoryItem({ entry, fileSystem });
+    mainWindowService.openFile({ historyItem });
 };
 
 app.on('open-file', (event, path) => {

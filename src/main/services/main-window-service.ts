@@ -3,9 +3,8 @@ import * as path from 'path';
 import { BrowserWindow, Menu, MenuItemConstructorOptions, MessageChannelMain, app } from 'electron';
 
 import { DirectoryEntry } from '../../common/entities/entry';
-import type { Entry } from '../../common/entities/entry';
 import { LocalFileSystem } from '../../common/entities/file-system';
-import type { FileSystem } from '../../common/entities/file-system';
+import { HistoryItem } from '../../common/entities/history-item';
 import { EventController, EventSignal } from '../../common/utils/event-controller';
 import { EntryPath } from '../../common/values/entry-path';
 import type { RestoreWindowStateService } from './restore-window-state-service';
@@ -46,8 +45,7 @@ export type MainWindowService = {
     isOpen(): boolean;
 
     openFile(params: {
-        entry: Entry;
-        fileSystem: FileSystem;
+        historyItem: HistoryItem;
     }): void;
 
     selectNextTab(): void;
@@ -61,10 +59,10 @@ export type HistoryStateChangedEvent = {
     type: 'history-state-changed';
 };
 
-const defaultHistoryItem = {
+const defaultHistoryItem = new HistoryItem({
     entry: new DirectoryEntry(new EntryPath(app.getPath('home'))),
     fileSystem: new LocalFileSystem(),
-};
+});
 
 export class MainWindowServiceImpl implements MainWindowService {
     #historyState = {
@@ -114,10 +112,7 @@ export class MainWindowServiceImpl implements MainWindowService {
     }
 
     private async _createWindow(params: {
-        initialState?: {
-            entry: Entry;
-            fileSystem: FileSystem;
-        };
+        initialHistoryItem?: HistoryItem;
     }): Promise<void> {
         if (this._controller !== null)
             throw Error();
@@ -168,7 +163,7 @@ export class MainWindowServiceImpl implements MainWindowService {
         if (BUILD_MODE === 'development')
             window.webContents.openDevTools();
 
-        let initialHistoryItem = params.initialState ?? defaultHistoryItem;
+        let initialHistoryItem = params.initialHistoryItem ?? defaultHistoryItem;
         let channel: MessageChannelMain | null = null;
 
         window.on('ready-to-show', () => {
@@ -192,8 +187,7 @@ export class MainWindowServiceImpl implements MainWindowService {
 
             port.postMessage({
                 type: 'window.initialize',
-                entry: initialHistoryItem.entry.toJson(),
-                fileSystem: initialHistoryItem.fileSystem.toJson(),
+                historyItem: initialHistoryItem.toJson(),
             });
 
             initialHistoryItem = defaultHistoryItem;
@@ -295,19 +289,17 @@ export class MainWindowServiceImpl implements MainWindowService {
     }
 
     openFile(params: {
-        entry: Entry;
-        fileSystem: FileSystem;
+        historyItem: HistoryItem;
     }) {
         if (this._controller === null) {
-            this._createWindow({ initialState: { entry: params.entry, fileSystem: params.fileSystem } });
+            this._createWindow({ initialHistoryItem: params.historyItem });
             return;
         }
 
         this._controller.show();
         this._controller.postMessage({
             type: 'window.open-file',
-            entry: params.entry.toJson(),
-            fileSystem: params.fileSystem.toJson(),
+            historyItem: params.historyItem.toJson(),
         });
     }
 

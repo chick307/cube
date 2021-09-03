@@ -1,5 +1,6 @@
 import { Entry } from '../../common/entities/entry';
 import { FileSystem } from '../../common/entities/file-system';
+import { HistoryItem } from '../../common/entities/history-item';
 import { immediate } from '../../common/utils/immediate';
 import { Restate, State } from '../../common/utils/restate';
 import type { HistoryController } from './history-controller';
@@ -10,10 +11,10 @@ const entryB = Entry.fromJson({ type: 'directory', path: '/a/b' });
 const entryC = Entry.fromJson({ type: 'directory', path: '/a/b/c' });
 const entryD = Entry.fromJson({ type: 'directory', path: '/a/b/c/d' });
 const fileSystem = new FileSystem();
-const historyItemA = { entry: entryA, fileSystem };
-const historyItemB = { entry: entryB, fileSystem };
-const historyItemC = { entry: entryC, fileSystem };
-const historyItemD = { entry: entryD, fileSystem };
+const historyItemA = new HistoryItem({ entry: entryA, fileSystem });
+const historyItemB = new HistoryItem({ entry: entryB, fileSystem });
+const historyItemC = new HistoryItem({ entry: entryC, fileSystem });
+const historyItemD = new HistoryItem({ entry: entryD, fileSystem });
 const defaultHistoryItem = historyItemA;
 
 const defaultHistoryController: HistoryController = {

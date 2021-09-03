@@ -2,6 +2,7 @@ import React from 'react';
 
 import type { SymbolicLinkEntry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
+import { HistoryItem } from '../../../common/entities/history-item';
 import { useEntryService } from '../../contexts/entry-service-context';
 import { useHistoryController } from '../../contexts/history-controller-context';
 import { useTask } from '../../hooks/use-task';
@@ -33,7 +34,7 @@ export const SymbolicLinkEntryView = (props: Props) => {
     const onClick = React.useCallback(() => {
         if (link?.entry == null)
             return;
-        historyController.navigate({ entry: link.entry, fileSystem });
+        historyController.navigate(new HistoryItem({ entry: link.entry, fileSystem }));
     }, [link]);
 
     if (link == null)

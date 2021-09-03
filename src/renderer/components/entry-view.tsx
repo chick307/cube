@@ -11,6 +11,7 @@ import styles from './entry-view.css';
 import { entryViews } from './entry-views';
 import { GoBackButton } from './go-back-button';
 import { GoForwardButton } from './go-forward-button';
+import { HistoryItem } from '../../common/entities/history-item';
 
 export type Props = {
     className?: string;
@@ -40,12 +41,12 @@ export const EntryView = (props: Props) => {
 
     React.useEffect(() => {
         if (entry.isFile() && isZipEntry(entry)) {
-            historyController.replace({
+            historyController.replace(new HistoryItem({
                 entry: new DirectoryEntry(new EntryPath('/')),
                 fileSystem: new ZipFileSystem({
                     container: { entry, fileSystem },
                 }),
-            });
+            }));
         }
     }, [entry, fileSystem]);
 

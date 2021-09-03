@@ -1,5 +1,6 @@
 import { Entry } from '../../common/entities/entry';
 import { FileSystem } from '../../common/entities/file-system';
+import { HistoryItem } from '../../common/entities/history-item';
 import { immediate } from '../../common/utils/immediate';
 import { HistoryControllerImpl } from './history-controller';
 
@@ -8,9 +9,9 @@ const unknownFileSystem = new UnknownFileSystem();
 const entryA = Entry.fromJson({ type: 'directory', path: '/a' });
 const entryB = Entry.fromJson({ type: 'directory', path: '/a/b' });
 const entryC = Entry.fromJson({ type: 'file', path: '/a/b/c' });
-const historyItemA = { entry: entryA, fileSystem: unknownFileSystem };
-const historyItemB = { entry: entryB, fileSystem: unknownFileSystem };
-const historyItemC = { entry: entryC, fileSystem: unknownFileSystem };
+const historyItemA = new HistoryItem({ entry: entryA, fileSystem: unknownFileSystem });
+const historyItemB = new HistoryItem({ entry: entryB, fileSystem: unknownFileSystem });
+const historyItemC = new HistoryItem({ entry: entryC, fileSystem: unknownFileSystem });
 
 describe('HistoryContollerImpl class', () => {
     describe('historyController.goBack() method', () => {

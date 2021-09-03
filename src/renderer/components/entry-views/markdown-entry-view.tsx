@@ -6,6 +6,7 @@ import ReactDomServer from 'react-dom/server';
 
 import type { FileEntry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
+import { HistoryItem } from '../../../common/entities/history-item';
 import { EntryPath } from '../../../common/values/entry-path';
 import { useEntryService } from '../../contexts/entry-service-context';
 import { useHistoryController } from '../../contexts/history-controller-context';
@@ -68,7 +69,7 @@ export const MarkdownEntryView = (props: Props) => {
                 const entry = await entryService.createEntryFromPath({ entryPath, fileSystem });
                 if (entry === null)
                     return;
-                historyController.navigate({ entry, fileSystem });
+                historyController.navigate(new HistoryItem({ entry, fileSystem }));
             });
         } else {
             shell.openExternal(url.href);

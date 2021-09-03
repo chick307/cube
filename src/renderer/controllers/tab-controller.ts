@@ -1,10 +1,9 @@
-import type { Entry } from '../../common/entities/entry';
-import type { FileSystem } from '../../common/entities/file-system';
+import type { HistoryItem } from '../../common/entities/history-item';
 import { CloseController } from '../../common/utils/close-controller';
 import { EventController, EventSignal } from '../../common/utils/event-controller';
 import { Restate, State } from '../../common/utils/restate';
 import type { HistoryControllerFactory } from '../factories/history-controller-factory';
-import type { HistoryController, HistoryItem } from './history-controller';
+import type { HistoryController } from './history-controller';
 
 export type TabState = {
     active: boolean;
@@ -39,10 +38,7 @@ export type TabController = {
 
 export type AddTabParameters = {
     active: boolean;
-    historyItem?: {
-        entry: Entry;
-        fileSystem: FileSystem;
-    } | null;
+    historyItem?: HistoryItem | null;
 };
 
 export type RemoveTabParameters = {

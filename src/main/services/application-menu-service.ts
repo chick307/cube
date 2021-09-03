@@ -1,7 +1,8 @@
 import { Menu, dialog } from 'electron';
 
-import type { MainWindowService } from './main-window-service';
+import { HistoryItem } from '../../common/entities/history-item';
 import type { LocalFileSystemService } from './local-file-system-service';
+import type { MainWindowService } from './main-window-service';
 
 export type ApplicationMenuService = {
     initialize(): void;
@@ -182,7 +183,8 @@ export class ApplicationMenuServiceImpl implements ApplicationMenuService {
         for (const filePath of result.filePaths) {
             const entry = await this._localFileSystemService.getEntryFromPath(filePath);
             const fileSystem = this._localFileSystemService.getFileSystem();
-            this._mainWindowService.openFile({ entry, fileSystem });
+            const historyItem = new HistoryItem({ entry, fileSystem });
+            this._mainWindowService.openFile({ historyItem });
         }
     }
 

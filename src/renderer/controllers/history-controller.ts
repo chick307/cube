@@ -1,11 +1,5 @@
-import type { Entry } from '../../common/entities/entry';
-import type { FileSystem } from '../../common/entities/file-system';
+import type { HistoryItem } from '../../common/entities/history-item';
 import { Restate, State } from '../../common/utils/restate';
-
-export type HistoryItem = {
-    entry: Entry;
-    fileSystem: FileSystem;
-};
 
 export type HistoryControllerState = {
     ableToGoBack: boolean;
@@ -86,14 +80,14 @@ export class HistoryControllerImpl implements HistoryController {
     navigate(item: HistoryItem): void {
         this.#restate.update((state) => {
             const backHistories = [...state.backHistories, state.current];
-            const current = { entry: item.entry, fileSystem: item.fileSystem };
+            const current = item;
             return { ...state, backHistories, current, forwardHistories: [] };
         });
     }
 
     replace(item: HistoryItem): void {
         this.#restate.update((state) => {
-            const current = { entry: item.entry, fileSystem: item.fileSystem };
+            const current = item;
             return { ...state, current };
         });
     }

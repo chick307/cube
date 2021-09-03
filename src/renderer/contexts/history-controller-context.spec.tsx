@@ -1,8 +1,7 @@
 import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-import { Entry } from '../../common/entities/entry';
-import { LocalFileSystem } from '../../common/entities/file-system';
+import { HistoryItem } from '../../common/entities/history-item';
 import { State } from '../../common/utils/restate';
 import { HistoryController } from '../controllers/history-controller';
 import { composeElements } from '../utils/compose-elements';
@@ -36,10 +35,10 @@ describe('HistoryController context', () => {
                 state: State.of({
                     ableToGoBack: false,
                     ableToGoForward: false,
-                    current: {
-                        entry: Entry.fromJson({ type: 'directory', path: '/a' }),
-                        fileSystem: new LocalFileSystem(),
-                    },
+                    current: HistoryItem.fromJson({
+                        entry: { type: 'directory', path: '/a' },
+                        fileSystem: { type: 'local' },
+                    }),
                 }),
                 goBack: () => {},
                 goForward: () => {},

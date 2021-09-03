@@ -1,5 +1,4 @@
-import { Entry, EntryJson } from '../../common/entities/entry';
-import { FileSystem, FileSystemJson } from '../../common/entities/file-system';
+import { HistoryItem, HistoryItemJson } from '../../common/entities/history-item';
 import { TabController } from '../controllers/tab-controller';
 import { MainChannelService } from './main-channel-service';
 
@@ -68,17 +67,15 @@ export class ApplicationServiceImpl implements ApplicationService {
                 }
 
                 case 'window.initialize': {
-                    const entry = Entry.fromJson(message.entry);
-                    const fileSystem = FileSystem.fromJson(message.fileSystem);
-                    this.#tabController.addTab({ active: true, historyItem: { entry, fileSystem } });
+                    const historyItem = HistoryItem.fromJson(message.historyItem);
+                    this.#tabController.addTab({ active: true, historyItem });
                     this.#mainChannelService.postMessage({ type: 'window.ready-to-show' });
                     return;
                 }
 
                 case 'window.open-file': {
-                    const entry = Entry.fromJson(message.entry);
-                    const fileSystem = FileSystem.fromJson(message.fileSystem);
-                    this.#tabController.addTab({ active: true, historyItem: { entry, fileSystem } });
+                    const historyItem = HistoryItem.fromJson(message.historyItem);
+                    this.#tabController.addTab({ active: true, historyItem });
                     return;
                 }
 
@@ -116,14 +113,12 @@ declare module './main-channel-service' {
 
         'window.initialize': {
             type: 'window.initialize';
-            entry: EntryJson;
-            fileSystem: FileSystemJson;
+            historyItem: HistoryItemJson;
         };
 
         'window.open-file': {
             type: 'window.open-file';
-            entry: EntryJson;
-            fileSystem: FileSystemJson;
+            historyItem: HistoryItem;
         };
 
         'window.select-next-tab': {
