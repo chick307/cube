@@ -1,0 +1,43 @@
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface ViewerStateTypes {}
+
+export type ViewerStateInstanceTypes = {
+    [Type in keyof ViewerStateTypes]: (
+        ViewerStateTypes[Type] extends { prototype: infer InstanceType; } ? InstanceType :
+        never
+    );
+};
+
+export type ViewerStateJsonTypes = {
+    [Type in keyof ViewerStateInstanceTypes]: (
+        ViewerStateInstanceTypes[Type] extends { toJson(): infer Json; } ? Json :
+        never
+    );
+};
+
+export type ViewerStateJson = ViewerStateJsonTypes[keyof ViewerStateJsonTypes];
+
+export const viewerStateTypes = {} as Partial<ViewerStateTypes>;
+
+export abstract class ViewerState {
+    static fromJson<Type extends keyof ViewerStateTypes>(json: ViewerStateJsonTypes[Type]): (
+        ViewerStateInstanceTypes[Type]
+    );
+
+    static fromJson(json: unknown): ViewerState;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    static fromJson(json: any): ViewerState {
+        if (json == null || typeof json.type !== 'string')
+            throw Error();
+        const viewerStateType = viewerStateTypes[json.type as keyof ViewerStateTypes];
+        if (viewerStateType == null)
+            throw Error();
+        const viewerState = viewerStateType.fromJson(json);
+        return viewerState;
+    }
+
+    abstract get type(): string;
+
+    abstract toJson(): ViewerStateJson;
+}
