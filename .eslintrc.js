@@ -36,6 +36,8 @@ module.exports = {
             files: [
                 'src/**/*.spec.ts',
                 'src/**/*.spec.tsx',
+                'src/**/*.test-helper.ts',
+                'src/**/*.test-helper.tsx',
             ],
             rules: {
                 '@typescript-eslint/no-empty-function': ['off'],

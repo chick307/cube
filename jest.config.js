@@ -4,7 +4,9 @@ module.exports = {
         '<rootDir>/src/**/*.(js|ts|tsx)',
     ],
     coverageDirectory: '<rootDir>/coverage',
-    coveragePathIgnorePatterns: [],
+    coveragePathIgnorePatterns: [
+        '\\.test-helper\\.(?:js|ts|tsx)$',
+    ],
     coverageReporters: ['lcov'],
     preset: 'ts-jest/presets/default',
     testEnvironment: 'jsdom',

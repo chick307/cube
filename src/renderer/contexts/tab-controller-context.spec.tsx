@@ -1,9 +1,8 @@
 import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-import { EventSignal } from '../../common/utils/event-controller';
-import { State } from '../../common/utils/restate';
 import { TabController } from '../controllers/tab-controller';
+import { createTabController } from '../controllers/tab-controller.test-helper';
 import { composeElements } from '../utils/compose-elements';
 import { TabControllerProvider, useTabController } from './tab-controller-context';
 
@@ -31,26 +30,16 @@ describe('TabController context', () => {
                 return <></>;
             };
 
-            const tabControllerInstance: TabController = {
-                state: State.of({ tabs: [] }),
-                onActiveTabChanged: EventSignal.never<any>(),
-                onHistoryStateChanged: EventSignal.never<any>(),
-                onTabAllClosed: EventSignal.never<any>(),
-                addTab: () => {},
-                removeTab: () => {},
-                selectNextTab: () => {},
-                selectTab: () => {},
-                selectPreviousTab: () => {},
-            };
+            const { tabController } = createTabController();
 
             TestUtils.act(() => {
                 ReactDom.render(composeElements(
-                    <TabControllerProvider value={tabControllerInstance}/>,
+                    <TabControllerProvider value={tabController}/>,
                     <Component />,
                 ), container);
             });
 
-            expect(instance).toBe(tabControllerInstance);
+            expect(instance).toBe(tabController);
         });
     });
 
