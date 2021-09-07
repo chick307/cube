@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTabController } from '../contexts/tab-controller-context';
+import { useTabController } from '../../contexts/tab-controller-context';
 import styles from './tab-close-button.css';
 
 export type Props = {

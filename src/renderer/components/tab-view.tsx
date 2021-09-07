@@ -8,7 +8,7 @@ import { composeElements } from '../utils/compose-elements';
 import { EntryIcon } from './entry-icon';
 import { EntryView } from './entry-view';
 import { TabAddButton } from './tab/tab-add-button';
-import { TabCloseButton } from './tab-close-button';
+import { TabCloseButton } from './tab/tab-close-button';
 import styles from './tab-view.css';
 
 export type Props = {
