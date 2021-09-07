@@ -1,16 +1,16 @@
 import React from 'react';
 
-import { useTabController } from '../contexts/tab-controller-context';
+import { useTabController } from '../../contexts/tab-controller-context';
 import styles from './tab-add-button.css';
 
 export const TabAddButton = () => {
     const tabController = useTabController();
 
+    const className = `${styles.tabAddButton}`;
+
     const onClick = React.useCallback(() => {
         tabController.addTab({ active: true });
     }, [tabController]);
-
-    const className = `${styles.tabAddButton}`;
 
     return (
         <button {...{ className, onClick }}>
