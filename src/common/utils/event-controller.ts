@@ -9,6 +9,23 @@ export type EventSignalLike<Event> = {
 export class EventSignal<Event> implements EventSignalLike<Event> {
     constructor(private _signal: EventSignalLike<Event>) {}
 
+    static fromMessagePort<Event>(messagePort: MessagePort): EventSignal<Event> {
+        return new EventSignal<Event>({
+            addListener: (listener: EventListener<Event>) => {
+                const internalListener = (event: { data: Event; }) => {
+                    listener(event.data);
+                };
+                messagePort.addEventListener('message', internalListener);
+                messagePort.start();
+                return {
+                    removeListener: () => {
+                        messagePort.removeEventListener('message', internalListener);
+                    },
+                };
+            },
+        });
+    }
+
     static never<Event>(): EventSignal<Event> {
         return new EventSignal({
             addListener: () => {

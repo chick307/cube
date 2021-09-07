@@ -1,4 +1,7 @@
+import { MessageChannel } from 'worker_threads';
+
 import { EventController, EventSignal } from './event-controller';
+import { timeout } from './immediate';
 
 describe('EventController class', () => {
     describe('eventController.emit() method', () => {
@@ -50,6 +53,30 @@ describe('EventController class', () => {
 });
 
 describe('EventSignal class', () => {
+    describe('EventSignal.fromMessagePort() method', () => {
+        test('it creates a new event signal', async () => {
+            const messageChannel = new MessageChannel() as any as { port1: MessagePort; port2: MessagePort; };
+            const signal = EventSignal.fromMessagePort<string>(messageChannel.port2);
+            const listener = jest.fn();
+            const remover = signal.addListener(listener);
+            messageChannel.port1.postMessage('message 1');
+            await timeout();
+            expect(listener).toHaveBeenCalledTimes(1);
+            expect(listener).toHaveBeenCalledWith('message 1');
+            listener.mockClear();
+            messageChannel.port1.postMessage('message 2');
+            await timeout();
+            expect(listener).toHaveBeenCalledTimes(1);
+            expect(listener).toHaveBeenCalledWith('message 2');
+            listener.mockClear();
+            remover.removeListener();
+            messageChannel.port1.postMessage('message 3');
+            await timeout();
+            expect(listener).not.toHaveBeenCalled();
+            messageChannel.port1.close();
+        });
+    });
+
     describe('EventSignal.never() method', () => {
         test('it creates a new event signal that does nothing', () => {
             const signal = EventSignal.never();

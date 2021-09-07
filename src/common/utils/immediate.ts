@@ -5,3 +5,9 @@ export const immediate = () => {
         timers.setImmediate(resolve);
     });
 };
+
+export const timeout = () => {
+    return new Promise<void>((resolve) => {
+        timers.setTimeout(resolve, 0);
+    });
+};
