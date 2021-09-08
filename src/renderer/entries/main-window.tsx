@@ -9,6 +9,7 @@ import { ContextMenuServiceProvider } from '../contexts/context-menu-service-con
 import { EntryIconServiceProvider } from '../contexts/entry-icon-service-context';
 import { EntryServiceProvider } from '../contexts/entry-service-context';
 import { TabControllerProvider } from '../contexts/tab-controller-context';
+import { ViewerServiceProvider } from '../contexts/viewer-service-context';
 import { TabControllerImpl } from '../controllers/tab-controller';
 import { HistoryControllerFactoryImpl } from '../factories/history-controller-factory';
 import { useTask } from '../hooks/use-task';
@@ -18,6 +19,7 @@ import { EntryIconServiceImpl } from '../services/entry-icon-service';
 import { EntryServiceImpl } from '../services/entry-service';
 import { LocalEntryService, LocalEntryServiceImpl } from '../services/local-entry-service';
 import { MainChannelServiceImpl } from '../services/main-channel-service';
+import { ViewerServiceImpl } from '../services/viewer-service';
 import { ZipEntryServiceImpl } from '../services/zip-entry-service';
 import { composeElements } from '../utils/compose-elements';
 import './main-window.css';
@@ -48,6 +50,7 @@ const MainWindow = () => {
             mainChannelService: MainChannelServiceImpl,
             messagePort: createFactory(() => port),
             tabController: TabControllerImpl,
+            viewerService: ViewerServiceImpl,
             zipEntryService: ZipEntryServiceImpl,
         });
 
@@ -67,6 +70,7 @@ const MainWindow = () => {
         <EntryIconServiceProvider value={container.entryIconService} />,
         <EntryServiceProvider value={container.entryService} />,
         <TabControllerProvider value={container.tabController} />,
+        <ViewerServiceProvider value={container.viewerService} />,
         <TabView />,
     );
 };
