@@ -9,4 +9,5 @@ export { MediaViewerState, MediaViewerStateJson } from './media-viewer-state';
 export { PdfViewerState, PdfViewerStateJson } from './pdf-viewer-state';
 export { SymbolicLinkViewerState, SymbolicLinkViewerStateJson } from './symbolic-link-viewer-state';
 export { TextViewerState, TextViewerStateJson } from './text-viewer-state';
+export { TsvViewerState, TsvViewerStateJson } from './tsv-viewer-state';
 export { ViewerState, ViewerStateJson } from './viewer-state';

@@ -9,3 +9,4 @@ export { MediaEntryView } from './media-entry-view';
 export { PdfEntryView } from './pdf-entry-view';
 export { SymbolicLinkEntryView } from './symbolic-link-entry-view';
 export { TextEntryView } from './text-entry-view';
+export { TsvEntryView } from './tsv-entry-view';

@@ -172,6 +172,12 @@ const textViewer = createFileViewer({
     render: ({ entry, fileSystem }) => ({ node: <EntryViews.TextEntryView {...{ entry, fileSystem }} /> }),
 });
 
+const tsvViewer = createFileViewer({
+    name: 'TSV',
+    viewerStateFactory: () => new ViewerStates.TsvViewerState(),
+    render: ({ entry, fileSystem }) => ({ node: <EntryViews.TsvEntryView {...{ entry, fileSystem }} /> }),
+});
+
 const createRedirectViewer = (params: {
     historyItem: HistoryItem;
     viewer: Viewer;
@@ -248,6 +254,7 @@ export class ViewerServiceImpl implements ViewerService {
             viewers.push(mediaViewer);
             viewers.push(pdfViewer);
             viewers.push(textViewer);
+            viewers.push(tsvViewer);
             viewers.push(createRedirectViewer({
                 historyItem: new HistoryItem({
                     entry: rootDirectory,
@@ -266,6 +273,7 @@ export class ViewerServiceImpl implements ViewerService {
                 this.#hasMediaExtension(entry) ? (viewer) => viewer.id === 'media' ? -1 : 0 :
                 this.#hasPdfExtension(entry) ? (viewer) => viewer.id === 'pdf' ? -1 : 0 :
                 this.#hasTextExtension(entry) ? (viewer) => viewer.id === 'text' ? -1 : 0 :
+                this.#hasTsvExtension(entry) ? (viewer) => viewer.id === 'tsv' ? -1 : 0 :
                 this.#hasZipExtension(entry) ? (viewer) => viewer.id === 'redirected-zip' ? -1 : 0 :
                 () => 0,
             );
@@ -306,6 +314,10 @@ export class ViewerServiceImpl implements ViewerService {
 
     #hasTextExtension(entry: FileEntry) {
         return /^\.(?:txt)$/.test(entry.path.getExtension());
+    }
+
+    #hasTsvExtension(entry: FileEntry) {
+        return /^\.(?:tsv)$/.test(entry.path.getExtension());
     }
 
     #hasZipExtension(entry: FileEntry) {
