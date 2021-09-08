@@ -1,3 +1,5 @@
+import React from 'react';
+
 import type { FileEntry } from '../../common/entities/entry';
 import { FileSystem } from '../../common/entities/file-system';
 import { useEntryService } from '../contexts/entry-service-context';
@@ -20,16 +22,21 @@ export const useBlobUrl = (params: Parameters) => {
         return buffer;
     }, [entry, fileSystem]);
 
-    const [url = null] = useTask(async (signal) => {
+    const url = React.useMemo(() => {
         if (buffer == null)
-            return;
+            return null;
         const blob = new Blob([buffer], { type });
         const url = URL.createObjectURL(blob);
-        signal.defer(() => {
-            URL.revokeObjectURL(url);
-        });
         return url;
     }, [buffer, type]);
+
+    React.useEffect(() => {
+        if (url === null)
+            return;
+        return () => {
+            URL.revokeObjectURL(url);
+        };
+    }, [url]);
 
     return url;
 };

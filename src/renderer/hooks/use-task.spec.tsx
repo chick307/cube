@@ -58,6 +58,7 @@ describe('useTask() hook', () => {
         const closed = jest.fn();
         const callback = jest.fn(async (signal) => {
             signal.defer(closed);
+            await Promise.race([]);
         });
         const Component = (props: { deps: any[]; }) => {
             useTask(callback, props.deps);
