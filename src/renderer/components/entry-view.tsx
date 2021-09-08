@@ -47,6 +47,25 @@ export const EntryView = (props: Props) => {
         return { node, viewer };
     }, [historyController, historyItem, viewerService, viewers]);
 
+    const onViewerSelected = React.useCallback((e: React.ChangeEvent) => {
+        const target = e.target as HTMLSelectElement;
+        const id = target.value;
+        const viewer = viewers.find((viewer) => viewer.id === id);
+        if (viewer == null)
+            return;
+        const newHistoryItem = viewer.redirect(historyItem);
+        historyController.replace(newHistoryItem);
+    }, [historyItem, viewers, viewerService]);
+
+    const viewerId = viewer?.id ?? '-';
+    const viewerOptions = React.useMemo(() => {
+        return viewers.map((viewer) => (
+            <option key={viewer.id} value={viewer.id}>
+                {viewer.name}
+            </option>
+        )).concat(viewerId === '-' ? [<option key={'-'} value={'-'}>-</option>] : []);
+    }, [viewerId, viewers]);
+
     return (
         <div key={historyItem.entry.path.toString()} className={`${className} ${styles.entryView}`}>
             <div className={styles.path}>
@@ -63,11 +82,14 @@ export const EntryView = (props: Props) => {
                 <div className={styles.entryViewStatusBar}>
                     <StatusBarExit />
                 </div>
-                <div className={styles.entryViewNameContainer}>
-                    <span className={styles.entryViewName}>
-                        {viewer?.name ?? ''}
+                <label className={styles.viewerSelectContainer}>
+                    <span className={styles.viewerName}>
+                        {viewer?.name ?? '-'}
                     </span>
-                </div>
+                    <select className={styles.viewerSelect} value={viewer?.id ?? '-'} onChange={onViewerSelected}>
+                        {viewerOptions}
+                    </select>
+                </label>
             </StatusBarGateway>
         </div>
     );
