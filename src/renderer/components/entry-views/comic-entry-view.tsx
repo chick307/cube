@@ -143,6 +143,3 @@ export const ComicEntryView = (props: Props) => {
         </div>
     );
 };
-
-export const isComicEntry = (entry: FileEntry) =>
-    /^\.(?:cbz)$/.test(entry.path.getExtension());

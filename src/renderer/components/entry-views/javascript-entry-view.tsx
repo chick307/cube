@@ -22,6 +22,3 @@ export const JavaScriptEntryView = (props: Props) => {
         </div>
     );
 };
-
-export const isJavaScriptEntry = (entry: FileEntry) =>
-    /^\.(?:jsx?)$/i.test(entry.path.getExtension());

@@ -22,6 +22,3 @@ export const CssEntryView = (props: Props) => {
         </div>
     );
 };
-
-export const isCssEntry = (entry: FileEntry) =>
-    /^\.(?:css)$/i.test(entry.path.getExtension());

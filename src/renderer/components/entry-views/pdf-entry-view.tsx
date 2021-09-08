@@ -124,6 +124,3 @@ export const PdfEntryView = (props: Props) => {
         </div>
     );
 };
-
-export const isPdfEntry = (entry: FileEntry) =>
-    /^\.pdf$/i.test(entry.path.getExtension());

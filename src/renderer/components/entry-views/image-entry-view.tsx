@@ -37,6 +37,3 @@ export const ImageEntryView = (props: Props) => {
         </div>
     );
 };
-
-export const isImageEntry = (entry: FileEntry) =>
-    /^\.(?:jpe?g|png|svg|webp)$/i.test(entry.path.getExtension());

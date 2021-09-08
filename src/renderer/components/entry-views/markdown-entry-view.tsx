@@ -83,6 +83,3 @@ export const MarkdownEntryView = (props: Props) => {
         </div>
     );
 };
-
-export const isMarkdownEntry = (entry: FileEntry) =>
-    /^\.(?:md|markdown)$/i.test(entry.path.getExtension());

@@ -26,6 +26,3 @@ export const MediaEntryView = (props: Props) => {
         </div>
     );
 };
-
-export const isMediaEntry = (entry: FileEntry) =>
-    /\.(?:m4a|mp[34]|wav)/.test(entry.path.getExtension());
