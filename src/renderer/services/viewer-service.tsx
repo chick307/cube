@@ -77,6 +77,21 @@ const directoryViewer: Viewer = {
     },
 };
 
+const comicViewer: Viewer = {
+    id: 'comic',
+    name: 'Comic',
+    canRender: (historyItem) => historyItem.viewerState?.type === 'comic',
+    redirect: (historyItem) => {
+        const viewerState = new ViewerStates.ComicViewerState();
+        return new HistoryItem({ ...historyItem, viewerState });
+    },
+    render({ entry, fileSystem }: HistoryItem) {
+        if (!entry.isDirectory() && !entry.isSymbolicLink())
+            return null;
+        return <EntryViews.ComicEntryView {...{ entry: entry as DirectoryEntry, fileSystem }} />;
+    },
+};
+
 const zipViewer: Viewer = {
     id: 'zip',
     name: 'Zip',
@@ -122,12 +137,6 @@ const binaryViewer = createFileViewer({
     name: 'Binary',
     viewerStateFactory: () => new ViewerStates.BinaryViewerState(),
     render: ({ entry, fileSystem }) => ({ node: <EntryViews.BinaryEntryView {...{ entry, fileSystem }} /> }),
-});
-
-const comicViewer = createFileViewer({
-    name: 'Comic',
-    viewerStateFactory: () => new ViewerStates.ComicViewerState(),
-    render: ({ entry, fileSystem }) => ({ node: <EntryViews.ComicEntryView {...{ entry, fileSystem }} /> }),
 });
 
 const cssViewer = createFileViewer({
@@ -228,16 +237,19 @@ export class ViewerServiceImpl implements ViewerService {
                     return viewers.map((viewer) => {
                         if (viewer.id === 'redirected-zip')
                             return zipViewer;
+                        if (viewer.id === 'redirected-comic')
+                            return comicViewer;
                         return createRedirectViewer({ historyItem: viewer.redirect(historyItem), viewer });
                     });
                 }
 
-                return [zipViewer];
+                return [zipViewer, comicViewer];
             }
 
             const viewers = [] as Viewer[];
 
             viewers.push(directoryViewer);
+            viewers.push(comicViewer);
 
             return viewers;
         }
@@ -246,7 +258,6 @@ export class ViewerServiceImpl implements ViewerService {
             const viewers = [] as Viewer[];
 
             viewers.push(binaryViewer);
-            viewers.push(comicViewer);
             viewers.push(cssViewer);
             viewers.push(imageViewer);
             viewers.push(javascriptViewer);
@@ -255,17 +266,27 @@ export class ViewerServiceImpl implements ViewerService {
             viewers.push(pdfViewer);
             viewers.push(textViewer);
             viewers.push(tsvViewer);
+
+            const zipFileSystem = new ZipFileSystem({ container: { entry, fileSystem } });
             viewers.push(createRedirectViewer({
                 historyItem: new HistoryItem({
                     entry: rootDirectory,
-                    fileSystem: new ZipFileSystem({ container: { entry, fileSystem } }),
+                    fileSystem: zipFileSystem,
+                    viewerState: new ViewerStates.ComicViewerState(),
+                }),
+                viewer: comicViewer,
+            }));
+            viewers.push(createRedirectViewer({
+                historyItem: new HistoryItem({
+                    entry: rootDirectory,
+                    fileSystem: zipFileSystem,
                     viewerState: new ViewerStates.DirectoryViewerState(),
                 }),
                 viewer: zipViewer,
             }));
 
             viewers.sort(
-                this.#hasComicExtension(entry) ? (viewer) => viewer.id === 'comic' ? -1 : 0 :
+                this.#hasComicExtension(entry) ? (viewer) => viewer.id === 'redirected-comic' ? -1 : 0 :
                 this.#hasCssExtension(entry) ? (viewer) => viewer.id === 'css' ? -1 : 0 :
                 this.#hasImageExtension(entry) ? (viewer) => viewer.id === 'image' ? -1 : 0 :
                 this.#hasJavaScriptExtension(entry) ? (viewer) => viewer.id === 'javascript' ? -1 : 0 :

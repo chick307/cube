@@ -1,41 +1,26 @@
 import React from 'react';
 
-import type { FileEntry } from '../../../common/entities/entry';
-import { DirectoryEntry } from '../../../common/entities/entry';
+import type { DirectoryEntry, FileEntry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
-import { ZipFileSystem } from '../../../common/entities/file-system';
-import { EntryPath } from '../../../common/values/entry-path';
 import { useEntryService } from '../../contexts/entry-service-context';
 import { useTask } from '../../hooks/use-task';
 import styles from './comic-entry-view.css';
 
 export type Props = {
     className?: string;
-    entry: FileEntry;
+    entry: DirectoryEntry;
     fileSystem: FileSystem;
 };
-
-const rootDirectoryEntry = new DirectoryEntry(new EntryPath('/'));
 
 export const ComicEntryView = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
 
     const entryService = useEntryService();
 
-    const zipFileSystem = React.useMemo(() => {
-        const zipFileSystem = new ZipFileSystem({ container: { entry, fileSystem } });
-        return zipFileSystem;
-    }, [entry, fileSystem]);
-
     const [pages] = useTask(async (signal) => {
         const pages: FileEntry[] = [];
         const getPages = async (directoryEntry: DirectoryEntry) => {
-            const entries = await entryService.readDirectory({
-                entry: directoryEntry,
-                fileSystem: zipFileSystem,
-            }, {
-                signal,
-            });
+            const entries = await entryService.readDirectory({ entry: directoryEntry, fileSystem }, { signal });
             for (const entry of entries) {
                 if (entry.isDirectory()) {
                     await signal.wrapPromise(getPages(entry));
@@ -44,9 +29,9 @@ export const ComicEntryView = (props: Props) => {
                 }
             }
         };
-        await getPages(rootDirectoryEntry);
+        await signal.wrapPromise(getPages(entry));
         return pages;
-    }, [zipFileSystem]);
+    }, [entry, entryService, fileSystem]);
 
     const spreads = React.useMemo(() => {
         if (pages == null)
@@ -85,7 +70,7 @@ export const ComicEntryView = (props: Props) => {
         return () => {
             document.removeEventListener('keydown', onKeyDown);
         };
-    }, [pages]);
+    }, [spreads]);
 
     const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
@@ -99,12 +84,7 @@ export const ComicEntryView = (props: Props) => {
             return;
         }
         const loadImage = async (fileEntry: FileEntry) => {
-            const buffer = await entryService.readFile({
-                entry: fileEntry,
-                fileSystem: zipFileSystem,
-            }, {
-                signal,
-            });
+            const buffer = await entryService.readFile({ entry: fileEntry, fileSystem }, { signal });
             const extension = fileEntry.path.getExtension();
             const type = extension === '.png' ? 'image/png' : 'image/jpeg';
             const blob = new Blob([buffer], { type });
