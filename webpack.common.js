@@ -29,6 +29,7 @@ const common = (options) => {
             new webpack.DefinePlugin({
                 /* eslint-disable @typescript-eslint/naming-convention */
                 BUILD_MODE: JSON.stringify(options.mode),
+                SharedArrayBuffer: 'ArrayBuffer',
                 /* eslint-enable @typescript-eslint/naming-convention */
             }),
         ],
