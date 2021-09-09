@@ -85,10 +85,14 @@ const comicViewer: Viewer = {
         const viewerState = new ViewerStates.ComicViewerState();
         return new HistoryItem({ ...historyItem, viewerState });
     },
-    render({ entry, fileSystem }: HistoryItem) {
-        if (!entry.isDirectory() && !entry.isSymbolicLink())
+    render(historyItem) {
+        if (!historyItem.entry.isDirectory() && !historyItem.entry.isSymbolicLink())
             return null;
-        return <EntryViews.ComicEntryView {...{ entry: entry as DirectoryEntry, fileSystem }} />;
+        const entry = historyItem.entry as DirectoryEntry;
+        const { fileSystem } = historyItem;
+        const viewerState = historyItem.viewerState as ViewerStates.ComicViewerState;
+        const pageDisplay = viewerState.pageDisplay;
+        return <EntryViews.ComicEntryView {...{ entry, fileSystem, pageDisplay }} />;
     },
 };
 

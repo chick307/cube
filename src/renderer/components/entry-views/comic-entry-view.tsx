@@ -2,7 +2,11 @@ import React from 'react';
 
 import type { DirectoryEntry, FileEntry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
+import { HistoryItem } from '../../../common/entities/history-item';
+import { ComicViewerPageDisplay, ComicViewerState } from '../../../common/values/viewer-state/comic-viewer-state';
 import { useEntryService } from '../../contexts/entry-service-context';
+import { useHistoryController } from '../../contexts/history-controller-context';
+import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
 import { useTask } from '../../hooks/use-task';
 import styles from './comic-entry-view.css';
 
@@ -10,12 +14,15 @@ export type Props = {
     className?: string;
     entry: DirectoryEntry;
     fileSystem: FileSystem;
+    pageDisplay: ComicViewerPageDisplay;
 };
 
 export const ComicEntryView = (props: Props) => {
-    const { className = '', entry, fileSystem } = props;
+    const { className = '', entry, fileSystem, pageDisplay } = props;
 
+    const historyController = useHistoryController();
     const entryService = useEntryService();
+    const StatusBarGateway = useStatusBarGateway();
 
     const [pages] = useTask(async (signal) => {
         const pages: FileEntry[] = [];
@@ -38,12 +45,14 @@ export const ComicEntryView = (props: Props) => {
             return;
         if (pages.length === 0)
             return;
+        if (pageDisplay === 'single')
+            return pages.map((entry) => [entry]);
         const spreads: ([FileEntry] | [FileEntry, FileEntry])[] = [[pages[0]]];
         const length = Math.ceil((pages.length - 1) / 2) + 1;
         for (let i = 1; i < length; i++)
             spreads.push(i * 2 < pages.length ? [pages[i * 2 - 1], pages[i * 2]] : [pages[i * 2 - 1]]);
         return spreads;
-    }, [pages]);
+    }, [pages, pageDisplay]);
 
     const [currentSpreadIndex, setCurrentSpreadIndex] = React.useState<number>(() => 0);
 
@@ -117,9 +126,38 @@ export const ComicEntryView = (props: Props) => {
         }
     }, [currentSpread]);
 
+    const onPageDisplaySelected = React.useCallback((event: React.ChangeEvent) => {
+        const target = event.target as HTMLSelectElement;
+        const viewerState = new ComicViewerState({ pageDisplay: target.value as ComicViewerPageDisplay });
+        const newHistoryItem = new HistoryItem({ entry, fileSystem, viewerState });
+        historyController.replace(newHistoryItem);
+        if (viewerState.pageDisplay === 'single') {
+            if (pageDisplay === 'two') {
+                setCurrentSpreadIndex((index) => Math.max(index * 2 - 1, 0));
+            }
+        } else if (viewerState.pageDisplay === 'two') {
+            if (pageDisplay === 'single') {
+                setCurrentSpreadIndex((index) => (index + 1) >>> 1);
+            }
+        }
+        target.blur();
+    }, [entry, fileSystem, historyController, pageDisplay]);
+
     return (
         <div className={`${className} ${styles.view}`}>
             <canvas className={styles.canvas} ref={canvasRef} />
+            <StatusBarGateway>
+                <div className={styles.statusBarSpace}></div>
+                <div className={styles.pageStyleContainer}>
+                    <span className={styles.pageStyle}>
+                        {pageDisplay === 'single' ? 'Single Page' : 'Two Pages'}
+                    </span>
+                    <select className={styles.pageStyleSelect} value={pageDisplay} onChange={onPageDisplaySelected}>
+                        <option value="single">Single Page</option>
+                        <option value="two">Two Pages</option>
+                    </select>
+                </div>
+            </StatusBarGateway>
         </div>
     );
 };

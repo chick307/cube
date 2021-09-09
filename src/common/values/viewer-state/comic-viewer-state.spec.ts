@@ -3,7 +3,12 @@ import { ComicViewerState } from '.';
 describe('ComicViewerState class', () => {
     describe('ComicViewerState.fromJson() method', () => {
         test('it returns an instance of ComicViewerState class', () => {
-            expect(ComicViewerState.fromJson({ type: 'comic' })).toEqual(new ComicViewerState());
+            expect(ComicViewerState.fromJson({ type: 'comic' }))
+                .toEqual(new ComicViewerState());
+            expect(ComicViewerState.fromJson({ type: 'comic', pageDisplay: 'single' }))
+                .toEqual(new ComicViewerState({ pageDisplay: 'single' }));
+            expect(ComicViewerState.fromJson({ type: 'comic', pageDisplay: 'two' }))
+                .toEqual(new ComicViewerState());
         });
 
         test('it throws an error if the passed JSON is invalid', () => {
@@ -16,7 +21,12 @@ describe('ComicViewerState class', () => {
 
     describe('comicViewerState.toJson() method', () => {
         test('it returns JSON object', () => {
-            expect(new ComicViewerState().toJson()).toEqual({ type: 'comic' });
+            expect(new ComicViewerState().toJson())
+                .toEqual({ type: 'comic', pageDisplay: 'two' });
+            expect(new ComicViewerState({ pageDisplay: 'single' }).toJson())
+                .toEqual({ type: 'comic', pageDisplay: 'single' });
+            expect(new ComicViewerState({ pageDisplay: 'two' }).toJson())
+                .toEqual({ type: 'comic', pageDisplay: 'two' });
         });
     });
 });
