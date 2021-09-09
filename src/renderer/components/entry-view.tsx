@@ -55,6 +55,7 @@ export const EntryView = (props: Props) => {
             return;
         const newHistoryItem = viewer.redirect(historyItem);
         historyController.replace(newHistoryItem);
+        target.blur();
     }, [historyItem, viewers, viewerService]);
 
     const viewerId = viewer?.id ?? '-';
