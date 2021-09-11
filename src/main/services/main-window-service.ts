@@ -160,9 +160,6 @@ export class MainWindowServiceImpl implements MainWindowService {
             },
         };
 
-        if (BUILD_MODE === 'development')
-            window.webContents.openDevTools();
-
         let initialHistoryItem = params.initialHistoryItem ?? defaultHistoryItem;
         let channel: MessageChannelMain | null = null;
 
@@ -191,6 +188,9 @@ export class MainWindowServiceImpl implements MainWindowService {
             });
 
             initialHistoryItem = defaultHistoryItem;
+
+            if (BUILD_MODE === 'development')
+                window.webContents.openDevTools();
 
             port.start();
             port.on('message', (event) => {
