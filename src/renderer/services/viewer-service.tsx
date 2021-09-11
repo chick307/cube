@@ -177,8 +177,8 @@ const pdfViewer = createFileViewer({
     name: 'PDF',
     viewerStateFactory: () => new ViewerStates.PdfViewerState(),
     render: ({ entry, fileSystem, viewerState }) => {
-        const { direction } = viewerState as ViewerStates.PdfViewerState;
-        return ({ node: <EntryViews.PdfEntryView {...{ direction, entry, fileSystem }} /> });
+        const { direction, pageDisplay } = viewerState as ViewerStates.PdfViewerState;
+        return ({ node: <EntryViews.PdfEntryView {...{ direction, entry, fileSystem, pageDisplay }} /> });
     },
 });
 

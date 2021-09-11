@@ -4,7 +4,11 @@ import React from 'react';
 import type { FileEntry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
 import { HistoryItem } from '../../../common/entities/history-item';
-import { PdfViewerDirection, PdfViewerState } from '../../../common/values/viewer-state/pdf-viewer-state';
+import {
+    PdfViewerDirection,
+    PdfViewerPageDisplay,
+    PdfViewerState,
+} from '../../../common/values/viewer-state/pdf-viewer-state';
 import { useHistoryController } from '../../contexts/history-controller-context';
 import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
 import { useBlobUrl } from '../../hooks/use-blob-url';
@@ -21,6 +25,7 @@ export type Props = {
     direction: PdfViewerDirection;
     entry: FileEntry;
     fileSystem: FileSystem;
+    pageDisplay: PdfViewerPageDisplay;
 };
 
 type PdfDocumentProxy = ReturnType<typeof pdfjs.getDocument>['promise'] extends Promise<infer T> ? T : never;
@@ -37,7 +42,7 @@ const docCache = new WeakMap<PdfDocumentProxy, {
 }>();
 
 export const PdfEntryView = (props: Props) => {
-    const { className = '', entry, fileSystem, direction: selectedDirection } = props;
+    const { className = '', entry, fileSystem, direction: selectedDirection, pageDisplay } = props;
 
     const historyController = useHistoryController();
 
@@ -45,7 +50,7 @@ export const PdfEntryView = (props: Props) => {
 
     const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
-    const [currentPageIndex, setCurrentPageIndex] = React.useState(0);
+    const [currentSpreadIndex, setCurrentSpreadIndex] = React.useState(0);
 
     const url = useBlobUrl({ entry, fileSystem, type: 'application/pdf' });
 
@@ -60,20 +65,40 @@ export const PdfEntryView = (props: Props) => {
         return doc;
     }, [url]);
 
-    const [page = null] = useTask(async (signal) => {
+    const spreads = React.useMemo(() => {
+        if (doc === null)
+            return [];
+        const length = pageDisplay === 'single' ? doc.numPages : Math.ceil((doc.numPages + 1) / 2);
+        const spreads = Array.from(
+            new Array(length),
+            pageDisplay === 'single' ? (
+                (_, index) => [index + 1]
+            ) : (
+                (_, index) => (
+                    index * 2 + 2 < doc.numPages ? [index * 2 + 1, index * 2 + 2] :
+                    [index * 2 + 1]
+                )
+            ),
+        );
+        return spreads;
+    }, [doc, pageDisplay]);
+
+    const [spread = null] = useTask(async (signal) => {
         if (doc === null)
             return;
         if (!docCache.has(doc))
             docCache.set(doc, { pages: {} });
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const cache = docCache.get(doc)!;
-        const pageCache = cache.pages[currentPageIndex] ??= {};
-        if (pageCache.page != null)
-            return pageCache.page;
-        const pagePromise = pageCache.pagePromise ??= doc.getPage(currentPageIndex + 1);
-        const page = pageCache.page = await signal.wrapPromise(pagePromise);
-        return page;
-    }, [doc, currentPageIndex]);
+        return Promise.all(spreads[currentSpreadIndex].map(async (pageNumber) => {
+            const pageCache = cache.pages[pageNumber] ??= {};
+            if (pageCache.page != null)
+                return pageCache.page;
+            const pagePromise = pageCache.pagePromise ??= doc.getPage(pageNumber);
+            const page = pageCache.page = await signal.wrapPromise(pagePromise);
+            return page;
+        }));
+    }, [doc, currentSpreadIndex, pageDisplay]);
 
     const [pref = null] = useTask(async (signal) => {
         if (doc === null)
@@ -90,20 +115,44 @@ export const PdfEntryView = (props: Props) => {
 
     React.useEffect(() => {
         const canvas = canvasRef.current;
-        if (page === null || canvas === null)
+        if (spread === null || canvas === null)
             return;
-        const viewport = page.getViewport({ scale: devicePixelRatio });
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const context = canvas.getContext('2d')!;
-        const task = page.render({ canvasContext: context, viewport });
+        const viewports = spread.map((page) => page.getViewport({ scale: devicePixelRatio }));
+        const height = viewports.reduce((height, viewport) => Math.max(height, viewport.height), 0);
+        const widthList = viewports.map((viewport) => Math.round(viewport.width * height / viewport.height));
+        const width = widthList.reduce((width, w) => width + w, 0);
+        const tasks = [] as Promise<HTMLCanvasElement>[];
+        const cleanup = spread.map((page, index) => {
+            const canvas = document.createElement('canvas');
+            canvas.width = widthList[index];
+            canvas.height = height;
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const ctx = canvas.getContext('2d')!;
+            const viewport = viewports[index];
+            const scale = height / viewport.height;
+            ctx.scale(scale, scale);
+            const task = page.render({ canvasContext: ctx, viewport });
+            tasks.push(task.promise.then(() => canvas));
+            return () => {
+                task.cancel();
+            };
+        });
+        Promise.all(tasks).then((canvases) => {
+            canvas.width = width;
+            canvas.height = height;
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const context = canvas.getContext('2d')!;
+            for (const c of direction === 'L2R' ? canvases : canvases.reverse()) {
+                context.drawImage(c, 0, 0);
+                context.translate(c.width, 0);
+            }
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        }, () => {}); // catch rendering cancelled excepction
         return () => {
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            task.promise.catch(() => {}); // catch rendering cancelled exception
-            task.cancel();
+            for (const c of cleanup)
+                c();
         };
-    }, [canvasRef.current, page]);
+    }, [canvasRef.current, direction, doc, spread, pageDisplay]);
 
     React.useEffect(() => {
         if (doc === null)
@@ -114,13 +163,13 @@ export const PdfEntryView = (props: Props) => {
 
         const onKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'End') {
-                setCurrentPageIndex(() => Math.max(doc.numPages - 1, 0));
+                setCurrentSpreadIndex(() => Math.max(spreads.length - 1, 0));
             } else if (e.key === 'Home') {
-                setCurrentPageIndex(() => 0);
+                setCurrentSpreadIndex(() => 0);
             } else if (e.key === nextPageKey || e.key === 'ArrowDown') {
-                setCurrentPageIndex((n) => Math.min(n + 1, doc.numPages - 1));
+                setCurrentSpreadIndex((n) => Math.min(n + 1, spreads.length - 1));
             } else if (e.key === 'ArrowUp' || e.key === prevPageKey) {
-                setCurrentPageIndex((n) => Math.max(n - 1, 0));
+                setCurrentSpreadIndex((n) => Math.max(n - 1, 0));
             }
         };
 
@@ -129,25 +178,37 @@ export const PdfEntryView = (props: Props) => {
         return () => {
             document.removeEventListener('keydown', onKeyDown);
         };
-    }, [direction, doc]);
+    }, [direction, spreads]);
 
-    const directionOptions = StatusBarSelect.useOptions<'L2R' | 'R2L' | null>(() => [
+    const directionOptions = StatusBarSelect.useOptions<PdfViewerDirection>(() => [
         { label: pref?.Direction === 'R2L' ? 'Right to Left (File)' : 'Left to Right (File)', value: null },
         { label: 'Left to Right', value: 'L2R' },
         { label: 'Right to Left', value: 'R2L' },
     ], [pref]);
 
     const selectDirection = React.useCallback((direction: PdfViewerDirection) => {
-        const viewerState = new PdfViewerState({ direction });
+        const viewerState = new PdfViewerState({ direction, pageDisplay });
         const historyItem = new HistoryItem({ entry, fileSystem, viewerState });
         historyController.replace(historyItem);
-    }, [entry, fileSystem, historyController]);
+    }, [entry, fileSystem, historyController, pageDisplay]);
+
+    const pageDisplayOptions = StatusBarSelect.useOptions<PdfViewerPageDisplay>(() => [
+        { label: 'Single Page', value: 'single' },
+        { label: 'Two Pages', value: 'two' },
+    ], [pref]);
+
+    const selectPageDisplay = React.useCallback((pageDisplay: PdfViewerPageDisplay) => {
+        const viewerState = new PdfViewerState({ direction: selectedDirection, pageDisplay });
+        const historyItem = new HistoryItem({ entry, fileSystem, viewerState });
+        historyController.replace(historyItem);
+    }, [selectedDirection, entry, fileSystem, historyController]);
 
     return (
         <div className={`${className} ${styles.view}`}>
             <canvas className={styles.canvas} ref={canvasRef} />
             <StatusBarGateway>
                 <StatusBarSpace />
+                <StatusBarSelect value={pageDisplay} onChange={selectPageDisplay} options={pageDisplayOptions} />
                 <StatusBarSelect value={selectedDirection} onChange={selectDirection} options={directionOptions} />
             </StatusBarGateway>
         </div>

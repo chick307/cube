@@ -3,22 +3,31 @@ import { ViewerState, viewerStateTypes } from './viewer-state';
 export type PdfViewerStateJson = {
     type: 'pdf';
     direction?: PdfViewerDirection;
+    pageDisplay?: PdfViewerPageDisplay;
 };
 
 export type PdfViewerDirection = 'L2R' | 'R2L' | null;
 
 const pdfViewerDirections = ['L2R', 'R2L', null] as const;
 
+export type PdfViewerPageDisplay = 'single' | 'two';
+
+const pdfViewerPageDisplays = ['single', 'two'];
+
 export class PdfViewerState extends ViewerState {
     readonly type = 'pdf';
 
     readonly direction: PdfViewerDirection;
 
+    readonly pageDisplay: PdfViewerPageDisplay;
+
     constructor(params?: {
         direction?: PdfViewerDirection;
+        pageDisplay?: PdfViewerPageDisplay;
     }) {
         super();
         this.direction = params?.direction ?? null;
+        this.pageDisplay = params?.pageDisplay ?? 'two';
     }
 
     static fromJson(json: PdfViewerStateJson): PdfViewerState;
@@ -30,7 +39,8 @@ export class PdfViewerState extends ViewerState {
         if (json == null || json.type !== 'pdf')
             throw Error();
         const direction = pdfViewerDirections.includes(json.direction) ? json.direction : null;
-        const pdfViewerState = new PdfViewerState({ direction });
+        const pageDisplay = pdfViewerPageDisplays.includes(json.pageDisplay) ? json.pageDisplay : 'two';
+        const pdfViewerState = new PdfViewerState({ direction, pageDisplay });
         return pdfViewerState;
     }
 
@@ -38,6 +48,7 @@ export class PdfViewerState extends ViewerState {
         return {
             type: 'pdf',
             direction: this.direction,
+            pageDisplay: this.pageDisplay,
         };
     }
 }
