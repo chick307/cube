@@ -8,11 +8,11 @@ import { useRestate } from '../hooks/use-restate';
 import { composeElements } from '../utils/compose-elements';
 import { EntryIcon } from './entry-icon';
 import { EntryView } from './entry-view';
+import styles from './tab-view.css';
 import { TabAddButton } from './tab/tab-add-button';
 import { TabCloseButton } from './tab/tab-close-button';
-import styles from './tab-view.css';
-import { TabViewContextMenu } from './tab/tab-view-context-menu';
 import { TabContextMenu } from './tab/tab-context-menu';
+import { TabViewContextMenu } from './tab/tab-view-context-menu';
 
 export type Props = {
     className?: string;
@@ -46,7 +46,7 @@ const Tab = (props: {
             </span>
             <span className={styles.tabMargin} />
             <span className={styles.tabTitle}>
-                {tab.title}
+                {title}
             </span>
             <span className={styles.tabMargin} />
             <TabCloseButton className={styles.closeButton} tabId={tab.id} />
@@ -62,18 +62,20 @@ export const TabView = (props: Props) => {
 
     const { tabs } = useRestate(tabController.state);
 
-    const tabElements = tabs.map((tab) => <Tab key={tab.id} {...{ tab }} />);
+    const tabElements = React.useMemo(() => tabs.map((tab) => {
+        return <Tab key={tab.id} {...{ tab }} />;
+    }), [tabs]);
 
-    const contents = tabs.map((tab) => {
+    const contents = React.useMemo(() => tabs.map((tab) => {
         return composeElements(
             <div key={tab.id} className={`${styles.content} ${tab.active ? styles.active : ''}`} />,
             <HistoryControllerProvider value={tab.historyController} />,
+            tab.active ? <StatusBarProvider /> : <React.Fragment />,
             <EntryView />,
         );
-    });
+    }), [StatusBarProvider, tabs]);
 
-    return composeElements(
-        <StatusBarProvider />,
+    return (
         <div className={`${styles.view} ${props.className ?? ''}`}>
             <TabViewContextMenu>
                 <div className={styles.tabs}>
@@ -85,6 +87,6 @@ export const TabView = (props: Props) => {
             <div className={styles.statusBar}>
                 <StatusBarExit />
             </div>
-        </div>,
+        </div>
     );
 };

@@ -55,7 +55,7 @@ export const EntryView = (props: Props) => {
             return;
         const newHistoryItem = viewer.redirect(historyItem);
         historyController.replace(newHistoryItem);
-    }, [historyItem, viewers, viewerService]);
+    }, [historyController, historyItem, viewers, viewerService]);
 
     const viewerId = viewer?.id ?? '-';
     const viewerOptions = StatusBarSelect.useOptions<Viewer | null>(() => {
