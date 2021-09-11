@@ -203,10 +203,20 @@ export const PdfEntryView = (props: Props) => {
         historyController.replace(historyItem);
     }, [selectedDirection, entry, fileSystem, historyController]);
 
+    const pageNumbers = React.useMemo(() => {
+        const spread = spreads[currentSpreadIndex] ?? ['-'];
+        const s = direction === 'L2R' ? spread.slice().reverse() : spread;
+        return `${s.join(', ')} / ${doc?.numPages ?? '-'}`;
+    }, [currentSpreadIndex, direction, doc, spreads]);
+
     return (
         <div className={`${className} ${styles.view}`}>
             <canvas className={styles.canvas} ref={canvasRef} />
             <StatusBarGateway>
+                <StatusBarSpace />
+                <div>
+                    {pageNumbers}
+                </div>
                 <StatusBarSpace />
                 <StatusBarSelect value={pageDisplay} onChange={selectPageDisplay} options={pageDisplayOptions} />
                 <StatusBarSelect value={selectedDirection} onChange={selectDirection} options={directionOptions} />
