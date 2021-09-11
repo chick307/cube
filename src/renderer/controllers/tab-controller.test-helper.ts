@@ -27,6 +27,7 @@ export const createTabController = (params?: {
             onHistoryStateChanged: onHistoryStateChangedController.signal,
             onTabAllClosed: onTabAllClosedController.signal,
             addTab: () => {},
+            insertTabs: () => {},
             removeTab: () => {},
             selectNextTab: () => {},
             selectTab: () => {},

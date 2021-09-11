@@ -27,6 +27,8 @@ export type TabController = {
 
     addTab(params: AddTabParameters): void;
 
+    insertTabs(params: InsertTabsParameters): void;
+
     removeTab(params: RemoveTabParameters): void;
 
     selectNextTab(): void;
@@ -39,6 +41,12 @@ export type TabController = {
 export type AddTabParameters = {
     active: boolean;
     historyItem?: HistoryItem | null;
+};
+
+export type InsertTabsParameters = {
+    active?: boolean;
+    historyItems: HistoryItem[];
+    index: number;
 };
 
 export type RemoveTabParameters = {
@@ -135,41 +143,69 @@ export class TabControllerImpl implements TabController {
         return this.#onTabAllClosedController.signal;
     }
 
+    #createTab(params: {
+        historyItem: HistoryItem;
+        state: InternalState;
+    }) {
+        const id = params.state.idCounter;
+        const idCounter = params.state.idCounter + 1;
+        const closeController = new CloseController();
+        const initialHistoryItem = params.historyItem;
+        const historyController = this.#historyControllerFactory.create({ initialHistoryItem });
+        const historyState = {
+            ableToGoBack: historyController.state.current.ableToGoBack,
+            ableToGoForward: historyController.state.current.ableToGoForward,
+            current: historyController.state.current.current,
+        };
+        historyController.state.forEach((state) => {
+            if (
+                historyState.ableToGoBack !== state.ableToGoBack ||
+                historyState.ableToGoForward !== state.ableToGoForward ||
+                !historyState.current.fileSystem.equals(state.current.fileSystem) ||
+                !historyState.current.entry.equals(state.current.entry)
+            ) {
+                historyState.ableToGoBack = state.ableToGoBack;
+                historyState.ableToGoForward = state.ableToGoForward;
+                historyState.current = state.current;
+                this.#onHistoryStateChangedController.emit({ type: 'history-state-changed', tabId: id });
+            }
+        }, { signal: closeController.signal });
+        const titleState = historyController.state.map(({ current }) => current.entry.name.toString());
+        titleState.forEach((title) => {
+            this.#restate.update((state) => ({
+                ...state,
+                tabs: state.tabs.map((tab) => tab.id !== id ? tab : ({ ...tab, title })),
+            }));
+        }, { signal: closeController.signal });
+        const tab = { active: false, closeController, historyController, id, title: titleState.current };
+        return { idCounter, tab };
+    }
+
     addTab(params: AddTabParameters): void {
         this.#restate.update(async (state) => {
-            const id = state.idCounter;
-            const idCounter = state.idCounter + 1;
             const active = params.active || state.tabs.length === 0;
-            const closeController = new CloseController();
-            const initialHistoryItem = params.historyItem ?? this.#defaultHistoryItem;
-            const historyController = this.#historyControllerFactory.create({ initialHistoryItem });
-            const historyState = {
-                ableToGoBack: historyController.state.current.ableToGoBack,
-                ableToGoForward: historyController.state.current.ableToGoForward,
-                current: historyController.state.current.current,
-            };
-            historyController.state.forEach((state) => {
-                if (
-                    historyState.ableToGoBack !== state.ableToGoBack ||
-                    historyState.ableToGoForward !== state.ableToGoForward ||
-                    !historyState.current.fileSystem.equals(state.current.fileSystem) ||
-                    !historyState.current.entry.equals(state.current.entry)
-                ) {
-                    historyState.ableToGoBack = state.ableToGoBack;
-                    historyState.ableToGoForward = state.ableToGoForward;
-                    historyState.current = state.current;
-                    this.#onHistoryStateChangedController.emit({ type: 'history-state-changed', tabId: id });
-                }
-            }, { signal: closeController.signal });
-            const titleState = historyController.state.map(({ current }) => current.entry.name.toString());
-            titleState.forEach((title) => {
-                this.#restate.update((state) => ({
-                    ...state,
-                    tabs: state.tabs.map((tab) => tab.id !== id ? tab : ({ ...tab, title })),
-                }));
-            }, { signal: closeController.signal });
+            const historyItem = params.historyItem ?? this.#defaultHistoryItem;
+            const { idCounter, tab } = this.#createTab({ historyItem, state });
             const tabs = !active ? [...state.tabs] : state.tabs.map((tab) => ({ ...tab, active: false }));
-            tabs.push({ active, closeController, historyController, id, title: titleState.current });
+            tabs.push({ ...tab, active });
+            return { ...state, idCounter, tabs };
+        });
+    }
+
+    insertTabs(params: InsertTabsParameters): void {
+        if (params.historyItems.length === 0)
+            return;
+        this.#restate.update(async (state) => {
+            const tabs = params.active ? state.tabs.map((tab) => ({ ...tab, active: false })) : [...state.tabs];
+            let idCounter = state.idCounter;
+            let index = Math.max(0, Math.min(tabs.length, params.index));
+            for (const historyItem of params.historyItems) {
+                const result = this.#createTab({ historyItem, state: { ...state, idCounter } });
+                const active = tabs.length === 0 || idCounter === state.idCounter && !!params.active;
+                idCounter = result.idCounter;
+                tabs.splice(index, 0, { ...result.tab, active });
+                index++;
+            }
             return { ...state, idCounter, tabs };
         });
     }

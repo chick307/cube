@@ -270,6 +270,64 @@ describe('TabController type', () => {
         });
     });
 
+    describe('tabController.insertTabs() method', () => {
+        test('it inserts new tabs', async () => {
+            const tabController = createTabController();
+            tabController.insertTabs({ historyItems: [historyItemA, historyItemB], index: 0 });
+            await immediate();
+            expect(historyControllerFactory.create).toHaveBeenCalledTimes(2);
+            expect(historyControllerFactory.create).toHaveBeenCalledWith({ initialHistoryItem: historyItemA });
+            expect(historyControllerFactory.create).toHaveBeenCalledWith({ initialHistoryItem: historyItemB });
+            const historyController1 = historyControllerFactory.create.mock.results[0].value;
+            const historyController2 = historyControllerFactory.create.mock.results[1].value;
+            expect(tabController.state.current).toEqual({
+                tabs: [
+                    { active: true, historyController: historyController1, id: 1, title: 'a' },
+                    { active: false, historyController: historyController2, id: 2, title: 'b' },
+                ],
+            });
+            historyControllerFactory.create.mockClear();
+            tabController.insertTabs({ historyItems: [historyItemC], index: 1 });
+            await immediate();
+            expect(historyControllerFactory.create).toHaveBeenCalledTimes(1);
+            expect(historyControllerFactory.create).toHaveBeenCalledWith({ initialHistoryItem: historyItemC });
+            const historyController3 = historyControllerFactory.create.mock.results[0].value;
+            expect(tabController.state.current).toEqual({
+                tabs: [
+                    { active: true, historyController: historyController1, id: 1, title: 'a' },
+                    { active: false, historyController: historyController3, id: 3, title: 'c' },
+                    { active: false, historyController: historyController2, id: 2, title: 'b' },
+                ],
+            });
+            historyControllerFactory.create.mockClear();
+            tabController.insertTabs({ active: true, historyItems: new Array(3).fill(historyItemD), index: 3 });
+            await immediate();
+            expect(historyControllerFactory.create).toHaveBeenCalledTimes(3);
+            expect(historyControllerFactory.create).toHaveBeenCalledWith({ initialHistoryItem: historyItemD });
+            const historyControllers = historyControllerFactory.create.mock.results.map(({ value }) => value);
+            expect(tabController.state.current).toEqual({
+                tabs: [
+                    { active: false, historyController: historyController1, id: 1, title: 'a' },
+                    { active: false, historyController: historyController3, id: 3, title: 'c' },
+                    { active: false, historyController: historyController2, id: 2, title: 'b' },
+                    { active: true, historyController: historyControllers[0], id: 4, title: 'd' },
+                    { active: false, historyController: historyControllers[1], id: 5, title: 'd' },
+                    { active: false, historyController: historyControllers[2], id: 6, title: 'd' },
+                ],
+            });
+            historyControllerFactory.create.mockClear();
+        });
+
+        test('it does nothing if an empty array is passed', async () => {
+            const tabController = createTabController();
+            tabController.insertTabs({ historyItems: [], index: 0 });
+            await immediate();
+            expect(historyControllerFactory.create).not.toHaveBeenCalled();
+            expect(tabController.state.current).toEqual({ tabs: [] });
+            historyControllerFactory.create.mockClear();
+        });
+    });
+
     describe('tabController.removeTab() method', () => {
         test('it removes the tab', async () => {
             const tabController = createTabController();
