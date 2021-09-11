@@ -8,6 +8,7 @@ import { useEntryService } from '../../contexts/entry-service-context';
 import { useHistoryController } from '../../contexts/history-controller-context';
 import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
 import { useTask } from '../../hooks/use-task';
+import { StatusBarSpace } from '../status-bar/status-bar-space';
 import styles from './comic-entry-view.css';
 
 export type Props = {
@@ -152,11 +153,11 @@ export const ComicEntryView = (props: Props) => {
         <div className={`${className} ${styles.view}`}>
             <canvas className={styles.canvas} ref={canvasRef} />
             <StatusBarGateway>
-                <div className={styles.statusBarSpace}></div>
+                <StatusBarSpace />
                 <div>
                     {currentPages}
                 </div>
-                <div className={styles.statusBarSpace}></div>
+                <StatusBarSpace />
                 <div className={styles.pageStyleContainer}>
                     <span className={styles.pageStyle}>
                         {pageDisplay === 'single' ? 'Single Page' : 'Two Pages'}

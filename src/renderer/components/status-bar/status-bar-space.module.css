@@ -1,0 +1,7 @@
+.space {
+    flex: 1;
+}
+
+.space ~ * {
+    --space-sibling: 1;
+}
