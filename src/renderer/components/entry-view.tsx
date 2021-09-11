@@ -7,6 +7,7 @@ import { useRestate } from '../hooks/use-restate';
 import { useTask } from '../hooks/use-task';
 import type { Viewer } from '../services/viewer-service';
 import styles from './entry-view.css';
+import { EntryPathView } from './entry/entry-path-view';
 import { GoBackButton } from './go-back-button';
 import { GoForwardButton } from './go-forward-button';
 import { StatusBarSelect } from './status-bar/status-bar-select';
@@ -68,7 +69,7 @@ export const EntryView = (props: Props) => {
             <div className={styles.path}>
                 <GoBackButton className={styles.goBackButton} />
                 <GoForwardButton className={styles.goForwardButton} />
-                <span className={styles.pathString}>{historyItem.entry.path.toString()}</span>
+                <EntryPathView entry={historyItem.entry} fileSystem={historyItem.fileSystem} />
             </div>
             <div className={styles.viewContainer}>
                 <StatusBarProvider>

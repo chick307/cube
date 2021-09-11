@@ -1,0 +1,21 @@
+.entry-path-view {
+    display: inline-flex;
+    align-items: center;
+    color: #444;
+    fill: #444;
+}
+
+.entry-name {
+    display: contents;
+}
+
+.delimiter,
+.root-icon,
+.zip-icon {
+    display: inline-flex;
+    margin: 0 4px;
+}
+
+.root-icon {
+    margin-right: 0;
+}
