@@ -3,8 +3,14 @@ import React from 'react';
 
 import type { FileEntry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
+import { HistoryItem } from '../../../common/entities/history-item';
+import { PdfViewerDirection, PdfViewerState } from '../../../common/values/viewer-state/pdf-viewer-state';
+import { useHistoryController } from '../../contexts/history-controller-context';
+import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
 import { useBlobUrl } from '../../hooks/use-blob-url';
 import { useTask } from '../../hooks/use-task';
+import { StatusBarSelect } from '../status-bar/status-bar-select';
+import { StatusBarSpace } from '../status-bar/status-bar-space';
 import styles from './pdf-entry-view.css';
 
 const CMAP_URL = './cmaps/';
@@ -12,6 +18,7 @@ const CMAP_PACKED = true;
 
 export type Props = {
     className?: string;
+    direction: PdfViewerDirection;
     entry: FileEntry;
     fileSystem: FileSystem;
 };
@@ -30,7 +37,11 @@ const docCache = new WeakMap<PdfDocumentProxy, {
 }>();
 
 export const PdfEntryView = (props: Props) => {
-    const { className = '', entry, fileSystem } = props;
+    const { className = '', entry, fileSystem, direction: selectedDirection } = props;
+
+    const historyController = useHistoryController();
+
+    const StatusBarGateway = useStatusBarGateway();
 
     const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
@@ -75,6 +86,8 @@ export const PdfEntryView = (props: Props) => {
         };
     }, [doc]);
 
+    const direction = selectedDirection ?? (pref?.Direction as 'L2R' | 'R2L' | null) ?? 'L2R';
+
     React.useEffect(() => {
         const canvas = canvasRef.current;
         if (page === null || canvas === null)
@@ -97,7 +110,7 @@ export const PdfEntryView = (props: Props) => {
             return;
 
         const [nextPageKey, prevPageKey] =
-            pref?.Direction === 'R2L' ? ['ArrowLeft', 'ArrowRight'] : ['ArrowRight', 'ArrowLeft'];
+            direction === 'R2L' ? ['ArrowLeft', 'ArrowRight'] : ['ArrowRight', 'ArrowLeft'];
 
         const onKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'End') {
@@ -116,11 +129,27 @@ export const PdfEntryView = (props: Props) => {
         return () => {
             document.removeEventListener('keydown', onKeyDown);
         };
-    }, [doc, pref]);
+    }, [direction, doc]);
+
+    const directionOptions = StatusBarSelect.useOptions<'L2R' | 'R2L' | null>(() => [
+        { label: pref?.Direction === 'R2L' ? 'Right to Left (File)' : 'Left to Right (File)', value: null },
+        { label: 'Left to Right', value: 'L2R' },
+        { label: 'Right to Left', value: 'R2L' },
+    ], [pref]);
+
+    const selectDirection = React.useCallback((direction: PdfViewerDirection) => {
+        const viewerState = new PdfViewerState({ direction });
+        const historyItem = new HistoryItem({ entry, fileSystem, viewerState });
+        historyController.replace(historyItem);
+    }, [entry, fileSystem, historyController]);
 
     return (
         <div className={`${className} ${styles.view}`}>
             <canvas className={styles.canvas} ref={canvasRef} />
+            <StatusBarGateway>
+                <StatusBarSpace />
+                <StatusBarSelect value={selectedDirection} onChange={selectDirection} options={directionOptions} />
+            </StatusBarGateway>
         </div>
     );
 };

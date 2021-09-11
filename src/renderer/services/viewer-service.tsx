@@ -176,7 +176,10 @@ const mediaViewer = createFileViewer({
 const pdfViewer = createFileViewer({
     name: 'PDF',
     viewerStateFactory: () => new ViewerStates.PdfViewerState(),
-    render: ({ entry, fileSystem }) => ({ node: <EntryViews.PdfEntryView {...{ entry, fileSystem }} /> }),
+    render: ({ entry, fileSystem, viewerState }) => {
+        const { direction } = viewerState as ViewerStates.PdfViewerState;
+        return ({ node: <EntryViews.PdfEntryView {...{ direction, entry, fileSystem }} /> });
+    },
 });
 
 const textViewer = createFileViewer({

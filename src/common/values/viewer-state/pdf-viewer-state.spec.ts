@@ -4,6 +4,12 @@ describe('PdfViewerState class', () => {
     describe('PdfViewerState.fromJson() method', () => {
         test('it returns an instance of PdfViewerState class', () => {
             expect(PdfViewerState.fromJson({ type: 'pdf' })).toEqual(new PdfViewerState());
+            expect(PdfViewerState.fromJson({ type: 'pdf', direction: null }))
+                .toEqual(new PdfViewerState({ direction: null }));
+            expect(PdfViewerState.fromJson({ type: 'pdf', direction: 'L2R' }))
+                .toEqual(new PdfViewerState({ direction: 'L2R' }));
+            expect(PdfViewerState.fromJson({ type: 'pdf', direction: 'R2L' }))
+                .toEqual(new PdfViewerState({ direction: 'R2L' }));
         });
 
         test('it throws an error if the passed JSON is invalid', () => {
@@ -16,7 +22,14 @@ describe('PdfViewerState class', () => {
 
     describe('pdfViewerState.toJson() method', () => {
         test('it returns JSON object', () => {
-            expect(new PdfViewerState().toJson()).toEqual({ type: 'pdf' });
+            expect(new PdfViewerState().toJson())
+                .toEqual({ type: 'pdf', direction: null });
+            expect(new PdfViewerState({}).toJson())
+                .toEqual({ type: 'pdf', direction: null });
+            expect(new PdfViewerState({ direction: 'L2R' }).toJson())
+                .toEqual({ type: 'pdf', direction: 'L2R' });
+            expect(new PdfViewerState({ direction: 'R2L' }).toJson())
+                .toEqual({ type: 'pdf', direction: 'R2L' });
         });
     });
 });
