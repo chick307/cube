@@ -8,6 +8,7 @@ import { useEntryService } from '../../contexts/entry-service-context';
 import { useHistoryController } from '../../contexts/history-controller-context';
 import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
 import { useTask } from '../../hooks/use-task';
+import { StatusBarSelect } from '../status-bar/status-bar-select';
 import { StatusBarSpace } from '../status-bar/status-bar-space';
 import styles from './comic-entry-view.css';
 
@@ -127,9 +128,8 @@ export const ComicEntryView = (props: Props) => {
         }
     }, [currentSpread]);
 
-    const onPageDisplaySelected = React.useCallback((event: React.ChangeEvent) => {
-        const target = event.target as HTMLSelectElement;
-        const viewerState = new ComicViewerState({ pageDisplay: target.value as ComicViewerPageDisplay });
+    const onPageDisplaySelected = React.useCallback((value: ComicViewerPageDisplay) => {
+        const viewerState = new ComicViewerState({ pageDisplay: value as ComicViewerPageDisplay });
         const newHistoryItem = new HistoryItem({ entry, fileSystem, viewerState });
         historyController.replace(newHistoryItem);
         if (viewerState.pageDisplay === 'single') {
@@ -141,8 +141,12 @@ export const ComicEntryView = (props: Props) => {
                 setCurrentSpreadIndex((index) => (index + 1) >>> 1);
             }
         }
-        target.blur();
     }, [entry, fileSystem, historyController, pageDisplay]);
+
+    const pageDisplayOptions = StatusBarSelect.useOptions<ComicViewerPageDisplay>(() => [
+        { label: 'Single Page', value: 'single' },
+        { label: 'Two Pages', value: 'two' },
+    ], []);
 
     const currentPages = React.useMemo(() => {
         const currentPages = currentSpread == null ? ['-'] : currentSpread.map(({ name }) => name.toString());
@@ -158,15 +162,7 @@ export const ComicEntryView = (props: Props) => {
                     {currentPages}
                 </div>
                 <StatusBarSpace />
-                <div className={styles.pageStyleContainer}>
-                    <span className={styles.pageStyle}>
-                        {pageDisplay === 'single' ? 'Single Page' : 'Two Pages'}
-                    </span>
-                    <select className={styles.pageStyleSelect} value={pageDisplay} onChange={onPageDisplaySelected}>
-                        <option value="single">Single Page</option>
-                        <option value="two">Two Pages</option>
-                    </select>
-                </div>
+                <StatusBarSelect value={pageDisplay} onChange={onPageDisplaySelected} options={pageDisplayOptions} />
             </StatusBarGateway>
         </div>
     );

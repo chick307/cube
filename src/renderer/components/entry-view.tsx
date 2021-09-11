@@ -5,9 +5,11 @@ import { useViewerService } from '../contexts/viewer-service-context';
 import { useStatusBar, useStatusBarGateway } from '../gateways/status-bar-gateway';
 import { useRestate } from '../hooks/use-restate';
 import { useTask } from '../hooks/use-task';
+import type { Viewer } from '../services/viewer-service';
 import styles from './entry-view.css';
 import { GoBackButton } from './go-back-button';
 import { GoForwardButton } from './go-forward-button';
+import { StatusBarSelect } from './status-bar/status-bar-select';
 
 export type Props = {
     className?: string;
@@ -47,24 +49,18 @@ export const EntryView = (props: Props) => {
         return { node, viewer };
     }, [historyController, historyItem, viewerService, viewers]);
 
-    const onViewerSelected = React.useCallback((e: React.ChangeEvent) => {
-        const target = e.target as HTMLSelectElement;
-        const id = target.value;
-        const viewer = viewers.find((viewer) => viewer.id === id);
-        if (viewer == null)
+    const onViewerSelected = React.useCallback((viewer: Viewer | null) => {
+        if (viewer === null)
             return;
         const newHistoryItem = viewer.redirect(historyItem);
         historyController.replace(newHistoryItem);
-        target.blur();
     }, [historyItem, viewers, viewerService]);
 
     const viewerId = viewer?.id ?? '-';
-    const viewerOptions = React.useMemo(() => {
-        return viewers.map((viewer) => (
-            <option key={viewer.id} value={viewer.id}>
-                {viewer.name}
-            </option>
-        )).concat(viewerId === '-' ? [<option key={'-'} value={'-'}>-</option>] : []);
+    const viewerOptions = StatusBarSelect.useOptions<Viewer | null>(() => {
+        return viewers
+            .map((viewer) => ({ label: viewer.name, value: viewer as Viewer | null }))
+            .concat(viewerId === '-' ? [{ label: '-', value: null }] : []);
     }, [viewerId, viewers]);
 
     return (
@@ -83,14 +79,7 @@ export const EntryView = (props: Props) => {
                 <div className={styles.entryViewStatusBar}>
                     <StatusBarExit />
                 </div>
-                <label className={styles.viewerSelectContainer}>
-                    <span className={styles.viewerName}>
-                        {viewer?.name ?? '-'}
-                    </span>
-                    <select className={styles.viewerSelect} value={viewer?.id ?? '-'} onChange={onViewerSelected}>
-                        {viewerOptions}
-                    </select>
-                </label>
+                <StatusBarSelect options={viewerOptions} value={viewer} onChange={onViewerSelected} />
             </StatusBarGateway>
         </div>
     );
