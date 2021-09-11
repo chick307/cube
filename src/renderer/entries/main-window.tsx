@@ -8,6 +8,7 @@ import { TabView } from '../components/tab-view';
 import { ContextMenuServiceProvider } from '../contexts/context-menu-service-context';
 import { EntryIconServiceProvider } from '../contexts/entry-icon-service-context';
 import { EntryServiceProvider } from '../contexts/entry-service-context';
+import { LocalEntryServiceProvider } from '../contexts/local-entry-service-context';
 import { TabControllerProvider } from '../contexts/tab-controller-context';
 import { ViewerServiceProvider } from '../contexts/viewer-service-context';
 import { TabControllerImpl } from '../controllers/tab-controller';
@@ -69,6 +70,7 @@ const MainWindow = () => {
         <ContextMenuServiceProvider value={container.contextMenuService} />,
         <EntryIconServiceProvider value={container.entryIconService} />,
         <EntryServiceProvider value={container.entryService} />,
+        <LocalEntryServiceProvider value={container.localEntryService} />,
         <TabControllerProvider value={container.tabController} />,
         <ViewerServiceProvider value={container.viewerService} />,
         <TabView />,
