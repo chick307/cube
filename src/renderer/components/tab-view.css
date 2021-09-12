@@ -1,6 +1,7 @@
 .view {
     display: flex;
     flex-direction: column;
+    position: relative;
     --tab-height: 34px;
     --tab-radius: 6px;
     --tabs-padding-top: 0;
@@ -9,6 +10,8 @@
     --active-tab-foreground: #444444;
     --content-background: #444444;
     --content-foreground: #FFFFFF;
+    --drag-over-icon-width: 12px;
+    --tab-insert-area-width: 16px;
 }
 
 :global(#container) > .view {
@@ -19,11 +22,98 @@
 .tabs {
     display: flex;
     align-items: center;
+    position: relative;
     box-sizing: border-box;
     padding-top: var(--tabs-padding-top);
     padding-left: var(--tabs-padding-left);
     min-height: calc(var(--tabs-padding-top) + var(--tab-height));
     -webkit-app-region: drag;
+}
+
+.append-area {
+    display: flex;
+    flex: 1;
+    align-items:center;
+    position: relative;
+    margin-top: calc(var(--tabs-padding-top) * -1);
+    padding-top: var(--tabs-padding-top);
+    height: var(--tab-height);
+    z-index: 2;
+}
+
+.prepend-area {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--tabs-padding-left);
+    z-index: 2;
+}
+
+.tab-insert-after-area,
+.tab-insert-before-area,
+.tab-navigate-area {
+    display: none;
+    position: absolute;
+    top: calc(var(--tabs-padding-top) * -1);
+    bottom: 0;
+    z-index: 2;
+}
+
+.tab-insert-after-area {
+    right: 0;
+    width: var(--tab-insert-area-width);
+}
+
+.tab-insert-before-area {
+    left: 0;
+    width: var(--tab-insert-area-width);
+}
+
+.tab-navigate-area {
+    left: var(--tab-insert-area-width);
+    right: var(--tab-insert-area-width);
+}
+
+.tab-view-drag-over-icon {
+    display: none;
+    position: absolute;
+    top: 2px;
+    fill: #FFFFFF;
+    filter: drop-shadow(0 0 1px #000000);
+}
+
+.append-area > .tab-view-drag-over-icon,
+.tab-insert-before-area > .tab-view-drag-over-icon {
+    left: 0;
+    margin-left: calc(var(--drag-over-icon-width) * -0.5);
+}
+
+.prepend-area > .tab-view-drag-over-icon,
+.tab-insert-after-area > .tab-view-drag-over-icon {
+    right: 0;
+    margin-right: calc(var(--drag-over-icon-width) * -0.5);
+}
+
+.tab-navigate-area > .tab-view-drag-over-icon {
+    left: 50%;
+    margin-left: calc(var(--drag-over-icon-width) * -0.5);
+}
+
+.append-area-drag-over .append-area > .tab-view-drag-over-icon,
+.prepend-area-drag-over .prepend-area > .tab-view-drag-over-icon,
+.tab-insert-after-area-drag-over .tab-insert-after-area > .tab-view-drag-over-icon,
+.tab-insert-before-area-drag-over .tab-insert-before-area > .tab-view-drag-over-icon,
+.tab-navigate-area-drag-over .tab-navigate-area > .tab-view-drag-over-icon {
+    display: inline-block;
+}
+
+.tab-view-drag-over .prepend-area,
+.tab-view-drag-over .tab-insert-after-area,
+.tab-view-drag-over .tab-insert-before-area,
+.tab-view-drag-over .tab-navigate-area {
+    display: block;
 }
 
 .tab {
@@ -84,6 +174,20 @@
         var(--tab-background) var(--tab-radius),
         var(--tab-background)
     );
+}
+
+.tab-drag-over-icon {
+    display: none;
+    position: absolute;
+    top: calc(var(--tabs-padding-top) * -1 + 2px);
+    left: 50%;
+    margin-left: calc(var(--drag-over-icon-width) * -0.5);
+    fill: #FFFFFF;
+    filter: drop-shadow(0 0 1px #000000);
+}
+
+.tab-drag-over .tab-drag-over-icon {
+    display: inline-block;
 }
 
 .tab-margin {
