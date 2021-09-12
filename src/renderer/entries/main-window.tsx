@@ -78,3 +78,14 @@ const MainWindow = () => {
 };
 
 ReactDom.render(<MainWindow />, document.querySelector('#container'));
+
+document.addEventListener('dragover', (event) => {
+    event.preventDefault();
+    if (event.dataTransfer === null)
+        return;
+    event.dataTransfer.dropEffect = 'none';
+}, { capture: false });
+
+document.addEventListener('drop', (event) => {
+    event.preventDefault();
+}, { capture: false });
