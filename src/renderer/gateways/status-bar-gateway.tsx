@@ -7,6 +7,7 @@ export type StatusBarGatewayProps = {
 };
 
 export type StatusBarProviderProps = {
+    active?: boolean | null | undefined;
     children?: React.ReactNode;
 };
 
@@ -23,8 +24,9 @@ export const useStatusBar = (): {
     const StatusBarExit = Exit;
 
     const StatusBarProvider = React.useCallback((props: StatusBarProviderProps) => {
+        const active = props.active == null || props.active;
         return (
-            <Context.Provider value={Gateway}>
+            <Context.Provider value={active ? Gateway : () => null}>
                 {props.children}
             </Context.Provider>
         );

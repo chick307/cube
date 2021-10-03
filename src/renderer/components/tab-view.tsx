@@ -113,7 +113,7 @@ export const TabView = (props: Props) => {
         return composeElements(
             <div key={tab.id} className={`${styles.content} ${tab.active ? styles.active : ''}`} />,
             <HistoryControllerProvider value={tab.historyController} />,
-            tab.active ? <StatusBarProvider /> : <React.Fragment />,
+            <StatusBarProvider active={tab.active} />,
             <EntryView />,
         );
     }), [StatusBarProvider, tabs]);
