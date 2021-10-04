@@ -29,5 +29,5 @@ export const EntryIcon = (props: Props) => {
     if (iconUrl == null)
         return <>{iconPlaceholder}</>;
 
-    return <img src={iconUrl} width="16" height="16" {...imageProps} />;
+    return <img src={iconUrl} width="16" height="16" draggable={false} {...imageProps} />;
 };

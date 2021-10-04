@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { LocalFileSystem } from '../../../common/entities/file-system';
+import { Entry } from '../../../common/entities/entry';
+import { FileSystem } from '../../../common/entities/file-system';
 import { HistoryItem } from '../../../common/entities/history-item';
 import { EntryPath } from '../../../common/values/entry-path';
 import { useLocalEntryService } from '../../contexts/local-entry-service-context';
@@ -13,8 +14,6 @@ export type Props = {
 
     onEntryDrop?: (historyItems: HistoryItem[]) => void;
 };
-
-const localFileSystem = new LocalFileSystem();
 
 export const EntryDropArea = (props: Props) => {
     const { children, dragOverClassName, onEntryDrop } = props;
@@ -55,16 +54,23 @@ export const EntryDropArea = (props: Props) => {
     const onDrop = React.useCallback((event: React.DragEvent) => {
         event.preventDefault();
         event.stopPropagation();
-        const files = Array.from(event.dataTransfer.files);
         if (onEntryDrop == null)
             return;
+        const files = Array.from(event.dataTransfer.files, (file) => ({
+            entry: { path: file.path },
+            fileSystem: { type: 'local' },
+        }));
+        if (event.dataTransfer.types.includes('application/x-cube-item+json'))
+            files.push(JSON.parse(event.dataTransfer.getData('application/x-cube-item+json')));
         (async () => {
-            const historyItems = await Promise.all(files.map(async (file) => {
-                const entryPath = new EntryPath(file.path);
-                const entry = await localEntryService.createEntryFromPath({ entryPath });
+            const historyItems = await Promise.all(files.map(async (json) => {
+                const entry = 'type' in json.entry ?
+                    Entry.fromJson(json.entry) :
+                    await localEntryService.createEntryFromPath({ entryPath: new EntryPath(json.entry.path) });
+                const fileSystem = FileSystem.fromJson(json.fileSystem);
                 if (entry == null)
                     return null;
-                return new HistoryItem({ entry, fileSystem: localFileSystem });
+                return new HistoryItem({ entry, fileSystem });
             })).then((items) => items.filter((item): item is HistoryItem => item !== null));
             if (historyItems.length === 0)
                 return;

@@ -27,12 +27,24 @@ const DirectoryItemView = (props: {
 
     const historyController = useHistoryController();
 
-    const onClick = React.useCallback(() => {
+    const itemRef = React.useRef<HTMLElement>(null);
+
+    const onDoubleClick = React.useCallback(() => {
         historyController.navigate(new HistoryItem({ entry, fileSystem }));
     }, [entry, fileSystem]);
 
+    const onDragStart = React.useCallback((event: React.DragEvent) => {
+        event.dataTransfer.effectAllowed = 'move';
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        event.dataTransfer.setDragImage(itemRef.current!, event.clientX, event.clientY);
+        event.dataTransfer.setData('application/x-cube-item+json', JSON.stringify({
+            entry: entry.toJson(),
+            fileSystem: fileSystem.toJson(),
+        }));
+    }, []);
+
     return (
-        <span className={styles.entryNameContainer} onDoubleClick={onClick}>
+        <span ref={itemRef} className={styles.entryNameContainer} draggable={true} {...{ onDoubleClick, onDragStart }}>
             <EntryIcon className={styles.icon} entry={entry} iconPlaceholder={iconPlaceholder} />
             <span className={styles.entryName}>
                 {entry.name.toString()}
