@@ -4,7 +4,6 @@ import type { HistoryItem } from '../../common/entities/history-item';
 import { HistoryControllerProvider } from '../contexts/history-controller-context';
 import { useTabController } from '../contexts/tab-controller-context';
 import type { TabState } from '../controllers/tab-controller';
-import { useStatusBar } from '../gateways/status-bar-gateway';
 import { useRestate } from '../hooks/use-restate';
 import { composeElements } from '../utils/compose-elements';
 import { EntryIcon } from './entry-icon';
@@ -101,8 +100,6 @@ const Tab = (props: {
 export const TabView = (props: Props) => {
     const tabController = useTabController();
 
-    const { StatusBarProvider, StatusBarExit } = useStatusBar();
-
     const { tabs } = useRestate(tabController.state);
 
     const tabElements = React.useMemo(() => tabs.map((tab) => {
@@ -113,10 +110,9 @@ export const TabView = (props: Props) => {
         return composeElements(
             <div key={tab.id} className={`${styles.content} ${tab.active ? styles.active : ''}`} />,
             <HistoryControllerProvider value={tab.historyController} />,
-            <StatusBarProvider active={tab.active} />,
             <EntryView />,
         );
-    }), [StatusBarProvider, tabs]);
+    }), [tabs]);
 
     const onEntryDropInAppendArea = React.useCallback((historyItems: HistoryItem[]) => {
         tabController.insertTabs({ active: true, historyItems, index: Infinity });
@@ -149,9 +145,6 @@ export const TabView = (props: Props) => {
                 </EntryDropArea>
             </TabViewContextMenu>
             <div className={styles.contents}>{contents}</div>
-            <div className={styles.statusBar}>
-                <StatusBarExit />
-            </div>
         </div>
     );
 };

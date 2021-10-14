@@ -250,12 +250,3 @@
 .content > * {
     flex: 1;
 }
-
-.status-bar {
-    display: flex;
-    min-height: 24px;
-    align-items: center;
-    background-color: #FFFFFF;
-    border-top: 1px solid #EEEEEE;
-    color: #444444;
-}

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useHistoryController } from '../contexts/history-controller-context';
 import { useViewerService } from '../contexts/viewer-service-context';
-import { useStatusBar, useStatusBarGateway } from '../gateways/status-bar-gateway';
+import { useStatusBar } from '../gateways/status-bar-gateway';
 import { useRestate } from '../hooks/use-restate';
 import { useTask } from '../hooks/use-task';
 import type { Viewer } from '../services/viewer-service';
@@ -26,8 +26,6 @@ export const EntryView = (props: Props) => {
     const { current: historyItem } = useRestate(historyController.state);
 
     const { StatusBarExit, StatusBarProvider } = useStatusBar();
-
-    const StatusBarGateway = useStatusBarGateway();
 
     const [viewers = []] = useTask(async (signal) => {
         const viewers = await viewerService.prioritizeViewers({
@@ -76,12 +74,12 @@ export const EntryView = (props: Props) => {
                     {node}
                 </StatusBarProvider>
             </div>
-            <StatusBarGateway>
+            <div className={styles.statusBar}>
                 <div className={styles.entryViewStatusBar}>
                     <StatusBarExit />
                 </div>
                 <StatusBarSelect options={viewerOptions} value={viewer} onChange={onViewerSelected} />
-            </StatusBarGateway>
+            </div>
         </div>
     );
 };

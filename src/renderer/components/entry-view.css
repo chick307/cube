@@ -87,6 +87,15 @@
     opacity: 0;
 }
 
+.status-bar {
+    display: flex;
+    min-height: 24px;
+    align-items: center;
+    background-color: #FFFFFF;
+    border-top: 1px solid #EEEEEE;
+    color: #444444;
+}
+
 .entry-view-status-bar {
     display: flex;
     flex: 1;
