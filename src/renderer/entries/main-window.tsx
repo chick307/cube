@@ -4,7 +4,7 @@ import ReactDom from 'react-dom';
 
 import { LocalFileSystem } from '../../common/entities/file-system';
 import { createContainer, createFactory } from '../../common/utils/create-container';
-import { TabView } from '../components/tab-view';
+import { TabView } from '../components/tab/tab-view';
 import { ContextMenuServiceProvider } from '../contexts/context-menu-service-context';
 import { EntryIconServiceProvider } from '../contexts/entry-icon-service-context';
 import { EntryServiceProvider } from '../contexts/entry-service-context';

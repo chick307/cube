@@ -1,19 +1,19 @@
 import React from 'react';
 
-import type { HistoryItem } from '../../common/entities/history-item';
-import { HistoryControllerProvider } from '../contexts/history-controller-context';
-import { useTabController } from '../contexts/tab-controller-context';
-import type { TabState } from '../controllers/tab-controller';
-import { useRestate } from '../hooks/use-restate';
-import { composeElements } from '../utils/compose-elements';
-import { EntryIcon } from './entry/entry-icon';
-import { EntryDropArea } from './entry/entry-drop-area';
-import { EntryView } from './entry/entry-view';
-import styles from './tab-view.css';
-import { TabAddButton } from './tab/tab-add-button';
-import { TabCloseButton } from './tab/tab-close-button';
-import { TabContextMenu } from './tab/tab-context-menu';
-import { TabViewContextMenu } from './tab/tab-view-context-menu';
+import type { HistoryItem } from '../../../common/entities/history-item';
+import { HistoryControllerProvider } from '../../contexts/history-controller-context';
+import { useTabController } from '../../contexts/tab-controller-context';
+import type { TabState } from '../../controllers/tab-controller';
+import { useRestate } from '../../hooks/use-restate';
+import { composeElements } from '../../utils/compose-elements';
+import { EntryIcon } from '../entry/entry-icon';
+import { EntryDropArea } from '../entry/entry-drop-area';
+import { EntryView } from '../entry/entry-view';
+import { TabAddButton } from './tab-add-button';
+import { TabCloseButton } from './tab-close-button';
+import { TabContextMenu } from './tab-context-menu';
+import styles from './tab-view.module.css';
+import { TabViewContextMenu } from './tab-view-context-menu';
 
 export type Props = {
     className?: string;
