@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { useHistoryController } from '../contexts/history-controller-context';
-import { useRestate } from '../hooks/use-restate';
-import { Button, Props as ButtonProps } from './button';
+import { useHistoryController } from '../../contexts/history-controller-context';
+import { useRestate } from '../../hooks/use-restate';
+import { Button, Props as ButtonProps } from '../button';
 
 export type Props = ButtonProps;
 
