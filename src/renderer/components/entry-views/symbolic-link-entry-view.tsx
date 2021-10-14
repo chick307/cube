@@ -6,7 +6,7 @@ import { HistoryItem } from '../../../common/entities/history-item';
 import { useEntryService } from '../../contexts/entry-service-context';
 import { useHistoryController } from '../../contexts/history-controller-context';
 import { useTask } from '../../hooks/use-task';
-import { EntryIcon } from '../entry-icon';
+import { EntryIcon } from '../entry/entry-icon';
 import styles from './symbolic-link-entry-view.css';
 
 const iconPlaceholder = (

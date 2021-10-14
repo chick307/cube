@@ -8,7 +8,7 @@ import { useHistoryController } from '../../contexts/history-controller-context'
 import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
 import { useContextMenu } from '../../hooks/use-context-menu';
 import { useTask } from '../../hooks/use-task';
-import { EntryIcon } from '../entry-icon';
+import { EntryIcon } from '../entry/entry-icon';
 import styles from './directory-entry-view.css';
 
 export type Props = {

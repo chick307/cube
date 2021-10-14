@@ -6,7 +6,7 @@ import { useTabController } from '../contexts/tab-controller-context';
 import type { TabState } from '../controllers/tab-controller';
 import { useRestate } from '../hooks/use-restate';
 import { composeElements } from '../utils/compose-elements';
-import { EntryIcon } from './entry-icon';
+import { EntryIcon } from './entry/entry-icon';
 import { EntryView } from './entry-view';
 import { EntryDropArea } from './entry/entry-drop-area';
 import styles from './tab-view.css';
