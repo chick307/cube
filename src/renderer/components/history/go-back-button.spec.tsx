@@ -2,15 +2,15 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-import { Entry } from '../../common/entities/entry';
-import { FileSystem } from '../../common/entities/file-system';
-import { HistoryItem } from '../../common/entities/history-item';
-import { immediate } from '../../common/utils/immediate';
-import { State } from '../../common/utils/restate';
-import { HistoryControllerProvider } from '../contexts/history-controller-context';
-import type { HistoryController, HistoryControllerState } from '../controllers/history-controller';
-import { composeElements } from '../utils/compose-elements';
-import buttonStyles from './button.css';
+import { Entry } from '../../../common/entities/entry';
+import { FileSystem } from '../../../common/entities/file-system';
+import { HistoryItem } from '../../../common/entities/history-item';
+import { immediate } from '../../../common/utils/immediate';
+import { State } from '../../../common/utils/restate';
+import { HistoryControllerProvider } from '../../contexts/history-controller-context';
+import type { HistoryController, HistoryControllerState } from '../../controllers/history-controller';
+import { composeElements } from '../../utils/compose-elements';
+import buttonStyles from '../button.css';
 import { GoBackButton } from './go-back-button';
 
 const entryA = Entry.fromJson({ type: 'directory', path: '/a' });
