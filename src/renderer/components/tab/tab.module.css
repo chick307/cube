@@ -1,0 +1,147 @@
+.tab-insert-after-area,
+.tab-insert-before-area,
+.tab-navigate-area {
+    display: none;
+    position: absolute;
+    top: calc(var(--tabs-padding-top) * -1);
+    bottom: 0;
+    z-index: 2;
+}
+
+.tab-insert-after-area {
+    right: 0;
+    width: var(--tab-insert-area-width);
+}
+
+.tab-insert-before-area {
+    left: 0;
+    width: var(--tab-insert-area-width);
+}
+
+.tab-navigate-area {
+    left: var(--tab-insert-area-width);
+    right: var(--tab-insert-area-width);
+}
+
+.tab .tab-view-drag-over-indicator {
+    display: none;
+    position: absolute;
+    top: 2px;
+}
+
+.tab-insert-before-area > .tab-view-drag-over-indicator {
+    left: 0;
+}
+
+.tab-insert-after-area > .tab-view-drag-over-indicator {
+    right: 0;
+}
+
+.tab-navigate-area > .tab-view-drag-over-indicator {
+    left: 50%;
+}
+
+.tab-insert-after-area-drag-over .tab-insert-after-area > .tab-view-drag-over-indicator,
+.tab-insert-before-area-drag-over .tab-insert-before-area > .tab-view-drag-over-indicator,
+.tab-navigate-area-drag-over .tab-navigate-area > .tab-view-drag-over-indicator {
+    display: inline-block;
+}
+
+.tab-view-drag-over .tab-insert-after-area,
+.tab-view-drag-over .tab-insert-before-area,
+.tab-view-drag-over .tab-navigate-area {
+    display: block;
+}
+
+.tab {
+    flex: 1 1;
+    display: flex;
+    align-items: center;
+    position: relative;
+    border-radius: var(--tab-radius) var(--tab-radius) 0 0;
+    width: 0;
+    max-width: 240px;
+    height: var(--tab-height);
+    background-color: var(--tab-background);
+    -webkit-app-region: no-drag;
+    --close-button-background: var(--content-foreground);
+    --close-button-foreground: var(--content-background);
+    --tab-background: transparent;
+    transition: background-color 0.1s;
+}
+
+.tab:not(.active):hover {
+    --tab-background: #FFFFFF44;
+}
+
+.tab.active {
+    color: var(--active-tab-foreground);
+    filter: drop-shadow(0 0 2px #00000022);
+    z-index: 1;
+    --close-button-background: var(--content-foreground);
+    --close-button-foreground: var(--content-background);
+    --tab-background: var(--active-tab-background);
+    transition: none;
+}
+
+.tab::before,
+.tab::after {
+    display: block;
+    position: absolute;
+    content: '';
+    width: var(--tab-radius);
+    height: var(--tab-radius);
+    bottom: 0;
+}
+
+.tab::before {
+    left: calc(var(--tab-radius) * -1);
+    background: radial-gradient(circle at top left,
+        transparent calc(var(--tab-radius) - 1px),
+        var(--tab-background) var(--tab-radius),
+        var(--tab-background)
+    );
+}
+
+.tab::after {
+    right: calc(var(--tab-radius) * -1);
+    background: radial-gradient(
+        circle at top right,
+        transparent calc(var(--tab-radius) - 1px),
+        var(--tab-background) var(--tab-radius),
+        var(--tab-background)
+    );
+}
+
+.tab-margin {
+    display: inline-block;
+    flex: 1;
+    width: 0;
+    max-width: 6px;
+}
+
+.tab-icon {
+    flex: 1 1 16px;
+    overflow: hidden;
+    max-width: 16px;
+    height: 16px;
+}
+
+.tab-title {
+    flex: 1 1 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.close-button {
+    opacity: 0;
+}
+
+.tab.active > .close-button,
+.close-button:hover {
+    opacity: 0.5;
+}
+
+.tab.active > .close-button:hover {
+    filter: brightness(0.8);
+}
