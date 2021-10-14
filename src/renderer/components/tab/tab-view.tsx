@@ -14,16 +14,11 @@ import { TabCloseButton } from './tab-close-button';
 import { TabContextMenu } from './tab-context-menu';
 import styles from './tab-view.module.css';
 import { TabViewContextMenu } from './tab-view-context-menu';
+import { TabViewDragOverIndicator } from './tab-view-drag-over-indicator';
 
 export type Props = {
     className?: string;
 };
-
-const dragOverIcon = (
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
-        <polygon fillRule="evenodd" points="11 3 6 10 1 3"/>
-    </svg>
-);
 
 const Tab = (props: {
     tab: TabState;
@@ -79,18 +74,18 @@ const Tab = (props: {
             <EntryDropArea dragOverClassName={styles.tabInsertBeforeAreaDragOver}
                 onEntryDrop={onEntryDropInInsertBeforeArea}>
                 <div className={styles.tabInsertBeforeArea}>
-                    <span className={styles.tabViewDragOverIcon}>{dragOverIcon}</span>
+                    <TabViewDragOverIndicator className={styles.tabViewDragOverIndicator} />
                 </div>
             </EntryDropArea>
             <EntryDropArea dragOverClassName={styles.tabNavigateAreaDragOver} {...{ onEntryDrop }}>
                 <div className={styles.tabNavigateArea}>
-                    <span className={styles.tabViewDragOverIcon}>{dragOverIcon}</span>
+                    <TabViewDragOverIndicator className={styles.tabViewDragOverIndicator} />
                 </div>
             </EntryDropArea>
             <EntryDropArea dragOverClassName={styles.tabInsertAfterAreaDragOver}
                 onEntryDrop={onEntryDropInInsertAfterArea}>
                 <div className={styles.tabInsertAfterArea}>
-                    <span className={styles.tabViewDragOverIcon}>{dragOverIcon}</span>
+                    <TabViewDragOverIndicator className={styles.tabViewDragOverIndicator} />
                 </div>
             </EntryDropArea>
         </div>,
@@ -130,14 +125,14 @@ export const TabView = (props: Props) => {
                         <EntryDropArea dragOverClassName={styles.prependAreaDragOver}
                             onEntryDrop={onEntryDropInPrependArea}>
                             <div className={styles.prependArea}>
-                                <span className={styles.tabViewDragOverIcon}>{dragOverIcon}</span>
+                                <TabViewDragOverIndicator className={styles.tabViewDragOverIndicator} />
                             </div>
                         </EntryDropArea>
                         {tabElements}
                         <EntryDropArea dragOverClassName={styles.appendAreaDragOver}
                             onEntryDrop={onEntryDropInAppendArea}>
                             <div className={styles.appendArea}>
-                                <span className={styles.tabViewDragOverIcon}>{dragOverIcon}</span>
+                                <TabViewDragOverIndicator className={styles.tabViewDragOverIndicator} />
                                 <TabAddButton />
                             </div>
                         </EntryDropArea>

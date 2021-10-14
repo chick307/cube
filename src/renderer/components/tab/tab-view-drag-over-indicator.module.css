@@ -1,0 +1,10 @@
+:where(.indicator) {
+    display: inline-block;
+    fill: #FFFFFF;
+    filter: drop-shadow(0 0 1px #000000);
+    margin-left: -6px;
+    margin-right: -6px;
+    width: 12px;
+    height: 6px;
+    pointer-events: none;
+}
