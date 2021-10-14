@@ -1,16 +1,16 @@
 import React from 'react';
 
-import { useHistoryController } from '../contexts/history-controller-context';
-import { useViewerService } from '../contexts/viewer-service-context';
-import { useStatusBar } from '../gateways/status-bar-gateway';
-import { useRestate } from '../hooks/use-restate';
-import { useTask } from '../hooks/use-task';
-import type { Viewer } from '../services/viewer-service';
-import styles from './entry-view.css';
-import { EntryPathView } from './entry/entry-path-view';
-import { GoBackButton } from './go-back-button';
-import { GoForwardButton } from './go-forward-button';
-import { StatusBarSelect } from './status-bar/status-bar-select';
+import { useHistoryController } from '../../contexts/history-controller-context';
+import { useViewerService } from '../../contexts/viewer-service-context';
+import { useStatusBar } from '../../gateways/status-bar-gateway';
+import { useRestate } from '../../hooks/use-restate';
+import { useTask } from '../../hooks/use-task';
+import type { Viewer } from '../../services/viewer-service';
+import { GoBackButton } from '../go-back-button';
+import { GoForwardButton } from '../go-forward-button';
+import { StatusBarSelect } from '../status-bar/status-bar-select';
+import { EntryPathView } from './entry-path-view';
+import styles from './entry-view.module.css';
 
 export type Props = {
     className?: string;
