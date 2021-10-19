@@ -67,7 +67,9 @@ export const EntryView = (props: Props) => {
             <div className={styles.path}>
                 <GoBackButton className={styles.goBackButton} />
                 <GoForwardButton className={styles.goForwardButton} />
-                <EntryPathView entry={historyItem.entry} fileSystem={historyItem.fileSystem} />
+                <span className={styles.pathContainer}>
+                    <EntryPathView entry={historyItem.entry} fileSystem={historyItem.fileSystem} />
+                </span>
             </div>
             <div className={styles.viewContainer}>
                 <StatusBarProvider>

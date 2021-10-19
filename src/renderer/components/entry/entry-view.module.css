@@ -37,13 +37,15 @@
     -webkit-app-region: drag;
 }
 
-.path > .path-string {
-    display: inline-block;
+.path-container {
     flex: 1;
-    margin: 8px;
-    line-height: 20px;
-    height: 20px;
+    flex-shrink: 1;
     overflow: hidden;
+    margin-right: 8px;
+}
+
+.path-container > * {
+    inline-size: 100%;
 }
 
 .view-container {

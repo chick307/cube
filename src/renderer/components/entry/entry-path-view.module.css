@@ -1,12 +1,63 @@
 .entry-path-view {
     display: inline-flex;
     align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.entry-path-view[data-shrinking-last="true"]::after {
+    display: block;
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 8px;
+    background: linear-gradient(90deg, transparent, #FFFFFF);
+}
+
+.content {
+    display: inline-flex;
+    align-items: center;
+    width: max-content;
     color: #444;
     fill: #444;
 }
 
+.shrink-indicator {
+    display: inline-flex;
+    align-items: center;
+    overflow: hidden;
+    width: 0;
+}
+
+.entry-path-view[data-shrinking="true"] .shrink-indicator {
+    width: max-content;
+}
+
+.root-entry-name {}
+
+.entry-name-container {
+    overflow: hidden;
+    width: max-content;
+    max-width: 100%;
+}
+
+.entry-name-container[data-shrunken="true"] {
+    width: 0;
+}
+
+.entry-name-content {
+    width: max-content;
+}
+
 .entry-name {
-    display: contents;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 10;
+    overflow: hidden;
+    width: auto;
+    transition: width 0.2s;
 }
 
 .delimiter,
@@ -18,4 +69,24 @@
 
 .root-icon {
     margin-right: 0;
+}
+
+.icon-container {
+    display: inline-flex;
+    margin-right: 0;
+    width: 0;
+    height: 16px;
+    overflow: hidden;
+    transition: margin-right, width 0.2s;
+}
+
+.entry-name-container:hover .icon-container,
+.entry-name-container:last-child .icon-container {
+    margin-right: 4px;
+    width: 16px;
+}
+
+.entry-name-container:hover ~ .entry-name-container .icon-container {
+    margin-right: 0;
+    width: 0;
 }

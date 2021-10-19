@@ -4,6 +4,7 @@ import { Entry } from '../../../common/entities/entry';
 import { FileSystem } from '../../../common/entities/file-system';
 import { EntryPath } from '../../../common/values/entry-path';
 import { useLocalEntryService } from '../../contexts/local-entry-service-context';
+import { EntryIcon } from './entry-icon';
 import styles from './entry-path-view.module.css';
 
 export type Props = {
@@ -57,31 +58,53 @@ const delimiter = (
     </svg>
 );
 
+const moreIcon = (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+        <path fillRule="evenodd" d={
+            'M5,14 C3.8954305,14 3,13.1045695 3,12 C3,10.8954305 3.8954305,10 5,10 C6.1045695,10 7,10.8954305 7,12 ' +
+            'C7,13.1045695 6.1045695,14 5,14 Z M12,14 C10.8954305,14 10,13.1045695 10,12 C10,10.8954305 ' +
+            '10.8954305,10 12,10 C13.1045695,10 14,10.8954305 14,12 C14,13.1045695 13.1045695,14 12,14 Z M19,14 ' +
+            'C17.8954305,14 17,13.1045695 17,12 C17,10.8954305 17.8954305,10 19,10 C20.1045695,10 21,10.8954305 ' +
+            '21,12 C21,13.1045695 20.1045695,14 19,14 Z'
+        } />
+    </svg>
+);
+
 const rootDirectoryPath = new EntryPath('/');
+
+const shrinkIndicator = (
+    <span key={0} className={styles.shrinkIndicator}>
+        <span className={styles.delimiter}>{delimiter}</span>
+        {moreIcon}
+    </span>
+);
 
 export const EntryPathView = (props: Props) => {
     const { entry, fileSystem } = props;
 
     const localEntryService = useLocalEntryService();
 
+    const viewRef = React.useRef<HTMLDivElement>(null);
+    const contentRef = React.useRef<HTMLDivElement>(null);
+
     const paths = React.useMemo(() => {
         const homeDirectory = localEntryService.getHomeDirectoryEntry();
         const list = [] as React.ReactNode[];
         let p: EntryPath | null = entry.path;
-        let i = 0;
+        let i = 1;
         while (p !== null) {
             const key = i++;
             if (fileSystem.isLocal()) {
                 if (p.equals(rootDirectoryPath)) {
-                    list.push((
-                        <span className={styles.entryName} {...{ key }}>
+                    list.push(shrinkIndicator, (
+                        <span className={`${styles.rootEntryName} ${styles.entryName}`} {...{ key }}>
                             <span className={styles.rootIcon}>{rootIcon}</span>
                         </span>
                     ));
                     break;
                 } else if (p.equals(homeDirectory.path)) {
-                    list.push((
-                        <span className={styles.entryName} {...{ key }}>
+                    list.push(shrinkIndicator, (
+                        <span className={`${styles.rootEntryName} ${styles.entryName}`} {...{ key }}>
                             <span className={styles.rootIcon}>{homeIcon}</span>
                         </span>
                     ));
@@ -89,8 +112,8 @@ export const EntryPathView = (props: Props) => {
                 }
             } else if (fileSystem.isZip()) {
                 if (p.equals(rootDirectoryPath)) {
-                    list.push((
-                        <span className={styles.entryName} {...{ key }}>
+                    list.push(shrinkIndicator, (
+                        <span className={`${styles.rootEntryName} ${styles.entryName}`} {...{ key }}>
                             <span className={styles.zipIcon}>{zipIcon}</span>
                             <span>{fileSystem.container.entry.name.toString()}</span>
                         </span>
@@ -99,19 +122,86 @@ export const EntryPathView = (props: Props) => {
                 }
             }
             list.push((
-                <span className={styles.entryName} {...{ key }}>
-                    <span className={styles.delimiter}>{delimiter}</span>
-                    <span>{p.name.toString()}</span>
+                <span className={styles.entryNameContainer} {...{ key }}>
+                    <span className={styles.entryNameContent}>
+                        <span className={styles.entryName}>
+                            <span className={styles.delimiter}>{delimiter}</span>
+                            <span className={styles.iconContainer}>
+                                <EntryIcon {...{ entry }} />
+                            </span>
+                            <span>{p.name.toString()}</span>
+                        </span>
+                    </span>
                 </span>
             ));
             p = p.getParentPath();
         }
         return list.reverse();
+    }, [entry, fileSystem]);
+
+    const resize = React.useCallback(() => {
+        const view = viewRef.current;
+        if (view === null)
+            return;
+        const rootEntryName = view.getElementsByClassName(styles.rootEntryName)[0] as HTMLElement;
+        const shrinkIndicator = view.getElementsByClassName(styles.shrinkIndicator)[0] as HTMLElement;
+        const entryNames = Array.from(view.getElementsByClassName(styles.entryNameContainer)) as HTMLElement[];
+        const maxSize = view.clientWidth;
+        let size = entryNames.reduce((size, entryNameContainer) => (
+            size + entryNameContainer.getElementsByClassName(styles.entryNameContent)[0].getBoundingClientRect().width
+        ), rootEntryName.getBoundingClientRect().width);
+        if (size <= maxSize) {
+            if (view.dataset.shrinking === 'true')
+                view.dataset.shrinking = 'false';
+            for (let index = 0; index < entryNames.length; index++) {
+                const entryName = entryNames[index];
+                if (entryName.dataset.shrunken === 'true')
+                    entryName.dataset.shrunken = 'false';
+            }
+            if (view.dataset.shrinkingLast === 'true')
+                view.dataset.shrinkingLast = 'false';
+        } else {
+            if (entryNames.length <= 1) {
+                view.dataset.shrinking = 'false';
+            } else if (view.dataset.shrinking !== 'true') {
+                view.dataset.shrinking = 'true';
+            }
+            size += shrinkIndicator.scrollWidth;
+            for (let index = 0; index < entryNames.length; index++) {
+                const entryName = entryNames[index];
+                if (size > maxSize && index !== entryNames.length - 1) {
+                    if (entryName.dataset.shrunken !== 'true')
+                        entryName.dataset.shrunken = 'true';
+                    size -= entryName.getElementsByClassName(styles.entryNameContent)[0].getBoundingClientRect().width;
+                } else {
+                    if (entryName.dataset.shrunken === 'true')
+                        entryName.dataset.shrunken = 'false';
+                }
+            }
+            if (size > maxSize) {
+                if (view.dataset.shrinkingLast !== 'true')
+                    view.dataset.shrinkingLast = 'true';
+            } else if (view.dataset.shrinkingLast === 'true') {
+                view.dataset.shrinkingLast = 'false';
+            }
+        }
     }, []);
 
+    React.useEffect(() => {
+        const resizeHandler = () => resize();
+        window.addEventListener('resize', resizeHandler, { passive: true });
+        return () => window.removeEventListener('resize', resizeHandler);
+    }, []);
+
+    React.useEffect(() => {
+        setTimeout(resize);
+    }, [paths]);
+
     return (
-        <div className={styles.entryPathView}>
-            {paths}
+        <div ref={viewRef} className={styles.entryPathView}>
+            <div ref={contentRef} className={styles.content}>
+                {paths}
+            </div>
         </div>
     );
 };
