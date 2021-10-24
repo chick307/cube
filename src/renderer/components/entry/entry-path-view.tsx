@@ -4,6 +4,7 @@ import { Entry } from '../../../common/entities/entry';
 import { FileSystem } from '../../../common/entities/file-system';
 import { EntryPath } from '../../../common/values/entry-path';
 import { useLocalEntryService } from '../../contexts/local-entry-service-context';
+import { EntryDraggable, EntryDragImage } from './entry-draggable';
 import { EntryIcon } from './entry-icon';
 import styles from './entry-path-view.module.css';
 
@@ -75,7 +76,9 @@ const rootDirectoryPath = new EntryPath('/');
 const shrinkIndicator = (
     <span key={0} className={styles.shrinkIndicator}>
         <span className={styles.delimiter}>{delimiter}</span>
-        {moreIcon}
+        <div className={styles.moreIcon}>
+            {moreIcon}
+        </div>
     </span>
 );
 
@@ -97,40 +100,52 @@ export const EntryPathView = (props: Props) => {
             if (fileSystem.isLocal()) {
                 if (p.equals(rootDirectoryPath)) {
                     list.push(shrinkIndicator, (
-                        <span className={`${styles.rootEntryName} ${styles.entryName}`} {...{ key }}>
-                            <span className={styles.rootIcon}>{rootIcon}</span>
-                        </span>
+                        <EntryDraggable {...{ fileSystem, key }} path={p} type={'directory'}
+                            className={`${styles.rootEntryName} ${styles.entryName}`}>
+                            <EntryDragImage className={styles.dragImage} offsetX={8} offsetY={8}>
+                                <span className={styles.rootIcon}>{rootIcon}</span>
+                            </EntryDragImage>
+                        </EntryDraggable>
                     ));
                     break;
                 } else if (p.equals(homeDirectory.path)) {
                     list.push(shrinkIndicator, (
-                        <span className={`${styles.rootEntryName} ${styles.entryName}`} {...{ key }}>
-                            <span className={styles.rootIcon}>{homeIcon}</span>
-                        </span>
+                        <EntryDraggable {...{ fileSystem, key }} path={p} type={'directory'}
+                            className={`${styles.rootEntryName} ${styles.entryName}`}>
+                            <EntryDragImage className={styles.dragImage} offsetX={8} offsetY={8}>
+                                <span className={styles.rootIcon}>{homeIcon}</span>
+                            </EntryDragImage>
+                        </EntryDraggable>
                     ));
                     break;
                 }
             } else if (fileSystem.isZip()) {
                 if (p.equals(rootDirectoryPath)) {
                     list.push(shrinkIndicator, (
-                        <span className={`${styles.rootEntryName} ${styles.entryName}`} {...{ key }}>
-                            <span className={styles.zipIcon}>{zipIcon}</span>
-                            <span>{fileSystem.container.entry.name.toString()}</span>
-                        </span>
+                        <EntryDraggable {...{ fileSystem, key }} path={p} type={'directory'}
+                            className={`${styles.rootEntryName} ${styles.entryName}`}>
+                            <EntryDragImage className={styles.dragImage} offsetX={8} offsetY={8}>
+                                <span className={styles.zipIcon}>{zipIcon}</span>
+                                <span>{fileSystem.container.entry.name.toString()}</span>
+                            </EntryDragImage>
+                        </EntryDraggable>
                     ));
                     break;
                 }
             }
+            const type = p === entry.path ? entry.type : 'directory';
             list.push((
                 <span className={styles.entryNameContainer} {...{ key }}>
                     <span className={styles.entryNameContent}>
-                        <span className={styles.entryName}>
+                        <EntryDraggable {...{ fileSystem, type }} path={p} className={styles.entryName}>
                             <span className={styles.delimiter}>{delimiter}</span>
-                            <span className={styles.iconContainer}>
-                                <EntryIcon {...{ entry }} />
-                            </span>
-                            <span>{p.name.toString()}</span>
-                        </span>
+                            <EntryDragImage className={styles.dragImage} offsetX={8} offsetY={8}>
+                                <span className={styles.iconContainer}>
+                                    <EntryIcon {...{ entry }} />
+                                </span>
+                                <span className={styles.entryNameText}>{p.name.toString()}</span>
+                            </EntryDragImage>
+                        </EntryDraggable>
                     </span>
                 </span>
             ));
