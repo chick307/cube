@@ -1,5 +1,5 @@
 import { EntryPath } from '../../values/entry-path';
-import { Entry } from './entry';
+import { DummyEntry } from './entry.test-helper';
 import { SymbolicLinkEntry } from './symbolic-link-entry';
 
 describe('SymbolicLinkEntry class', () => {
@@ -23,8 +23,8 @@ describe('SymbolicLinkEntry class', () => {
         test('it returns if the passed entry equals self', () => {
             const symbolicLinkEntryA = new SymbolicLinkEntry(new EntryPath('/a'));
             const symbolicLinkEntryB = new SymbolicLinkEntry(new EntryPath('/a/b'));
-            const entryA = new Entry(new EntryPath('/a'));
-            const entryB = new Entry(new EntryPath('/a/b'));
+            const entryA = new DummyEntry(new EntryPath('/a'));
+            const entryB = new DummyEntry(new EntryPath('/a/b'));
             expect(symbolicLinkEntryA.equals(symbolicLinkEntryA)).toBe(true);
             expect(symbolicLinkEntryA.equals(new SymbolicLinkEntry(new EntryPath('/a')))).toBe(true);
             expect(symbolicLinkEntryB.equals(symbolicLinkEntryB)).toBe(true);
@@ -55,7 +55,7 @@ describe('SymbolicLinkEntry class', () => {
 
 describe('entry.isSymbolicLink() method', () => {
     test('it returns false', async () => {
-        const entry = new Entry(new EntryPath('/a/e'));
+        const entry = new DummyEntry(new EntryPath('/a/e'));
         expect(entry.isSymbolicLink()).toBe(false);
     });
 });

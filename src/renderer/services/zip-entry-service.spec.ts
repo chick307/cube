@@ -1,7 +1,8 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 
-import { DirectoryEntry, Entry, FileEntry } from '../../common/entities/entry';
+import { DirectoryEntry, FileEntry } from '../../common/entities/entry';
+import { DummyEntry } from '../../common/entities/entry.test-helper';
 import { FileSystem } from '../../common/entities/file-system';
 import { ZipFileSystem } from '../../common/entities/file-system';
 import { CloseController, Closed } from '../../common/utils/close-controller';
@@ -20,7 +21,7 @@ const dummyEntryService: EntryService = {
         return buffer;
     },
     readLink: async () => ({
-        entry: new Entry(new EntryPath('/a/e')),
+        entry: new DummyEntry(new EntryPath('/a/e')),
         linkString: '/a/e',
     }),
 };

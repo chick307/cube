@@ -1,6 +1,7 @@
 import { EntryPath } from '../../values/entry-path';
 import { DirectoryEntry } from './directory-entry';
 import { Entry } from './entry';
+import { DummyEntry } from './entry.test-helper';
 import { FileEntry } from './file-entry';
 import { SymbolicLinkEntry } from './symbolic-link-entry';
 
@@ -33,12 +34,12 @@ describe('Entry class', () => {
 
     describe('entry.equals() method', () => {
         test('it returns if the passed entry equals self', () => {
-            const entryA = new Entry(new EntryPath('/a'));
-            const entryB = new Entry(new EntryPath('/a/b'));
+            const entryA = new DummyEntry(new EntryPath('/a'));
+            const entryB = new DummyEntry(new EntryPath('/a/b'));
             expect(entryA.equals(entryA)).toBe(true);
-            expect(entryA.equals(new Entry(new EntryPath('/a')))).toBe(true);
+            expect(entryA.equals(new DummyEntry(new EntryPath('/a')))).toBe(true);
             expect(entryB.equals(entryB)).toBe(true);
-            expect(entryB.equals(new Entry(new EntryPath('/a/b')))).toBe(true);
+            expect(entryB.equals(new DummyEntry(new EntryPath('/a/b')))).toBe(true);
             expect(entryA.equals(entryB)).toBe(false);
             expect(entryB.equals(entryA)).toBe(false);
         });
@@ -46,7 +47,7 @@ describe('Entry class', () => {
 
     describe('entry.toJson() method', () => {
         test('it returns JSON object', () => {
-            const entry = new Entry(new EntryPath('/a/b/c'));
+            const entry = new DummyEntry(new EntryPath('/a/b/c'));
             expect(entry.toJson()).toEqual({ path: '/a/b/c' });
         });
     });

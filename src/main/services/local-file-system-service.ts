@@ -18,7 +18,9 @@ export class LocalFileSystemServiceImpl implements LocalFileSystemService {
             stat.isSymbolicLink() ? new SymbolicLinkEntry(entryPath) :
             stat.isDirectory() ? new DirectoryEntry(entryPath) :
             stat.isFile() ? new FileEntry(entryPath) :
-            new Entry(entryPath);
+            null;
+        if (entry === null)
+            throw Error();
         return entry;
     }
 

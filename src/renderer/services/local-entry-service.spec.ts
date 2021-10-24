@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 
 import { ipcRenderer } from 'electron';
 
-import { DirectoryEntry, Entry, FileEntry, SymbolicLinkEntry } from '../../common/entities/entry';
+import { DirectoryEntry, FileEntry, SymbolicLinkEntry } from '../../common/entities/entry';
 import { CloseController, Closed } from '../../common/utils/close-controller';
 import { EntryPath } from '../../common/values/entry-path';
 import { LocalEntryServiceImpl } from './local-entry-service';
@@ -38,8 +38,6 @@ describe('LocalEntryService type', () => {
                 return createDirectoryStats() as any;
             if (path === '/a/d')
                 return createSymbolicLinkStats() as any;
-            if (path === '/a/e')
-                return createStats() as any;
             return Promise.reject(Object.assign(Error(), { code: 'ENOENT' }));
         });
 
@@ -72,8 +70,6 @@ describe('LocalEntryService type', () => {
                 .resolves.toEqual(new DirectoryEntry(new EntryPath('/a/c')));
             await expect(localEntryService.createEntryFromPath({ entryPath: new EntryPath('/a/d') }))
                 .resolves.toEqual(new SymbolicLinkEntry(new EntryPath('/a/d')));
-            await expect(localEntryService.createEntryFromPath({ entryPath: new EntryPath('/a/e') }))
-                .resolves.toEqual(new Entry(new EntryPath('/a/e')));
         });
 
         test('it returns null if the path does not exist', async () => {
@@ -123,7 +119,6 @@ describe('LocalEntryService type', () => {
                 new FileEntry(new EntryPath('/a/b')),
                 new DirectoryEntry(new EntryPath('/a/c')),
                 new SymbolicLinkEntry(new EntryPath('/a/d')),
-                new Entry(new EntryPath('/a/e')),
             ]);
         });
 

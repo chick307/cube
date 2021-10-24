@@ -1,6 +1,6 @@
 import { EntryPath } from '../../values/entry-path';
 import { DirectoryEntry } from './directory-entry';
-import { Entry } from './entry';
+import { DummyEntry } from './entry.test-helper';
 
 describe('DirectoryEntry class', () => {
     describe('DirectoryEntry.fromJson() method', () => {
@@ -23,8 +23,8 @@ describe('DirectoryEntry class', () => {
         test('it returns if the passed entry equals self', () => {
             const directoryEntryA = new DirectoryEntry(new EntryPath('/a'));
             const directoryEntryB = new DirectoryEntry(new EntryPath('/a/b'));
-            const entryA = new Entry(new EntryPath('/a'));
-            const entryB = new Entry(new EntryPath('/a/b'));
+            const entryA = new DummyEntry(new EntryPath('/a'));
+            const entryB = new DummyEntry(new EntryPath('/a/b'));
             expect(directoryEntryA.equals(directoryEntryA)).toBe(true);
             expect(directoryEntryA.equals(new DirectoryEntry(new EntryPath('/a')))).toBe(true);
             expect(directoryEntryB.equals(directoryEntryB)).toBe(true);
@@ -55,19 +55,19 @@ describe('DirectoryEntry class', () => {
 
 describe('entry.isDirectory() method', () => {
     test('it returns false', async () => {
-        const entry = new Entry(new EntryPath('/a/e'));
+        const entry = new DummyEntry(new EntryPath('/a/e'));
         expect(entry.isDirectory()).toBe(false);
     });
 });
 
 describe('entry.getParentEntry() method', () => {
     test('it returns the parent directory entry', async () => {
-        const entry = new Entry(new EntryPath('/a/e'));
+        const entry = new DummyEntry(new EntryPath('/a/e'));
         expect(entry.getParentEntry()).toEqual(new DirectoryEntry(new EntryPath('/a')));
     });
 
     test('it returns null if the entry is the root', async () => {
-        const entry = new Entry(new EntryPath('/'));
+        const entry = new DummyEntry(new EntryPath('/'));
         expect(entry.getParentEntry()).toBeNull();
     });
 });

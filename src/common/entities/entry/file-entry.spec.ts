@@ -1,5 +1,5 @@
 import { EntryPath } from '../../values/entry-path';
-import { Entry } from './entry';
+import { DummyEntry } from './entry.test-helper';
 import { FileEntry } from './file-entry';
 
 describe('FileEntry class', () => {
@@ -23,8 +23,8 @@ describe('FileEntry class', () => {
         test('it returns if the passed entry equals self', () => {
             const fileEntryA = new FileEntry(new EntryPath('/a'));
             const fileEntryB = new FileEntry(new EntryPath('/a/b'));
-            const entryA = new Entry(new EntryPath('/a'));
-            const entryB = new Entry(new EntryPath('/a/b'));
+            const entryA = new DummyEntry(new EntryPath('/a'));
+            const entryB = new DummyEntry(new EntryPath('/a/b'));
             expect(fileEntryA.equals(fileEntryA)).toBe(true);
             expect(fileEntryA.equals(new FileEntry(new EntryPath('/a')))).toBe(true);
             expect(fileEntryB.equals(fileEntryB)).toBe(true);
@@ -55,7 +55,7 @@ describe('FileEntry class', () => {
 
 describe('entry.isFile() method', () => {
     test('it returns false', async () => {
-        const entry = new Entry(new EntryPath('/a/e'));
+        const entry = new DummyEntry(new EntryPath('/a/e'));
         expect(entry.isFile()).toBe(false);
     });
 });

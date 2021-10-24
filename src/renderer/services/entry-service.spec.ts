@@ -1,4 +1,5 @@
-import { DirectoryEntry, Entry, FileEntry, SymbolicLinkEntry } from '../../common/entities/entry';
+import { DirectoryEntry, FileEntry, SymbolicLinkEntry } from '../../common/entities/entry';
+import { DummyEntry } from '../../common/entities/entry.test-helper';
 import { FileSystem, LocalFileSystem, ZipContainer, ZipFileSystem } from '../../common/entities/file-system';
 import { CloseController } from '../../common/utils/close-controller';
 import { EntryPath } from '../../common/values/entry-path';
@@ -18,7 +19,7 @@ const dummyLocalEntryService: LocalEntryService = {
     ],
     readFile: async () => Buffer.from('abc'),
     readLink: async () => ({
-        entry: new Entry(new EntryPath('/a/e')),
+        entry: new DummyEntry(new EntryPath('/a/e')),
         linkString: '/a/e',
     }),
 };
@@ -202,14 +203,14 @@ describe('EntryService type', () => {
             const entryService = createEntryService();
             const promise1 = entryService.readLink({ entry, fileSystem });
             await expect(promise1).resolves.toEqual({
-                entry: new Entry(new EntryPath('/a/e')),
+                entry: new DummyEntry(new EntryPath('/a/e')),
                 linkString: '/a/e',
             });
             expect(readLink).toHaveBeenCalledWith({ entry }, { signal: undefined });
             readLink.mockClear();
             const promise2 = entryService.readLink({ entry, fileSystem }, { signal });
             await expect(promise2).resolves.toEqual({
-                entry: new Entry(new EntryPath('/a/e')),
+                entry: new DummyEntry(new EntryPath('/a/e')),
                 linkString: '/a/e',
             });
             expect(readLink).toHaveBeenCalledWith({ entry }, { signal });

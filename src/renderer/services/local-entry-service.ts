@@ -72,7 +72,7 @@ export class LocalEntryServiceImpl implements LocalEntryService {
             return new DirectoryEntry(entryPath);
         if (stat.isSymbolicLink())
             return new SymbolicLinkEntry(entryPath);
-        return new Entry(entryPath);
+        throw Error();
     }
 
     async createEntryFromPath(
