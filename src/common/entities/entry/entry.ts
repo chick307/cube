@@ -10,10 +10,14 @@ export type EntryJsonBase = {
 
 export type EntryJson = EntryJsonTypes[keyof EntryJsonTypes];
 
-export class Entry {
+export type EntryType = EntryJson['type'];
+
+export abstract class Entry {
     readonly name: EntryName;
 
     readonly path: EntryPath;
+
+    abstract readonly type: EntryType;
 
     constructor(entryPath: EntryPath) {
         this.name = entryPath.name;
