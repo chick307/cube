@@ -11,3 +11,20 @@
     max-height: 100%;
     object-fit: contain;
 }
+
+.entry-name-container {
+    display: inline-flex;
+    align-items: center;
+}
+
+.drag-image {
+    display: inline-flex;
+}
+
+.entry-name-container + .entry-name-container {
+    margin-left: 8px;
+}
+
+.entry-name-text {
+    margin-left: 4px;
+}

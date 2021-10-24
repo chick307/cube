@@ -8,6 +8,8 @@ import { useEntryService } from '../../contexts/entry-service-context';
 import { useHistoryController } from '../../contexts/history-controller-context';
 import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
 import { useTask } from '../../hooks/use-task';
+import { EntryDraggable, EntryDragImage } from '../entry/entry-draggable';
+import { EntryIcon } from '../entry/entry-icon';
 import { StatusBarSelect } from '../status-bar/status-bar-select';
 import { StatusBarSpace } from '../status-bar/status-bar-space';
 import styles from './comic-entry-view.css';
@@ -149,9 +151,22 @@ export const ComicEntryView = (props: Props) => {
     ], []);
 
     const currentPages = React.useMemo(() => {
-        const currentPages = currentSpread == null ? ['-'] : currentSpread.map(({ name }) => name.toString());
-        return currentPages.join(' ');
-    }, [currentSpread]);
+        if (currentSpread == null)
+            return '-';
+        const currentPages = currentSpread.map((entry, index) => {
+            return (
+                <EntryDraggable {...{ fileSystem }} key={index} path={entry.path} type={entry.type}>
+                    <div className={styles.entryNameContainer}>
+                        <EntryDragImage className={styles.dragImage} offsetX={8} offsetY={8}>
+                            <EntryIcon {...{ entry }} />
+                            <span className={styles.entryNameText}>{entry.name.toString()}</span>
+                        </EntryDragImage>
+                    </div>
+                </EntryDraggable>
+            );
+        });
+        return currentPages.reverse();
+    }, [currentSpread, fileSystem]);
 
     return (
         <div className={`${className} ${styles.view}`}>
