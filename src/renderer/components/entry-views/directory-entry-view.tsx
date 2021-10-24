@@ -8,6 +8,7 @@ import { useHistoryController } from '../../contexts/history-controller-context'
 import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
 import { useContextMenu } from '../../hooks/use-context-menu';
 import { useTask } from '../../hooks/use-task';
+import { EntryDraggable } from '../entry/entry-draggable';
 import { EntryIcon } from '../entry/entry-icon';
 import styles from './directory-entry-view.css';
 
@@ -33,23 +34,15 @@ const DirectoryItemView = (props: {
         historyController.navigate(new HistoryItem({ entry, fileSystem }));
     }, [entry, fileSystem]);
 
-    const onDragStart = React.useCallback((event: React.DragEvent) => {
-        event.dataTransfer.effectAllowed = 'move';
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        event.dataTransfer.setDragImage(itemRef.current!, event.clientX, event.clientY);
-        event.dataTransfer.setData('application/x-cube-item+json', JSON.stringify({
-            entry: entry.toJson(),
-            fileSystem: fileSystem.toJson(),
-        }));
-    }, []);
-
     return (
-        <span ref={itemRef} className={styles.entryNameContainer} draggable={true} {...{ onDoubleClick, onDragStart }}>
-            <EntryIcon className={styles.icon} entry={entry} iconPlaceholder={iconPlaceholder} />
-            <span className={styles.entryName}>
-                {entry.name.toString()}
+        <EntryDraggable {...{ fileSystem }} path={entry.path} type={entry.type}>
+            <span ref={itemRef} className={styles.entryNameContainer} {...{ onDoubleClick }}>
+                <EntryIcon className={styles.icon} entry={entry} iconPlaceholder={iconPlaceholder} />
+                <span className={styles.entryName}>
+                    {entry.name.toString()}
+                </span>
             </span>
-        </span>
+        </EntryDraggable>
     );
 };
 
