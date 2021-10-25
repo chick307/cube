@@ -319,7 +319,7 @@ export class ViewerServiceImpl implements ViewerService {
     }
 
     #hasComicExtension(entry: FileEntry) {
-        return /^\.(?:cbz)$/.test(entry.path.getExtension());
+        return /^\.(?:cbz)$/i.test(entry.path.getExtension());
     }
 
     #hasCssExtension(entry: FileEntry) {
@@ -339,7 +339,7 @@ export class ViewerServiceImpl implements ViewerService {
     }
 
     #hasMediaExtension(entry: FileEntry) {
-        return /\.(?:m4a|mp[34]|wav)/.test(entry.path.getExtension());
+        return /\.(?:m4a|mp[34]|wav)/i.test(entry.path.getExtension());
     }
 
     #hasPdfExtension(entry: FileEntry) {
@@ -347,15 +347,15 @@ export class ViewerServiceImpl implements ViewerService {
     }
 
     #hasTextExtension(entry: FileEntry) {
-        return /^\.(?:txt)$/.test(entry.path.getExtension());
+        return /^\.(?:txt)$/i.test(entry.path.getExtension());
     }
 
     #hasTsvExtension(entry: FileEntry) {
-        return /^\.(?:tsv)$/.test(entry.path.getExtension());
+        return /^\.(?:tsv)$/i.test(entry.path.getExtension());
     }
 
     #hasZipExtension(entry: FileEntry) {
-        return /^\.(?:zip)$/.test(entry.path.getExtension());
+        return /^\.(?:zip)$/i.test(entry.path.getExtension());
     }
 
     async prioritizeViewers(
