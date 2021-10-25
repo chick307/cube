@@ -70,10 +70,13 @@ const directoryViewer: Viewer = {
         const viewerState = new ViewerStates.DirectoryViewerState();
         return new HistoryItem({ ...historyItem, viewerState });
     },
-    render({ entry, fileSystem }: HistoryItem) {
-        if (!entry.isDirectory() && !entry.isSymbolicLink())
+    render(historyItem: HistoryItem) {
+        if (!historyItem.entry.isDirectory() && !historyItem.entry.isSymbolicLink())
             return null;
-        return <EntryViews.DirectoryEntryView {...{ entry: entry as DirectoryEntry, fileSystem }} />;
+        const entry = historyItem.entry as DirectoryEntry;
+        const { fileSystem } = historyItem;
+        const viewerState = historyItem.viewerState as ViewerStates.DirectoryViewerState;
+        return <EntryViews.DirectoryEntryView {...{ entry, fileSystem, viewerState }} />;
     },
 };
 
@@ -104,10 +107,13 @@ const zipViewer: Viewer = {
         const viewerState = new ViewerStates.DirectoryViewerState();
         return new HistoryItem({ ...historyItem, viewerState });
     },
-    render({ entry, fileSystem }: HistoryItem) {
-        if (!entry.isDirectory() && !entry.isSymbolicLink())
+    render(historyItem: HistoryItem) {
+        if (!historyItem.entry.isDirectory() && !historyItem.entry.isSymbolicLink())
             return null;
-        return <EntryViews.DirectoryEntryView {...{ entry: entry as DirectoryEntry, fileSystem }} />;
+        const entry = historyItem.entry as DirectoryEntry;
+        const { fileSystem } = historyItem;
+        const viewerState = historyItem.viewerState as ViewerStates.DirectoryViewerState;
+        return <EntryViews.DirectoryEntryView {...{ entry, fileSystem, viewerState }} />;
     },
 };
 

@@ -3,6 +3,7 @@ import React from 'react';
 import type { DirectoryEntry, Entry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
 import { HistoryItem } from '../../../common/entities/history-item';
+import { DirectoryViewerState } from '../../../common/values/viewer-state';
 import { useEntryService } from '../../contexts/entry-service-context';
 import { useHistoryController } from '../../contexts/history-controller-context';
 import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
@@ -16,6 +17,7 @@ export type Props = {
     className?: string;
     entry: DirectoryEntry;
     fileSystem: FileSystem;
+    viewerState: DirectoryViewerState;
 };
 
 const iconPlaceholder = <span className={styles.iconPlaceholder}></span>;
@@ -47,14 +49,31 @@ const DirectoryItemView = (props: {
 };
 
 export const DirectoryEntryView = (props: Props) => {
-    const { className, entry, fileSystem } = props;
+    const { className, entry, fileSystem, viewerState } = props;
+
+    const { hiddenEntriesVisible } = viewerState;
 
     const entryService = useEntryService();
 
-    const [entries = []] = useTask(async (signal) => {
-        const entries = await entryService.readDirectory({ entry, fileSystem }, { signal });
-        return entries.filter((entry) => !entry.path.name.toString().startsWith('.'));
+    const [allEntries = []] = useTask(async (signal) => {
+        const allEntries = await entryService.readDirectory({ entry, fileSystem }, { signal });
+        return allEntries;
     }, [entry, entryService, fileSystem]);
+
+    const { entries, hiddenEntriesCount } = React.useMemo(() => {
+        const entries: Entry[] = [];
+        let hiddenEntriesCount = 0;
+        for (const entry of allEntries) {
+            if (entry.path.name.toString().startsWith('.')) {
+                if (hiddenEntriesVisible)
+                    entries.push(entry);
+                hiddenEntriesCount++;
+            } else {
+                entries.push(entry);
+            }
+        }
+        return { entries, hiddenEntriesCount };
+    }, [allEntries, hiddenEntriesVisible]);
 
     const itemCount = React.useMemo(() => {
         if (entries.length === 1)
@@ -77,8 +96,20 @@ export const DirectoryEntryView = (props: Props) => {
                     historyController.navigate(historyItem);
                 },
             },
+            {
+                label: (
+                    `${hiddenEntriesVisible ? 'Hide' : 'Show'} ` +
+                    'Hidden Files' +
+                    ` (${hiddenEntriesCount} item${hiddenEntriesCount === 1 ? '' : 's'})`
+                ),
+                onClicked: () => {
+                    const viewerState = props.viewerState.toggleHiddenFilesVisible();
+                    const historyItem = new HistoryItem({ entry, fileSystem, viewerState });
+                    historyController.replace(historyItem);
+                },
+            },
         ];
-    }, [entries, fileSystem, historyController]);
+    }, [entries, fileSystem, historyController, viewerState]);
 
     return (
         <div className={`${className} ${styles.view}`}>
