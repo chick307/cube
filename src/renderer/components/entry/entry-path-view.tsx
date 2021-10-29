@@ -141,7 +141,7 @@ export const EntryPathView = (props: Props) => {
                             <span className={styles.delimiter}>{delimiter}</span>
                             <EntryDragImage className={styles.dragImage} offsetX={8} offsetY={8}>
                                 <span className={styles.iconContainer}>
-                                    <EntryIcon {...{ entry }} />
+                                    <EntryIcon {...{ entryPath: p, fileSystem }} />
                                 </span>
                                 <span className={styles.entryNameText}>{p.name.toString()}</span>
                             </EntryDragImage>
