@@ -1,5 +1,6 @@
 import dompurify from 'dompurify';
 import { shell } from 'electron';
+import { JSDOM } from 'jsdom';
 import marked from 'marked';
 import React from 'react';
 import ReactDomServer from 'react-dom/server';
@@ -11,6 +12,7 @@ import { EntryPath } from '../../../common/values/entry-path';
 import { useEntryService } from '../../contexts/entry-service-context';
 import { useHistoryController } from '../../contexts/history-controller-context';
 import { useEntryText } from '../../hooks/use-entry-text';
+import { useTask } from '../../hooks/use-task';
 import { Highlight } from '../highlight';
 import styles from './markdown-entry-view.css';
 
@@ -30,10 +32,11 @@ export const MarkdownEntryView = (props: Props) => {
 
     const markdown = useEntryText({ entry, fileSystem });
 
-    const markup = React.useMemo(() => {
+    const [markup = null] = useTask(async (signal) => {
         if (markdown === null)
             return null;
         const unsafeHtml = marked(markdown, {
+            baseUrl,
             headerIds: false,
             highlight: (code, lang) => {
                 const component = <Highlight language={lang} {...{ code }} />;
@@ -46,9 +49,33 @@ export const MarkdownEntryView = (props: Props) => {
             ALLOW_UNKNOWN_PROTOCOLS: true,
             /* eslint-enable @typescript-eslint/naming-convention */
         });
+        const doc = new JSDOM(safeHtml).window.document;
+        for (const image of Array.from(doc.getElementsByTagName('img'))) {
+            const src = image.getAttribute('src');
+            if (src === null)
+                continue;
+            const url = new URL(src, baseUrl);
+            if (url.protocol === 'file:') {
+                const entryPath = new EntryPath(decodeURI(url.pathname));
+                const entry = await entryService.createEntryFromPath({ entryPath, fileSystem });
+                if (entry === null) {
+                    image.removeAttribute('src');
+                    continue;
+                }
+                const content = await entryService.readFile({ entry: entry as FileEntry, fileSystem }, { signal });
+                const type =
+                    /\.jpe?g/i.test(entryPath.toString()) ? 'image/jpeg' :
+                    /\.png/i.test(entryPath.toString()) ? 'image/png' :
+                    /\.gif/i.test(entryPath.toString()) ? 'image/gif' :
+                    /\.webp/i.test(entryPath.toString()) ? 'image/webp' :
+                    /\.svg/i.test(entryPath.toString()) ? 'image/svg+xml' :
+                    'application/octet-stream';
+                image.src = `data:${type};base64,${content.toString('base64')}`;
+            }
+        }
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        return { __html: safeHtml };
-    }, [markdown]);
+        return { __html: doc.body.innerHTML };
+    }, [baseUrl, fileSystem, markdown]);
 
     const onDragStart = React.useCallback((event: React.MouseEvent<HTMLElement>) => {
         event.preventDefault();
