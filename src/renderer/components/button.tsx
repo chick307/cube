@@ -5,9 +5,16 @@ import styles from './button.css';
 export type Props = React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
 
 export const Button = (props: Props) => {
-    const { className = '', ...buttonProps } = props;
+    const { className = '', onClick, ...buttonProps } = props;
+
+    const onButtonClick = React.useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+        if (onClick != null)
+            onClick(event);
+        if (!event.defaultPrevented)
+            event.currentTarget.blur();
+    }, []);
 
     return <>
-        <button className={`${className} ${styles.button}`} {...buttonProps} />
+        <button className={`${className} ${styles.button}`} onClick={onButtonClick} {...buttonProps} />
     </>;
 };

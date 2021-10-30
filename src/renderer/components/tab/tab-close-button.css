@@ -8,4 +8,14 @@
     border: none;
     border-radius: 50%;
     text-align: center;
+    outline: none;
+}
+
+.tab-close-button:hover,
+.tab-close-button:focus-within {
+    filter: brightness(0.8);
+}
+
+.tab-close-button:active {
+    filter: brightness(0.6);
 }

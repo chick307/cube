@@ -8,8 +8,9 @@ export const TabAddButton = () => {
 
     const className = `${styles.tabAddButton}`;
 
-    const onClick = React.useCallback(() => {
+    const onClick = React.useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
         tabController.addTab({ active: true });
+        event.currentTarget.blur();
     }, [tabController]);
 
     return (
