@@ -9,6 +9,7 @@
     background-color: #FFFFFF;
     color: #888888;
     overflow: hidden;
+    fill: #444444;
 }
 
 .button:disabled {

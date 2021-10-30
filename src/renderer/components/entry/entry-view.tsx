@@ -6,6 +6,7 @@ import { useStatusBar } from '../../gateways/status-bar-gateway';
 import { useRestate } from '../../hooks/use-restate';
 import { useTask } from '../../hooks/use-task';
 import type { Viewer } from '../../services/viewer-service';
+import { Button } from '../button';
 import { GoBackButton } from '../history/go-back-button';
 import { GoForwardButton } from '../history/go-forward-button';
 import { StatusBarSelect } from '../status-bar/status-bar-select';
@@ -15,6 +16,18 @@ import styles from './entry-view.module.css';
 export type Props = {
     className?: string;
 };
+
+const refreshIcon = (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+        <path fillRule="evenodd" d={
+            'M17.8069373,7 C16.4464601,5.07869636 14.3936238,4 12,4 C7.581722,4 4,7.581722 4,12 L2,12 C2,6.4771525 ' +
+            '6.4771525,2 12,2 C14.8042336,2 17.274893,3.18251178 19,5.27034886 L19,2 L21,2 L21,9 L14,9 L14,7 ' +
+            'L17.8069373,7 Z M6.19306266,17 C7.55353989,18.9213036 9.60637619,20 12,20 C16.418278,20 20,16.418278 ' +
+            '20,12 L22,12 C22,17.5228475 17.5228475,22 12,22 C9.19576641,22 6.72510698,20.8174882 5,18.7296511 ' +
+            'L5,22 L3,22 L3,15 L10,15 L10,17 L6.19306266,17 Z'
+        } />
+    </svg>
+);
 
 export const EntryView = (props: Props) => {
     const { className = '' } = props;
@@ -62,18 +75,32 @@ export const EntryView = (props: Props) => {
             .concat(viewerId === '-' ? [{ label: '-', value: null }] : []);
     }, [viewerId, viewers]);
 
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefreshButtonClick = React.useCallback(() => {
+        setRefreshing(true);
+    }, []);
+
+    React.useEffect(() => {
+        if (refreshing)
+            setRefreshing(false);
+    }, [refreshing]);
+
     return (
         <div key={historyItem.entry.path.toString()} className={`${className} ${styles.entryView}`}>
             <div className={styles.path}>
                 <GoBackButton className={styles.goBackButton} />
                 <GoForwardButton className={styles.goForwardButton} />
+                <Button className={styles.refreshButton} onClick={onRefreshButtonClick}>
+                    {refreshIcon}
+                </Button>
                 <span className={styles.pathContainer}>
                     <EntryPathView entry={historyItem.entry} fileSystem={historyItem.fileSystem} />
                 </span>
             </div>
             <div className={styles.viewContainer}>
                 <StatusBarProvider>
-                    {node}
+                    {refreshing ? null : node}
                 </StatusBarProvider>
             </div>
             <div className={styles.statusBar}>

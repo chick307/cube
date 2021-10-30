@@ -12,11 +12,6 @@
     border-bottom: 1px solid #EEEEEE;
 }
 
-:global(#container) > .entry-view > .path {
-    padding-left: 72px;
-    -webkit-app-region: drag;
-}
-
 .go-back-button {
     margin: 6px 1px 6px 8px;
     height: 24px;
@@ -27,14 +22,9 @@
     height: 24px;
 }
 
-:global(#container) > .entry-view > .path > .go-back-button,
-:global(#container) > .entry-view > .path > .go-forward-button {
-    -webkit-app-region: no-drag;
-}
-
-:global(#container) > .entry-view > .path > .go-back-button:disabled,
-:global(#container) > .entry-view > .path > .go-forward-button:disabled {
-    -webkit-app-region: drag;
+.refresh-button {
+    margin: 6px 8px 6px 0;
+    height: 24px;
 }
 
 .path-container {
