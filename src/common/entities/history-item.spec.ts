@@ -1,4 +1,4 @@
-import { ViewerState } from '../values/viewer-state';
+import { DummyViewerState } from '../values/viewer-state.test-helper';
 import { Entry } from './entry';
 import { FileSystem } from './file-system';
 import { HistoryItem } from './history-item';
@@ -7,8 +7,8 @@ const entryAJson = { type: 'directory', path: '/a' };
 const entryA = Entry.fromJson(entryAJson);
 const fileSystemAJson = { type: 'local' };
 const fileSystemA = FileSystem.fromJson(fileSystemAJson);
-const viewerStateAJson = { type: 'directory' };
-const viewerStateA = ViewerState.fromJson(viewerStateAJson);
+const viewerStateAJson = { type: 'dummy' };
+const viewerStateA = new DummyViewerState();
 
 describe('HistoryItem class', () => {
     describe('HistoryItem.fromJson() method', () => {
