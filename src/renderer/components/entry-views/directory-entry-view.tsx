@@ -39,7 +39,7 @@ const DirectoryItemView = (props: {
     return (
         <EntryDraggable {...{ fileSystem }} path={entry.path} type={entry.type}>
             <span ref={itemRef} className={styles.entryNameContainer} {...{ onDoubleClick }}>
-                <EntryIcon className={styles.icon} entry={entry} iconPlaceholder={iconPlaceholder} />
+                <EntryIcon className={styles.icon} {...{ entryPath: entry.path, fileSystem, iconPlaceholder }} />
                 <span className={styles.entryName}>
                     {entry.name.toString()}
                 </span>

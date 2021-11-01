@@ -50,12 +50,14 @@ export const Tab = (props: Props) => {
 
     const { title } = tab;
 
+    const { entry, fileSystem } = tab.historyController.state.current.current;
+
     return composeElements(
         <TabContextMenu tabId={tab.id} />,
         <div key={tab.id} {...{ className, onAuxClick, onClick, title }}>
             <span className={styles.tabMargin} />
             <span className={styles.tabIcon}>
-                <EntryIcon entry={tab.historyController.state.current.current.entry} />
+                <EntryIcon {...{ entryPath: entry.path, fileSystem }} />
             </span>
             <span className={styles.tabMargin} />
             <span className={styles.tabTitle}>

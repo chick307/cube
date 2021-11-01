@@ -158,7 +158,7 @@ export const ComicEntryView = (props: Props) => {
                 <EntryDraggable {...{ fileSystem }} key={index} path={entry.path} type={entry.type}>
                     <div className={styles.entryNameContainer}>
                         <EntryDragImage className={styles.dragImage} offsetX={8} offsetY={8}>
-                            <EntryIcon {...{ entry }} />
+                            <EntryIcon {...{ entryPath: entry.path, fileSystem }} />
                             <span className={styles.entryNameText}>{entry.name.toString()}</span>
                         </EntryDragImage>
                     </div>

@@ -49,7 +49,7 @@ export const SymbolicLinkEntryView = (props: Props) => {
                 <div className={styles.destContainer}>
                     <span className={styles.arrow}>&rarr;</span>
                     <span className={styles.iconContainer} {...{ onClick }}>
-                        <EntryIcon entry={link.entry} {...{ iconPlaceholder }} />
+                        <EntryIcon {...{ entryPath: link.entry.path, fileSystem, iconPlaceholder }} />
                     </span>
                     <span className={styles.destPath} {...{ onClick }}>
                         {link.entry.path.toString()}
