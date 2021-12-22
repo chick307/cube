@@ -69,7 +69,8 @@
   "scripts": {
     "build:dev": "npm run build:dev:webpack",
     "build:dev:webpack": "webpack --config webpack.dev.js",
-    "build:prod:mac": "npm run build:prod:webpack && electron-builder --mac --x64",
+    "build:prod:mac:x64": "npm run build:prod:webpack && electron-builder --mac --x64",
+    "build:prod:mac:arm64": "npm run build:prod:webpack && electron-builder --mac --arm64",
     "build:prod:webpack": "webpack --config webpack.prod.js",
     "coverage": "jest --collect-coverage",
     "lint": "eslint --ext .js,.ts,.tsx .",
