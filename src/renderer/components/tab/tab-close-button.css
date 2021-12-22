@@ -17,4 +17,9 @@
     @nest &:active {
         filter: brightness(0.6);
     }
+
+    @nest & > svg {
+        width: 10px;
+        height: 10px;
+    }
 }

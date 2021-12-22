@@ -22,4 +22,9 @@
     @nest &:active {
         background-color: #FFFFFF22;
     }
+
+    @nest & > svg {
+        width: 12px;
+        height: 12px;
+    }
 }

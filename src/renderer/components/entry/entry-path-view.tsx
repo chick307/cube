@@ -4,6 +4,7 @@ import { Entry } from '../../../common/entities/entry';
 import { FileSystem } from '../../../common/entities/file-system';
 import { EntryPath } from '../../../common/values/entry-path';
 import { useLocalEntryService } from '../../contexts/local-entry-service-context';
+import { ChevronRightSmallIcon, MoreHorizontalIcon } from '../icons';
 import { EntryDraggable, EntryDragImage } from './entry-draggable';
 import { EntryIcon } from './entry-icon';
 import styles from './entry-path-view.module.css';
@@ -52,33 +53,12 @@ const zipIcon = (
     </svg>
 );
 
-const delimiter = (
-    <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 16 16">
-        <polygon fillRule="evenodd"
-            points="9.586 8 4.293 2.707 5.707 1.293 12.414 8 5.707 14.707 4.293 13.293"/>
-    </svg>
-);
-
-const moreIcon = (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-        <path fillRule="evenodd" d={
-            'M5,14 C3.8954305,14 3,13.1045695 3,12 C3,10.8954305 3.8954305,10 5,10 C6.1045695,10 7,10.8954305 7,12 ' +
-            'C7,13.1045695 6.1045695,14 5,14 Z M12,14 C10.8954305,14 10,13.1045695 10,12 C10,10.8954305 ' +
-            '10.8954305,10 12,10 C13.1045695,10 14,10.8954305 14,12 C14,13.1045695 13.1045695,14 12,14 Z M19,14 ' +
-            'C17.8954305,14 17,13.1045695 17,12 C17,10.8954305 17.8954305,10 19,10 C20.1045695,10 21,10.8954305 ' +
-            '21,12 C21,13.1045695 20.1045695,14 19,14 Z'
-        } />
-    </svg>
-);
-
 const rootDirectoryPath = new EntryPath('/');
 
 const shrinkIndicator = (
     <span key={0} className={styles.shrinkIndicator}>
-        <span className={styles.delimiter}>{delimiter}</span>
-        <div className={styles.moreIcon}>
-            {moreIcon}
-        </div>
+        <span className={styles.delimiter}>{ChevronRightSmallIcon}</span>
+        <div className={styles.moreIcon}>{MoreHorizontalIcon}</div>
     </span>
 );
 
@@ -138,7 +118,7 @@ export const EntryPathView = (props: Props) => {
                 <span className={styles.entryNameContainer} {...{ key }}>
                     <span className={styles.entryNameContent}>
                         <EntryDraggable {...{ fileSystem, type }} path={p} className={styles.entryName}>
-                            <span className={styles.delimiter}>{delimiter}</span>
+                            <span className={styles.delimiter}>{ChevronRightSmallIcon}</span>
                             <EntryDragImage className={styles.dragImage} offsetX={8} offsetY={8}>
                                 <span className={styles.iconContainer}>
                                     <EntryIcon {...{ entryPath: p, fileSystem }} />

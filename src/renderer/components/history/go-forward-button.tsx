@@ -3,11 +3,20 @@ import React from 'react';
 import { useHistoryController } from '../../contexts/history-controller-context';
 import { useRestate } from '../../hooks/use-restate';
 import { Button, Props as ButtonProps } from '../button';
+import { ArrowRightIcon } from '../icons';
+import styles from './go-forward-button.module.css';
 
 export type Props = ButtonProps;
 
+const defaultIcon = (
+    <span className={styles.defaultIcon}>
+        {ArrowRightIcon}
+    </span>
+);
+
 export const GoForwardButton = (props: Props) => {
     const {
+        className: classNameProp,
         disabled: buttonDisabled,
         onClick: buttonOnClick,
         children: buttonChildren,
@@ -18,6 +27,8 @@ export const GoForwardButton = (props: Props) => {
 
     const { ableToGoForward } = useRestate(historyController.state);
 
+    const className = classNameProp == null ? styles.goForwardButton : `${styles.goForwardButton} ${classNameProp}`;
+
     const disabled = buttonDisabled || !ableToGoForward;
 
     const onClick = React.useCallback((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -27,13 +38,9 @@ export const GoForwardButton = (props: Props) => {
             historyController.goForward();
     }, [historyController]);
 
-    const children = React.useMemo(() => buttonChildren || <>
-        <svg width="16" height="16" fill="#666666" viewBox="0 0 24 24">
-            <use xlinkHref="images/icons.svg#arrow-right" />
-        </svg>
-    </>, [buttonChildren]);
+    const children = React.useMemo(() => buttonChildren || defaultIcon, [buttonChildren]);
 
     return <>
-        <Button {...{ disabled, onClick, children, ...buttonProps }} />
+        <Button {...{ className, disabled, onClick, children, ...buttonProps }} />
     </>;
 };

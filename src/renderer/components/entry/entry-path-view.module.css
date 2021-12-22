@@ -39,6 +39,11 @@
 .more-icon {
     margin-left: 4px;
     height: 16px;
+
+    @nest & > svg {
+        width: 16px;
+        height: 16px;
+    }
 }
 
 .root-entry-name {}
@@ -76,6 +81,13 @@
 .zip-icon {
     display: inline-flex;
     margin: 0;
+}
+
+.delimiter {
+    @nest & > svg {
+        width: 8px;
+        height: 8px;
+    }
 }
 
 .zip-icon + span {

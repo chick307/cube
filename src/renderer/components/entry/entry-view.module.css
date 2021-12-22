@@ -25,6 +25,11 @@
 .refresh-button {
     margin: 6px 8px 6px 0;
     height: 24px;
+
+    @nest & > svg {
+        width: 16px;
+        height: 16px;
+    }
 }
 
 .path-container {
