@@ -114,6 +114,16 @@ const electronRenderer = (options) => {
                                 },
                             },
                         },
+                        {
+                            loader: 'postcss-loader',
+                            options: {
+                                postcssOptions: {
+                                    plugins: [
+                                        'postcss-nesting',
+                                    ],
+                                },
+                            },
+                        },
                     ],
                 },
             ],
