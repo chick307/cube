@@ -33,7 +33,9 @@ export const ComicEntryView = (props: Props) => {
         const getPages = async (directoryEntry: DirectoryEntry) => {
             const entries = await entryService.readDirectory({ entry: directoryEntry, fileSystem, signal });
             for (const entry of entries) {
-                if (entry.isDirectory()) {
+                if (entry.path.name.toString().startsWith('.')) {
+                    continue
+                } else if (entry.isDirectory()) {
                     await signal.wrapPromise(getPages(entry));
                 } else if (entry.isFile() && /^\.(?:jpe?g|png)$/.test(entry.path.getExtension())) {
                     pages.push(entry);
