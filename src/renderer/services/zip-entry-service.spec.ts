@@ -3,15 +3,15 @@ import path from 'path';
 
 import { DirectoryEntry, FileEntry } from '../../common/entities/entry';
 import { DummyEntry } from '../../common/entities/entry.test-helper';
-import { FileSystem } from '../../common/entities/file-system';
 import { ZipFileSystem } from '../../common/entities/file-system';
+import { DummyFileSystem } from '../../common/entities/file-system.test-helper';
 import { CloseController, Closed } from '../../common/utils/close-controller';
 import { EntryPath } from '../../common/values/entry-path';
 import type { EntryService } from './entry-service';
 import { createEntryService } from './entry-service.test-helper';
 import { ZipEntryServiceImpl } from './zip-entry-service';
 
-const dummyFileSystem = new FileSystem();
+const fileSystem = new DummyFileSystem();
 
 let entryService: EntryService;
 
@@ -37,7 +37,7 @@ afterEach(() => {
 
 const dummyContainer = {
     entry: new FileEntry(new EntryPath('/path/to/zip')),
-    fileSystem: dummyFileSystem,
+    fileSystem,
 };
 
 describe('ZipEntryService type', () => {

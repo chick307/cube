@@ -1,17 +1,16 @@
 import { Entry } from '../../common/entities/entry';
-import { FileSystem } from '../../common/entities/file-system';
+import { DummyFileSystem } from '../../common/entities/file-system.test-helper';
 import { HistoryItem } from '../../common/entities/history-item';
 import { immediate } from '../../common/utils/immediate';
 import { HistoryControllerImpl } from './history-controller';
 
-class UnknownFileSystem extends FileSystem {}
-const unknownFileSystem = new UnknownFileSystem();
 const entryA = Entry.fromJson({ type: 'directory', path: '/a' });
 const entryB = Entry.fromJson({ type: 'directory', path: '/a/b' });
 const entryC = Entry.fromJson({ type: 'file', path: '/a/b/c' });
-const historyItemA = new HistoryItem({ entry: entryA, fileSystem: unknownFileSystem });
-const historyItemB = new HistoryItem({ entry: entryB, fileSystem: unknownFileSystem });
-const historyItemC = new HistoryItem({ entry: entryC, fileSystem: unknownFileSystem });
+const fileSystem = new DummyFileSystem();
+const historyItemA = new HistoryItem({ entry: entryA, fileSystem });
+const historyItemB = new HistoryItem({ entry: entryB, fileSystem });
+const historyItemC = new HistoryItem({ entry: entryC, fileSystem });
 
 describe('HistoryContollerImpl class', () => {
     describe('historyController.goBack() method', () => {

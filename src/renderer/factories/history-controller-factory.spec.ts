@@ -1,11 +1,11 @@
 import { Entry } from '../../common/entities/entry';
-import { FileSystem } from '../../common/entities/file-system';
+import { DummyFileSystem } from '../../common/entities/file-system.test-helper';
 import { HistoryItem } from '../../common/entities/history-item';
 import { HistoryControllerImpl } from '../controllers/history-controller';
 import { HistoryControllerFactoryImpl } from './history-controller-factory';
 
 const entryA = Entry.fromJson({ type: 'directory', path: '/a' });
-const fileSystem = new FileSystem();
+const fileSystem = new DummyFileSystem();
 const historyItemA = new HistoryItem({ entry: entryA, fileSystem });
 
 describe('HistoryControllerFactory type', () => {

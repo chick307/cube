@@ -3,7 +3,7 @@ import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
 import { Entry } from '../../../common/entities/entry';
-import { FileSystem } from '../../../common/entities/file-system';
+import { DummyFileSystem } from '../../../common/entities/file-system.test-helper';
 import { HistoryItem } from '../../../common/entities/history-item';
 import { immediate } from '../../../common/utils/immediate';
 import { State } from '../../../common/utils/restate';
@@ -15,7 +15,7 @@ import { GoBackButton } from './go-back-button';
 
 const entryA = Entry.fromJson({ type: 'directory', path: '/a' });
 const entryB = Entry.fromJson({ type: 'directory', path: '/a/b' });
-const fileSystem = new FileSystem();
+const fileSystem = new DummyFileSystem();
 const historyItemA = new HistoryItem({ entry: entryA, fileSystem });
 const historyItemB = new HistoryItem({ entry: entryB, fileSystem });
 

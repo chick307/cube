@@ -1,4 +1,4 @@
-import { FileSystem } from './file-system';
+import { DummyFileSystem } from './file-system.test-helper';
 import { LocalFileSystem } from './local-file-system';
 
 describe('LocalFileSystem entity class', () => {
@@ -26,8 +26,8 @@ describe('LocalFileSystem entity class', () => {
             expect(localFileSystemB.equals(localFileSystemA)).toBe(true);
             expect(localFileSystemA.equals(new LocalFileSystem())).toBe(true);
             expect(localFileSystemB.equals(new LocalFileSystem())).toBe(true);
-            expect(localFileSystemA.equals(new FileSystem())).toBe(false);
-            expect(localFileSystemB.equals(new FileSystem())).toBe(false);
+            expect(localFileSystemA.equals(new DummyFileSystem())).toBe(false);
+            expect(localFileSystemB.equals(new DummyFileSystem())).toBe(false);
         });
     });
 
@@ -48,7 +48,7 @@ describe('LocalFileSystem entity class', () => {
 
 describe('fileSystme.isLocal() method', () => {
     test('it returns false', () => {
-        const fileSystem = new FileSystem();
+        const fileSystem = new DummyFileSystem();
         expect(fileSystem.isLocal()).toBe(false);
     });
 });

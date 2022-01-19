@@ -1,6 +1,6 @@
 import { EntryPath } from '../../values/entry-path';
 import { FileEntry } from '../entry';
-import { FileSystem } from './file-system';
+import { DummyFileSystem } from './file-system.test-helper';
 import { LocalFileSystem } from './local-file-system';
 import { ZipFileSystem } from './zip-file-system';
 
@@ -47,8 +47,8 @@ describe('ZipFileSystem entity class', () => {
             expect(zipFileSystemA.equals(new ZipFileSystem({ container: containerB }))).toBe(true);
             expect(zipFileSystemB.equals(zipFileSystemA)).toBe(true);
             expect(zipFileSystemB.equals(new ZipFileSystem({ container: containerA }))).toBe(true);
-            expect(zipFileSystemA.equals(new FileSystem())).toBe(false);
-            expect(zipFileSystemB.equals(new FileSystem())).toBe(false);
+            expect(zipFileSystemA.equals(new DummyFileSystem())).toBe(false);
+            expect(zipFileSystemB.equals(new DummyFileSystem())).toBe(false);
         });
     });
 
@@ -90,7 +90,7 @@ describe('ZipFileSystem entity class', () => {
 
 describe('fileSystme.isZip() method', () => {
     test('it returns false', () => {
-        const fileSystem = new FileSystem();
+        const fileSystem = new DummyFileSystem();
         expect(fileSystem.isZip()).toBe(false);
     });
 });

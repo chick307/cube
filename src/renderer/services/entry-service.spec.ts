@@ -1,6 +1,7 @@
 import { DirectoryEntry, FileEntry, SymbolicLinkEntry } from '../../common/entities/entry';
 import { DummyEntry } from '../../common/entities/entry.test-helper';
-import { FileSystem, LocalFileSystem, ZipContainer, ZipFileSystem } from '../../common/entities/file-system';
+import { LocalFileSystem, ZipContainer, ZipFileSystem } from '../../common/entities/file-system';
+import { DummyFileSystem } from '../../common/entities/file-system.test-helper';
 import { CloseController } from '../../common/utils/close-controller';
 import { EntryPath } from '../../common/values/entry-path';
 import { EntryServiceImpl } from './entry-service';
@@ -9,17 +10,13 @@ import { createLocalEntryService } from './local-entry-service.test-helper';
 import type { ZipEntryService } from './zip-entry-service';
 import { createZipEntryService } from './zip-entry-service.test-helper';
 
-class UnknownFileSystem extends FileSystem {
-    //
-}
-
 let localEntryService: LocalEntryService;
 
 let zipEntryService: ZipEntryService;
 
 const dummyContainer: ZipContainer = {
     entry: new FileEntry(new EntryPath('/a/b')),
-    fileSystem: new UnknownFileSystem(),
+    fileSystem: new DummyFileSystem(),
 };
 
 const createEntryService = () => {
@@ -97,7 +94,7 @@ describe('EntryService type', () => {
         test('it throws an error if the passed file system is unknown', async () => {
             const entryPath = new EntryPath('/x');
             const entryService = createEntryService();
-            const fileSystem = new UnknownFileSystem();
+            const fileSystem = new DummyFileSystem();
             const promise = entryService.createEntryFromPath({ entryPath, fileSystem });
             await expect(promise).rejects.toThrow();
         });
@@ -146,7 +143,7 @@ describe('EntryService type', () => {
 
         test('it throws an error if the passed file system is unknown', async () => {
             const entry = new DirectoryEntry(new EntryPath('/a/c'));
-            const fileSystem = new UnknownFileSystem();
+            const fileSystem = new DummyFileSystem();
             const entryService = createEntryService();
             const promise = entryService.readDirectory({ entry, fileSystem });
             await expect(promise).rejects.toThrow();
@@ -189,7 +186,7 @@ describe('EntryService type', () => {
 
         test('it throws an error if the passed file system is unknown', async () => {
             const entry = new FileEntry(new EntryPath('/a/c'));
-            const fileSystem = new UnknownFileSystem();
+            const fileSystem = new DummyFileSystem();
             const entryService = createEntryService();
             const promise = entryService.readFile({ entry, fileSystem });
             await expect(promise).rejects.toThrow();
@@ -230,7 +227,7 @@ describe('EntryService type', () => {
 
         test('it throws an error if the passed file system is unknown', async () => {
             const entry = new SymbolicLinkEntry(new EntryPath('/a/d'));
-            const fileSystem = new UnknownFileSystem();
+            const fileSystem = new DummyFileSystem();
             const entryService = createEntryService();
             const promise = entryService.readLink({ entry, fileSystem });
             await expect(promise).rejects.toThrow();

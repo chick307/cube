@@ -2,7 +2,7 @@ import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
 import { FileEntry } from '../../common/entities/entry';
-import { FileSystem } from '../../common/entities/file-system';
+import { DummyFileSystem } from '../../common/entities/file-system.test-helper';
 import { immediate } from '../../common/utils/immediate';
 import { EntryPath } from '../../common/values/entry-path';
 import { EntryServiceProvider } from '../contexts/entry-service-context';
@@ -10,12 +10,8 @@ import type { EntryService } from '../services/entry-service';
 import { createEntryService } from '../services/entry-service.test-helper';
 import { useBlobUrl } from './use-blob-url';
 
-class UnknownFileSystem extends FileSystem {
-    //
-}
-
 const entry = new FileEntry(new EntryPath('/a/b'));
-const fileSystem = new UnknownFileSystem();
+const fileSystem = new DummyFileSystem();
 
 let container: HTMLElement;
 

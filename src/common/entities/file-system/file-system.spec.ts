@@ -1,6 +1,7 @@
 import { EntryPath } from '../../values/entry-path';
 import { FileEntry } from '../entry';
 import { FileSystem } from './file-system';
+import { DummyFileSystem } from './file-system.test-helper';
 import { LocalFileSystem } from './local-file-system';
 import { ZipFileSystem } from './zip-file-system';
 
@@ -36,20 +37,20 @@ describe('FileSystem class', () => {
 
     describe('fileSystem.equals() method', () => {
         test('it returns if the passed file system equals self', () => {
-            const fileSystemA = new FileSystem();
-            const fileSystemB = new FileSystem();
+            const fileSystemA = new DummyFileSystem();
+            const fileSystemB = new DummyFileSystem();
             expect(fileSystemA.equals(fileSystemA)).toBe(true);
             expect(fileSystemB.equals(fileSystemB)).toBe(true);
             expect(fileSystemA.equals(fileSystemB)).toBe(false);
             expect(fileSystemB.equals(fileSystemA)).toBe(false);
-            expect(fileSystemA.equals(new FileSystem())).toBe(false);
-            expect(fileSystemB.equals(new FileSystem())).toBe(false);
+            expect(fileSystemA.equals(new DummyFileSystem())).toBe(false);
+            expect(fileSystemB.equals(new DummyFileSystem())).toBe(false);
         });
     });
 
     describe('fileSystem.toJson() method', () => {
         test('it returns JSON object', () => {
-            const fileSystem = new FileSystem();
+            const fileSystem = new DummyFileSystem();
             expect(fileSystem.toJson()).toEqual({});
         });
     });
