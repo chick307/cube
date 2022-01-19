@@ -155,13 +155,12 @@ export const ComicEntryView = (props: Props) => {
             return '-';
         const currentPages = currentSpread.map((entry, index) => {
             return (
-                <EntryDraggable {...{ fileSystem }} key={index} path={entry.path} type={entry.type}>
-                    <div className={styles.entryNameContainer}>
-                        <EntryDragImage className={styles.dragImage} offsetX={8} offsetY={8}>
-                            <EntryIcon {...{ entryPath: entry.path, fileSystem }} />
-                            <span className={styles.entryNameText}>{entry.name.toString()}</span>
-                        </EntryDragImage>
-                    </div>
+                <EntryDraggable key={index} className={styles.entryNameContainer}
+                    {...{ fileSystem }} path={entry.path} type={entry.type}>
+                    <EntryDragImage className={styles.dragImage} offsetX={8} offsetY={8}>
+                        <EntryIcon {...{ entryPath: entry.path, fileSystem }} />
+                        <span className={styles.entryNameText}>{entry.name.toString()}</span>
+                    </EntryDragImage>
                 </EntryDraggable>
             );
         });
