@@ -56,7 +56,8 @@ describe('EntryIcon component', () => {
             await immediate();
         });
         expect(createEntryFromPath).toHaveBeenCalledTimes(1);
-        expect(createEntryFromPath.mock.calls[0][0]).toEqual({ entryPath, fileSystem });
+        expect(createEntryFromPath.mock.calls[0][0].entryPath).toEqual(entryPath);
+        expect(createEntryFromPath.mock.calls[0][0].fileSystem).toEqual(fileSystem);
         expect(getEntryIconUrl).toHaveBeenCalledTimes(1);
         expect(getEntryIconUrl.mock.calls[0][0]).toBe(entry);
         expect(container.querySelector('.icon')?.getAttribute('src')).toBe('data:image/png;base64,AAAA');

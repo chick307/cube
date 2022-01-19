@@ -77,7 +77,8 @@ describe('ZipEntryService type', () => {
                 entryPath: new EntryPath('/d-1/f-404'),
                 entryService,
                 fileSystem,
-            }, { signal });
+                signal,
+            });
             await expect(promise).rejects.toBeInstanceOf(Closed);
         });
 
@@ -90,7 +91,8 @@ describe('ZipEntryService type', () => {
                 entryPath: new EntryPath('/d-1/f-404'),
                 entryService,
                 fileSystem,
-            }, { signal });
+                signal,
+            });
             closeController.close();
             await expect(promise).rejects.toBeInstanceOf(Closed);
         });

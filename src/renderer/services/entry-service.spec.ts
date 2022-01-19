@@ -65,12 +65,12 @@ describe('EntryService type', () => {
             const promise1 = entryService.createEntryFromPath({ entryPath, fileSystem });
             await expect(promise1).resolves.toBeNull();
             expect(createEntryFromPath).toHaveBeenCalledTimes(1);
-            expect(createEntryFromPath).toHaveBeenCalledWith({ entryPath }, undefined);
+            expect(createEntryFromPath).toHaveBeenCalledWith({ entryPath, signal: undefined });
             createEntryFromPath.mockClear();
-            const promise2 = entryService.createEntryFromPath({ entryPath, fileSystem }, { signal });
+            const promise2 = entryService.createEntryFromPath({ entryPath, fileSystem, signal });
             await expect(promise2).resolves.toBeNull();
             expect(createEntryFromPath).toHaveBeenCalledTimes(1);
-            expect(createEntryFromPath).toHaveBeenCalledWith({ entryPath }, { signal });
+            expect(createEntryFromPath).toHaveBeenCalledWith({ entryPath, signal });
         });
 
         test('it calls zipEntryService.createEntryFromPath() method, ' +
@@ -85,12 +85,13 @@ describe('EntryService type', () => {
             const promise1 = entryService.createEntryFromPath({ entryPath, fileSystem });
             await expect(promise1).resolves.toBeNull();
             expect(createEntryFromPath).toHaveBeenCalledTimes(1);
-            expect(createEntryFromPath).toHaveBeenCalledWith({ entryPath, entryService, fileSystem }, undefined);
+            expect(createEntryFromPath)
+                .toHaveBeenCalledWith({ entryPath, entryService, fileSystem, signal: undefined });
             createEntryFromPath.mockClear();
-            const promise2 = entryService.createEntryFromPath({ entryPath, fileSystem }, { signal });
+            const promise2 = entryService.createEntryFromPath({ entryPath, fileSystem, signal });
             await expect(promise2).resolves.toBeNull();
             expect(createEntryFromPath).toHaveBeenCalledTimes(1);
-            expect(createEntryFromPath).toHaveBeenCalledWith({ entryPath, entryService, fileSystem }, { signal });
+            expect(createEntryFromPath).toHaveBeenCalledWith({ entryPath, entryService, fileSystem, signal });
         });
 
         test('it throws an error if the passed file system is unknown', async () => {

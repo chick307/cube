@@ -29,7 +29,7 @@ export const EntryIcon = (props: Props) => {
             return src;
         if (entryPath == null || fileSystem == null)
             return null;
-        const entry = await entryService.createEntryFromPath({ entryPath, fileSystem }, { signal });
+        const entry = await entryService.createEntryFromPath({ entryPath, fileSystem, signal });
         if (entry === null)
             return null;
         const iconUrl = entryIconService.getEntryIconUrl(entry, { signal });

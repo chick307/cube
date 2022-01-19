@@ -83,7 +83,7 @@ describe('LocalEntryService type', () => {
             closeController.close();
             const { signal } = closeController;
             const localEntryService = new LocalEntryServiceImpl();
-            const promise = localEntryService.createEntryFromPath({ entryPath: new EntryPath('/a/b') }, { signal });
+            const promise = localEntryService.createEntryFromPath({ entryPath: new EntryPath('/a/b'), signal });
             await expect(promise).rejects.toBeInstanceOf(Closed);
         });
 
@@ -91,7 +91,7 @@ describe('LocalEntryService type', () => {
             const closeController = new CloseController();
             const { signal } = closeController;
             const localEntryService = new LocalEntryServiceImpl();
-            const promise = localEntryService.createEntryFromPath({ entryPath: new EntryPath('/a/b') }, { signal });
+            const promise = localEntryService.createEntryFromPath({ entryPath: new EntryPath('/a/b'), signal });
             closeController.close();
             await expect(promise).rejects.toBeInstanceOf(Closed);
         });

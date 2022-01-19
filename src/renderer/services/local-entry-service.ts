@@ -8,14 +8,6 @@ import { EntryName } from '../../common/values/entry-name';
 import { EntryPath } from '../../common/values/entry-path';
 import type { Link } from './entry-service';
 
-export type CreateEntryFromPathParameters = {
-    entryPath: EntryPath;
-};
-
-export type CreateEntryFromPathOptions = {
-    signal?: CloseSignal | null;
-};
-
 export type ReadDirectoryParameters = {
     entry: DirectoryEntry;
 };
@@ -41,10 +33,7 @@ export type ReadLinkOptions = {
 };
 
 export type LocalEntryService = {
-    createEntryFromPath(
-        params: CreateEntryFromPathParameters,
-        options?: CreateEntryFromPathOptions,
-    ): Promise<Entry | null>;
+    createEntryFromPath(params: CreateEntryFromPathParams): Promise<Entry | null>;
 
     getHomeDirectoryEntry(): DirectoryEntry;
 
@@ -53,6 +42,12 @@ export type LocalEntryService = {
     readFile(params: ReadFileParameters, options?: ReadFileOptions | null): Promise<Buffer>;
 
     readLink(params: ReadLinkParameters, options?: ReadLinkOptions | null): Promise<Link>;
+};
+
+export type CreateEntryFromPathParams = {
+    entryPath: EntryPath;
+
+    signal?: CloseSignal | null | undefined;
 };
 
 export class LocalEntryServiceImpl implements LocalEntryService {
@@ -75,11 +70,8 @@ export class LocalEntryServiceImpl implements LocalEntryService {
         throw Error();
     }
 
-    async createEntryFromPath(
-        params: CreateEntryFromPathParameters,
-        options?: CreateEntryFromPathOptions,
-    ): Promise<Entry | null> {
-        const entry = await this._createEntry(params.entryPath, options?.signal);
+    async createEntryFromPath(params: CreateEntryFromPathParams): Promise<Entry | null> {
+        const entry = await this._createEntry(params.entryPath, params.signal);
         return entry;
     }
 

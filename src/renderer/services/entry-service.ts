@@ -5,15 +5,6 @@ import type { EntryPath } from '../../common/values/entry-path';
 import type { LocalEntryService } from './local-entry-service';
 import type { ZipEntryService } from './zip-entry-service';
 
-export type CreateEntryFromPathParameters = {
-    entryPath: EntryPath;
-    fileSystem: FileSystem;
-};
-
-export type CreateEntryFromPathOptions = {
-    signal?: CloseSignal | null;
-};
-
 export type ReadDirectoryParameters = {
     entry: DirectoryEntry;
     fileSystem: FileSystem;
@@ -47,16 +38,21 @@ export type Link = {
 };
 
 export type EntryService = {
-    createEntryFromPath(
-        params: CreateEntryFromPathParameters,
-        options?: CreateEntryFromPathOptions,
-    ): Promise<Entry | null>;
+    createEntryFromPath(params: CreateEntryFromPathParams): Promise<Entry | null>;
 
     readDirectory(params: ReadDirectoryParameters, options?: ReadDirectoryOptions | null): Promise<Entry[]>;
 
     readFile(params: ReadFileParameters, options?: ReadFileOptions | null): Promise<Buffer>;
 
     readLink(params: ReadLinkParameters, options?: ReadLinkOptions | null): Promise<Link>;
+};
+
+export type CreateEntryFromPathParams = {
+    entryPath: EntryPath;
+
+    fileSystem: FileSystem;
+
+    signal?: CloseSignal | null | undefined;
 };
 
 export class EntryServiceImpl implements EntryService {
@@ -72,18 +68,15 @@ export class EntryServiceImpl implements EntryService {
         this._zipEntryService = container.zipEntryService;
     }
 
-    async createEntryFromPath(
-        params: CreateEntryFromPathParameters,
-        options?: CreateEntryFromPathOptions,
-    ): Promise<Entry | null> {
-        const { entryPath, fileSystem } = params;
+    async createEntryFromPath(params: CreateEntryFromPathParams): Promise<Entry | null> {
+        const { entryPath, fileSystem, signal } = params;
 
         if (fileSystem.isLocal()) {
-            return this._localEntryService.createEntryFromPath({ entryPath }, options);
+            return this._localEntryService.createEntryFromPath({ entryPath, signal });
         }
 
         if (fileSystem.isZip()) {
-            return this._zipEntryService.createEntryFromPath({ entryPath, entryService: this, fileSystem }, options);
+            return this._zipEntryService.createEntryFromPath({ entryPath, entryService: this, fileSystem, signal });
         }
 
         throw Error('Unknown file system');

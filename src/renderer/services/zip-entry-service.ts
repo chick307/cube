@@ -7,16 +7,6 @@ import type { CloseSignal } from '../../common/utils/close-controller';
 import { EntryPath } from '../../common/values/entry-path';
 import type { EntryService } from './entry-service';
 
-export type CreateEntryFromPathParameters = {
-    entryPath: EntryPath;
-    entryService: EntryService;
-    fileSystem: ZipFileSystem;
-};
-
-export type CreateEntryFromPathOptions = {
-    signal?: CloseSignal | null;
-};
-
 export type ReadDirectoryParameters = {
     entry: DirectoryEntry;
     entryService: EntryService;
@@ -38,14 +28,21 @@ export type ReadFileOptions = {
 };
 
 export type ZipEntryService = {
-    createEntryFromPath(
-        params: CreateEntryFromPathParameters,
-        options?: CreateEntryFromPathOptions,
-    ): Promise<Entry | null>;
+    createEntryFromPath(params: CreateEntryFromPathParams): Promise<Entry | null>;
 
     readDirectory(params: ReadDirectoryParameters, options?: ReadDirectoryOptions | null): Promise<Entry[]>;
 
     readFile(params: ReadFileParameters, options?: ReadFileOptions | null): Promise<Buffer>;
+};
+
+export type CreateEntryFromPathParams = {
+    entryPath: EntryPath;
+
+    entryService: EntryService;
+
+    fileSystem: ZipFileSystem;
+
+    signal?: CloseSignal | null | undefined;
 };
 
 export class ZipEntryServiceImpl implements ZipEntryService {
@@ -90,14 +87,11 @@ export class ZipEntryServiceImpl implements ZipEntryService {
         return signal.wrapPromise(zipEntriesPromise);
     }
 
-    async createEntryFromPath(
-        params: CreateEntryFromPathParameters,
-        options?: CreateEntryFromPathOptions,
-    ): Promise<Entry | null> {
+    async createEntryFromPath(params: CreateEntryFromPathParams): Promise<Entry | null> {
         const entries = await this._getZipEntries({
             container: params.fileSystem.container,
             entryService: params.entryService,
-        }, options?.signal);
+        }, params.signal);
         for (const { entry } of entries.values()) {
             if (params.entryPath.equals(entry.path))
                 return entry;

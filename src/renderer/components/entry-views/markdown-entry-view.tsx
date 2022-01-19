@@ -57,7 +57,7 @@ export const MarkdownEntryView = (props: Props) => {
             const url = new URL(src, baseUrl);
             if (url.protocol === 'file:') {
                 const entryPath = new EntryPath(decodeURI(url.pathname));
-                const entry = await entryService.createEntryFromPath({ entryPath, fileSystem });
+                const entry = await entryService.createEntryFromPath({ entryPath, fileSystem, signal });
                 if (entry === null) {
                     image.removeAttribute('src');
                     continue;
