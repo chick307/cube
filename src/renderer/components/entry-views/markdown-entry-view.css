@@ -5,8 +5,8 @@
 
 .inner-view {
     margin: 2em;
-}
 
-.inner-view a {
-    color: #88CCFF;
+    @nest & a {
+        color: #88CCFF;
+    }
 }
