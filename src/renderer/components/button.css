@@ -11,17 +11,17 @@
     overflow: hidden;
     fill: #444444;
     outline: none;
-}
 
-.button:disabled {
-    opacity: 0.5;
-}
+    @nest &:disabled {
+        opacity: 0.5;
+    }
 
-.button:focus-within {
-    border-color: #88BBCC;
-    background-color: #EEFFFF;
-}
+    @nest &:focus-within {
+        border-color: #88BBCC;
+        background-color: #EEFFFF;
+    }
 
-.button:active {
-    background-color: #EEEEEE;
+    @nest &:active:not(:disabled) {
+        background-color: #EEEEEE;
+    }
 }
