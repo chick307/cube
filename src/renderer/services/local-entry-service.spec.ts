@@ -201,7 +201,7 @@ describe('LocalEntryService type', () => {
             const { signal } = closeController;
             const localEntryService = new LocalEntryServiceImpl();
             const entry = new SymbolicLinkEntry(new EntryPath('/a/d'));
-            const promise = localEntryService.readLink({ entry }, { signal });
+            const promise = localEntryService.readLink({ entry, signal });
             await expect(promise).rejects.toBeInstanceOf(Closed);
         });
 
@@ -210,7 +210,7 @@ describe('LocalEntryService type', () => {
             const { signal } = closeController;
             const localEntryService = new LocalEntryServiceImpl();
             const entry = new SymbolicLinkEntry(new EntryPath('/a/d'));
-            const promise = localEntryService.readLink({ entry }, { signal });
+            const promise = localEntryService.readLink({ entry, signal });
             closeController.close();
             await expect(promise).rejects.toBeInstanceOf(Closed);
         });

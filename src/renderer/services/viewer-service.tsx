@@ -231,7 +231,7 @@ export class ViewerServiceImpl implements ViewerService {
         const { depth, entry, fileSystem, signal } = params;
 
         if (entry.isSymbolicLink()) {
-            const link = await this.#entryService.readLink({ entry, fileSystem }, { signal });
+            const link = await this.#entryService.readLink({ entry, fileSystem, signal });
 
             const viewers: Viewer[] = link.entry == null || link.entry.isSymbolicLink() && depth >= 9 ? [] :
                 await this.#prioritizeViewers({ depth: depth + 1, entry: link.entry, fileSystem, signal });

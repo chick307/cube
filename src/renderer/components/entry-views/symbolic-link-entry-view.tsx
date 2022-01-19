@@ -27,7 +27,7 @@ export const SymbolicLinkEntryView = (props: Props) => {
     const historyController = useHistoryController();
 
     const [link] = useTask(async (signal) => {
-        const link = await entryService.readLink({ entry, fileSystem }, { signal });
+        const link = await entryService.readLink({ entry, fileSystem, signal });
         return link;
     }, [entry, entryService, fileSystem]);
 

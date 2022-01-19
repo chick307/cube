@@ -8,14 +8,6 @@ import { EntryName } from '../../common/values/entry-name';
 import { EntryPath } from '../../common/values/entry-path';
 import type { Link } from './entry-service';
 
-export type ReadLinkParameters = {
-    entry: SymbolicLinkEntry;
-};
-
-export type ReadLinkOptions = {
-    signal?: CloseSignal | null;
-};
-
 export type LocalEntryService = {
     createEntryFromPath(params: CreateEntryFromPathParams): Promise<Entry | null>;
 
@@ -25,7 +17,7 @@ export type LocalEntryService = {
 
     readFile(params: ReadFileParams): Promise<Buffer>;
 
-    readLink(params: ReadLinkParameters, options?: ReadLinkOptions | null): Promise<Link>;
+    readLink(params: ReadLinkParams): Promise<Link>;
 };
 
 export type CreateEntryFromPathParams = {
@@ -42,6 +34,12 @@ export type ReadDirectoryParams = {
 
 export type ReadFileParams = {
     entry: FileEntry;
+
+    signal?: CloseSignal | null;
+};
+
+export type ReadLinkParams = {
+    entry: SymbolicLinkEntry;
 
     signal?: CloseSignal | null;
 };
@@ -100,13 +98,13 @@ export class LocalEntryServiceImpl implements LocalEntryService {
         return buffer;
     }
 
-    async readLink(params: ReadLinkParameters, options?: ReadLinkOptions | null): Promise<Link> {
-        options?.signal?.throwIfClosed();
+    async readLink(params: ReadLinkParams): Promise<Link> {
+        params.signal?.throwIfClosed();
         const promise = fs.readlink(params.entry.path.toString());
-        const linkString = await (options?.signal?.wrapPromise(promise) ?? promise);
+        const linkString = await (params.signal?.wrapPromise(promise) ?? promise);
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const entryPath = params.entry.path.getParentPath()!.resolve(new EntryPath(linkString));
-        const entry = await this._createEntry(entryPath, options?.signal)
+        const entry = await this._createEntry(entryPath, params.signal)
             .catch(() => null);
         return { entry, linkString };
     }

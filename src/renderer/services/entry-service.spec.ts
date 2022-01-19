@@ -209,14 +209,14 @@ describe('EntryService type', () => {
                 entry: new DummyEntry(new EntryPath('/a/e')),
                 linkString: '/a/e',
             });
-            expect(readLink).toHaveBeenCalledWith({ entry }, { signal: undefined });
+            expect(readLink).toHaveBeenCalledWith({ entry, signal: undefined });
             readLink.mockClear();
-            const promise2 = entryService.readLink({ entry, fileSystem }, { signal });
+            const promise2 = entryService.readLink({ entry, fileSystem, signal });
             await expect(promise2).resolves.toEqual({
                 entry: new DummyEntry(new EntryPath('/a/e')),
                 linkString: '/a/e',
             });
-            expect(readLink).toHaveBeenCalledWith({ entry }, { signal });
+            expect(readLink).toHaveBeenCalledWith({ entry, signal });
         });
 
         test('it throws an error if the zip file system is passed', async () => {

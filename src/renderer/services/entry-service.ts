@@ -5,15 +5,6 @@ import type { EntryPath } from '../../common/values/entry-path';
 import type { LocalEntryService } from './local-entry-service';
 import type { ZipEntryService } from './zip-entry-service';
 
-export type ReadLinkParameters = {
-    entry: SymbolicLinkEntry;
-    fileSystem: FileSystem;
-};
-
-export type ReadLinkOptions = {
-    signal?: CloseSignal | null;
-};
-
 export type Link = {
     entry: Entry | null;
     linkString: string;
@@ -26,7 +17,7 @@ export type EntryService = {
 
     readFile(params: ReadFileParams): Promise<Buffer>;
 
-    readLink(params: ReadLinkParameters, options?: ReadLinkOptions | null): Promise<Link>;
+    readLink(params: ReadLinkParams): Promise<Link>;
 };
 
 export type CreateEntryFromPathParams = {
@@ -47,6 +38,14 @@ export type ReadDirectoryParams = {
 
 export type ReadFileParams = {
     entry: FileEntry;
+
+    fileSystem: FileSystem;
+
+    signal?: CloseSignal | null;
+};
+
+export type ReadLinkParams = {
+    entry: SymbolicLinkEntry;
 
     fileSystem: FileSystem;
 
@@ -108,12 +107,11 @@ export class EntryServiceImpl implements EntryService {
         throw Error('Unknown file system');
     }
 
-    async readLink(params: ReadLinkParameters, options?: ReadLinkOptions | null): Promise<Link> {
-        const { entry, fileSystem } = params;
-        const { signal } = options ?? {};
+    async readLink(params: ReadLinkParams): Promise<Link> {
+        const { entry, fileSystem, signal } = params;
 
         if (fileSystem.isLocal()) {
-            return this._localEntryService.readLink({ entry }, { signal });
+            return this._localEntryService.readLink({ entry, signal });
         }
 
         if (fileSystem.isZip()) {
