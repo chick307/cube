@@ -1,30 +1,27 @@
 import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-import { EntryService } from '../services/entry-service';
+import type { EntryService } from '../services/entry-service';
+import { createEntryService } from '../services/entry-service.test-helper';
 import { EntryServiceProvider, useEntryService } from './entry-service-context';
 
-const rejectedPromise = Promise.reject(Error());
-rejectedPromise.catch(() => {});
-
-const dummyEntryService: EntryService = {
-    createEntryFromPath: jest.fn().mockReturnValue(rejectedPromise),
-    readDirectory: jest.fn().mockReturnValue(rejectedPromise),
-    readFile: jest.fn().mockReturnValue(rejectedPromise),
-    readLink: jest.fn().mockReturnValue(rejectedPromise),
-};
-
 let container: HTMLElement;
+
+let entryService: EntryService;
 
 beforeEach(() => {
     container = document.createElement('div');
     document.body.appendChild(container);
+
+    ({ entryService } = createEntryService());
 });
 
 afterEach(() => {
     ReactDom.unmountComponentAtNode(container);
     container.remove();
     container = null!;
+
+    entryService = null!;
 });
 
 describe('EntryService context', () => {
@@ -37,12 +34,12 @@ describe('EntryService context', () => {
             };
             TestUtils.act(() => {
                 ReactDom.render((
-                    <EntryServiceProvider value={dummyEntryService}>
+                    <EntryServiceProvider value={entryService}>
                         <Component />
                     </EntryServiceProvider>
                 ), container);
             });
-            expect(instance).toBe(dummyEntryService);
+            expect(instance).toBe(entryService);
         });
     });
 

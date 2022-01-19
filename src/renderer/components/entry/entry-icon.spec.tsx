@@ -8,24 +8,30 @@ import { EntryPath } from '../../../common/values/entry-path';
 import { EntryIconServiceProvider } from '../../contexts/entry-icon-service-context';
 import { EntryServiceProvider } from '../../contexts/entry-service-context';
 import { createEntryIconService } from '../../services/entry-icon-service.test-helper';
+import type { EntryService } from '../../services/entry-service';
 import { createEntryService } from '../../services/entry-service.test-helper';
 import { composeElements } from '../../utils/compose-elements';
 import { EntryIcon } from './entry-icon';
 
 const { entryIconService } = createEntryIconService();
-const { entryService } = createEntryService();
 
 let container: HTMLElement;
+
+let entryService: EntryService;
 
 beforeEach(() => {
     container = document.createElement('div');
     document.body.appendChild(container);
+
+    ({ entryService } = createEntryService());
 });
 
 afterEach(() => {
     ReactDom.unmountComponentAtNode(container);
     container.remove();
     container = null!;
+
+    entryService = null!;
 });
 
 describe('EntryIcon component', () => {
