@@ -17,8 +17,8 @@ body {
 :global(#container) {
     display: flex;
     height: 100%;
-}
 
-:global(#container) > * {
-    flex: 1;
+    @nest & > * {
+        flex: 1;
+    }
 }
