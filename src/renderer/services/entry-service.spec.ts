@@ -7,6 +7,7 @@ import { EntryServiceImpl } from './entry-service';
 import type { LocalEntryService } from './local-entry-service';
 import { createLocalEntryService } from './local-entry-service.test-helper';
 import type { ZipEntryService } from './zip-entry-service';
+import { createZipEntryService } from './zip-entry-service.test-helper';
 
 class UnknownFileSystem extends FileSystem {
     //
@@ -14,13 +15,7 @@ class UnknownFileSystem extends FileSystem {
 
 let localEntryService: LocalEntryService;
 
-const dummyZipEntryService: ZipEntryService = {
-    createEntryFromPath: async () => null,
-    readDirectory: async () => [
-        new FileEntry(new EntryPath('/d-1/f-1-1')),
-    ],
-    readFile: async () => Buffer.from('def'),
-};
+let zipEntryService: ZipEntryService;
 
 const dummyContainer: ZipContainer = {
     entry: new FileEntry(new EntryPath('/a/b')),
@@ -30,7 +25,7 @@ const dummyContainer: ZipContainer = {
 const createEntryService = () => {
     return new EntryServiceImpl({
         localEntryService,
-        zipEntryService: dummyZipEntryService,
+        zipEntryService,
     });
 };
 
@@ -42,10 +37,17 @@ beforeEach(() => {
     jest.spyOn(localEntryService, 'readFile').mockReturnValue(Promise.resolve(Buffer.from('abc')));
     jest.spyOn(localEntryService, 'readLink')
         .mockReturnValue(Promise.resolve(({ entry: new DummyEntry(new EntryPath('/a/e')), linkString: '/a/e' })));
+
+    ({ zipEntryService } = createZipEntryService());
+    jest.spyOn(zipEntryService, 'createEntryFromPath').mockReturnValue(Promise.resolve(null));
+    jest.spyOn(zipEntryService, 'readDirectory')
+        .mockReturnValue(Promise.resolve([new FileEntry(new EntryPath('/d-1/f-1-1'))]));
+    jest.spyOn(zipEntryService, 'readFile').mockReturnValue(Promise.resolve(Buffer.from('def')));
 });
 
 afterEach(() => {
     localEntryService = null!;
+    zipEntryService = null!;
 
     jest.restoreAllMocks();
 });
@@ -73,7 +75,7 @@ describe('EntryService type', () => {
 
         test('it calls zipEntryService.createEntryFromPath() method, ' +
              'if the zip file system is passed', async () => {
-            const createEntryFromPath = jest.spyOn(dummyZipEntryService, 'createEntryFromPath');
+            const createEntryFromPath = jest.spyOn(zipEntryService, 'createEntryFromPath');
             const closeController = new CloseController();
             const { signal } = closeController;
             const entryPath = new EntryPath('/d-1');
@@ -123,7 +125,7 @@ describe('EntryService type', () => {
         test('it calls zipEntryService.readDirectory() method, if the zip file system is passed', async () => {
             const closeController = new CloseController();
             const { signal } = closeController;
-            const readDirectory = jest.spyOn(dummyZipEntryService, 'readDirectory');
+            const readDirectory = jest.spyOn(zipEntryService, 'readDirectory');
             const entry = new DirectoryEntry(new EntryPath('/d-1'));
             const container = dummyContainer;
             const fileSystem = new ZipFileSystem({ container });
@@ -170,7 +172,7 @@ describe('EntryService type', () => {
         test('it calls zipEntryService.readFile() method, if the zip file system is passed', async () => {
             const closeController = new CloseController();
             const { signal } = closeController;
-            const readFile = jest.spyOn(dummyZipEntryService, 'readFile');
+            const readFile = jest.spyOn(zipEntryService, 'readFile');
             const entry = new FileEntry(new EntryPath('/f-1'));
             const container = dummyContainer;
             const fileSystem = new ZipFileSystem({ container });
