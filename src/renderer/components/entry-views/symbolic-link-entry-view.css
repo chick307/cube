@@ -32,9 +32,8 @@
     display: inline-block;
     line-height: 16px;
     cursor: pointer;
-}
 
-.icon-container:hover + .dest-path,
-.dest-path:hover {
-    text-decoration: underline;
+    @nest .icon-container:hover + &, &:hover {
+        text-decoration: underline;
+    }
 }
