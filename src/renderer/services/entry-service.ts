@@ -5,15 +5,6 @@ import type { EntryPath } from '../../common/values/entry-path';
 import type { LocalEntryService } from './local-entry-service';
 import type { ZipEntryService } from './zip-entry-service';
 
-export type ReadDirectoryParameters = {
-    entry: DirectoryEntry;
-    fileSystem: FileSystem;
-};
-
-export type ReadDirectoryOptions = {
-    signal?: CloseSignal | null;
-};
-
 export type ReadFileParameters = {
     entry: FileEntry;
     fileSystem: FileSystem;
@@ -40,7 +31,7 @@ export type Link = {
 export type EntryService = {
     createEntryFromPath(params: CreateEntryFromPathParams): Promise<Entry | null>;
 
-    readDirectory(params: ReadDirectoryParameters, options?: ReadDirectoryOptions | null): Promise<Entry[]>;
+    readDirectory(params: ReadDirectoryParams): Promise<Entry[]>;
 
     readFile(params: ReadFileParameters, options?: ReadFileOptions | null): Promise<Buffer>;
 
@@ -53,6 +44,14 @@ export type CreateEntryFromPathParams = {
     fileSystem: FileSystem;
 
     signal?: CloseSignal | null | undefined;
+};
+
+export type ReadDirectoryParams = {
+    entry: DirectoryEntry;
+
+    fileSystem: FileSystem;
+
+    signal?: CloseSignal | null;
 };
 
 export class EntryServiceImpl implements EntryService {
@@ -82,16 +81,15 @@ export class EntryServiceImpl implements EntryService {
         throw Error('Unknown file system');
     }
 
-    async readDirectory(params: ReadDirectoryParameters, options?: ReadDirectoryOptions | null): Promise<Entry[]> {
-        const { entry, fileSystem } = params;
-        const { signal } = options ?? {};
+    async readDirectory(params: ReadDirectoryParams): Promise<Entry[]> {
+        const { entry, fileSystem, signal } = params;
 
         if (fileSystem.isLocal()) {
-            return this._localEntryService.readDirectory({ entry }, { signal });
+            return this._localEntryService.readDirectory({ entry, signal });
         }
 
         if (fileSystem.isZip()) {
-            return this._zipEntryService.readDirectory({ entry, entryService: this, fileSystem }, { signal });
+            return this._zipEntryService.readDirectory({ entry, entryService: this, fileSystem, signal });
         }
 
         throw Error('Unknown file system');

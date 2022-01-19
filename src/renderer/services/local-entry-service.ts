@@ -8,14 +8,6 @@ import { EntryName } from '../../common/values/entry-name';
 import { EntryPath } from '../../common/values/entry-path';
 import type { Link } from './entry-service';
 
-export type ReadDirectoryParameters = {
-    entry: DirectoryEntry;
-};
-
-export type ReadDirectoryOptions = {
-    signal?: CloseSignal | null;
-};
-
 export type ReadFileParameters = {
     entry: FileEntry;
 };
@@ -37,7 +29,7 @@ export type LocalEntryService = {
 
     getHomeDirectoryEntry(): DirectoryEntry;
 
-    readDirectory(params: ReadDirectoryParameters, options?: ReadDirectoryOptions | null): Promise<Entry[]>;
+    readDirectory(params: ReadDirectoryParams): Promise<Entry[]>;
 
     readFile(params: ReadFileParameters, options?: ReadFileOptions | null): Promise<Buffer>;
 
@@ -46,6 +38,12 @@ export type LocalEntryService = {
 
 export type CreateEntryFromPathParams = {
     entryPath: EntryPath;
+
+    signal?: CloseSignal | null | undefined;
+};
+
+export type ReadDirectoryParams = {
+    entry: DirectoryEntry;
 
     signal?: CloseSignal | null | undefined;
 };
@@ -81,15 +79,15 @@ export class LocalEntryServiceImpl implements LocalEntryService {
         return new DirectoryEntry(homeDirectoryPath);
     }
 
-    async readDirectory(params: ReadDirectoryParameters, options?: ReadDirectoryOptions | null): Promise<Entry[]> {
-        options?.signal?.throwIfClosed();
+    async readDirectory(params: ReadDirectoryParams): Promise<Entry[]> {
+        params.signal?.throwIfClosed();
         const promise = fs.readdir(params.entry.path.toString());
-        const names = await (options?.signal?.wrapPromise(promise) ?? promise);
+        const names = await (params.signal?.wrapPromise(promise) ?? promise);
         const entries: Entry[] = [];
         for (const name of names) {
             const entryName = new EntryName(name);
             const entryPath = params.entry.path.join(entryName);
-            const entry = await this._createEntry(entryPath, options?.signal);
+            const entry = await this._createEntry(entryPath, params.signal);
             if (entry === null)
                 continue;
             entries.push(entry);

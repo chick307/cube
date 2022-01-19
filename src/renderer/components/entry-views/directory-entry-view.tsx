@@ -56,7 +56,7 @@ export const DirectoryEntryView = (props: Props) => {
     const entryService = useEntryService();
 
     const [allEntries = []] = useTask(async (signal) => {
-        const allEntries = await entryService.readDirectory({ entry, fileSystem }, { signal });
+        const allEntries = await entryService.readDirectory({ entry, fileSystem, signal });
         return allEntries;
     }, [entry, entryService, fileSystem]);
 

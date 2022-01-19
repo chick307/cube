@@ -7,16 +7,6 @@ import type { CloseSignal } from '../../common/utils/close-controller';
 import { EntryPath } from '../../common/values/entry-path';
 import type { EntryService } from './entry-service';
 
-export type ReadDirectoryParameters = {
-    entry: DirectoryEntry;
-    entryService: EntryService;
-    fileSystem: ZipFileSystem;
-};
-
-export type ReadDirectoryOptions = {
-    signal?: CloseSignal | null;
-};
-
 export type ReadFileParameters = {
     entry: FileEntry;
     entryService: EntryService;
@@ -30,7 +20,7 @@ export type ReadFileOptions = {
 export type ZipEntryService = {
     createEntryFromPath(params: CreateEntryFromPathParams): Promise<Entry | null>;
 
-    readDirectory(params: ReadDirectoryParameters, options?: ReadDirectoryOptions | null): Promise<Entry[]>;
+    readDirectory(params: ReadDirectoryParams): Promise<Entry[]>;
 
     readFile(params: ReadFileParameters, options?: ReadFileOptions | null): Promise<Buffer>;
 };
@@ -43,6 +33,16 @@ export type CreateEntryFromPathParams = {
     fileSystem: ZipFileSystem;
 
     signal?: CloseSignal | null | undefined;
+};
+
+export type ReadDirectoryParams = {
+    entry: DirectoryEntry;
+
+    entryService: EntryService;
+
+    fileSystem: ZipFileSystem;
+
+    signal?: CloseSignal | null;
 };
 
 export class ZipEntryServiceImpl implements ZipEntryService {
@@ -99,11 +99,11 @@ export class ZipEntryServiceImpl implements ZipEntryService {
         return null;
     }
 
-    async readDirectory(params: ReadDirectoryParameters, options?: ReadDirectoryOptions | null): Promise<Entry[]> {
+    async readDirectory(params: ReadDirectoryParams): Promise<Entry[]> {
         const entries = await this._getZipEntries({
             container: params.fileSystem.container,
             entryService: params.entryService,
-        }, options?.signal);
+        }, params.signal);
         const directoryEntries: Entry[] = [];
         for (const { entry } of entries.values()) {
             const parentEntry = entry.getParentEntry();

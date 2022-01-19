@@ -117,7 +117,7 @@ describe('ZipEntryService type', () => {
             const entry = new DirectoryEntry(new EntryPath('/d-1'));
             const fileSystem = new ZipFileSystem({ container: dummyContainer });
             const zipEntryService = new ZipEntryServiceImpl();
-            const promise = zipEntryService.readDirectory({ entry, entryService, fileSystem }, { signal });
+            const promise = zipEntryService.readDirectory({ entry, entryService, fileSystem, signal });
             await expect(promise).rejects.toBeInstanceOf(Closed);
         });
 
@@ -127,7 +127,7 @@ describe('ZipEntryService type', () => {
             const entry = new DirectoryEntry(new EntryPath('/d-1'));
             const fileSystem = new ZipFileSystem({ container: dummyContainer });
             const zipEntryService = new ZipEntryServiceImpl();
-            const promise = zipEntryService.readDirectory({ entry, entryService, fileSystem }, { signal });
+            const promise = zipEntryService.readDirectory({ entry, entryService, fileSystem, signal });
             closeController.close();
             await expect(promise).rejects.toBeInstanceOf(Closed);
         });

@@ -31,7 +31,7 @@ export const ComicEntryView = (props: Props) => {
     const [pages] = useTask(async (signal) => {
         const pages: FileEntry[] = [];
         const getPages = async (directoryEntry: DirectoryEntry) => {
-            const entries = await entryService.readDirectory({ entry: directoryEntry, fileSystem }, { signal });
+            const entries = await entryService.readDirectory({ entry: directoryEntry, fileSystem, signal });
             for (const entry of entries) {
                 if (entry.isDirectory()) {
                     await signal.wrapPromise(getPages(entry));
