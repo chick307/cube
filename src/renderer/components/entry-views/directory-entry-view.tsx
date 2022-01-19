@@ -64,7 +64,7 @@ export const DirectoryEntryView = (props: Props) => {
         const entries: Entry[] = [];
         let hiddenEntriesCount = 0;
         for (const entry of allEntries) {
-            if (entry.path.name.toString().startsWith('.')) {
+            if (entry.name.startsWithDot()) {
                 if (hiddenEntriesVisible)
                     entries.push(entry);
                 hiddenEntriesCount++;
