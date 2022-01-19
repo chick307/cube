@@ -12,11 +12,11 @@
     --content-foreground: #FFFFFF;
     --drag-over-icon-width: 12px;
     --tab-insert-area-width: 16px;
-}
 
-:global(#container) > .view {
-    --tabs-padding-top: calc(var(--traffic-light-height) - var(--tab-height));
-    --tabs-padding-left: calc(var(--traffic-light-width) + var(--tab-radius) + 4px);
+    @nest :global(#container) > & {
+        --tabs-padding-top: calc(var(--traffic-light-height) - var(--tab-height));
+        --tabs-padding-left: calc(var(--traffic-light-width) + var(--tab-radius) + 4px);
+    }
 }
 
 .tabs {
@@ -49,29 +49,28 @@
     bottom: 0;
     width: var(--tabs-padding-left);
     z-index: 2;
+
+    @nest .tab-view-drag-over & {
+        display: block;
+    }
 }
 
 .tab-view-drag-over-indicator {
     display: none;
     position: absolute;
     top: 2px;
-}
 
-.append-area > .tab-view-drag-over-indicator {
-    left: 0;
-}
+    @nest .append-area > & {
+        left: 0;
+    }
 
-.prepend-area > .tab-view-drag-over-indicator {
-    right: 0;
-}
+    @nest .prepend-area > & {
+        right: 0;
+    }
 
-.append-area-drag-over .append-area > .tab-view-drag-over-indicator,
-.prepend-area-drag-over .prepend-area > .tab-view-drag-over-indicator {
-    display: inline-block;
-}
-
-.tab-view-drag-over .prepend-area {
-    display: block;
+    @nest :is(.append-area-drag-over .append-area, .prepend-area-drag-over .prepend-area) > & {
+        display: inline-block;
+    }
 }
 
 .contents {
@@ -92,12 +91,12 @@
     right: 0;
     bottom: 0;
     left: 0;
-}
 
-.content.active {
-    display: flex;
-}
+    @nest &.active {
+        display: flex;
+    }
 
-.content > * {
-    flex: 1;
+    @nest & > * {
+        flex: 1;
+    }
 }
