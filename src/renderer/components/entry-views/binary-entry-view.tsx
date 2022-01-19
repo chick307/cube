@@ -16,7 +16,7 @@ export const BinaryEntryView = (props: Props) => {
     const entryService = useEntryService();
 
     const [text = ''] = useTask(async (signal) => {
-        const buffer = await entryService.readFile({ entry, fileSystem }, { signal });
+        const buffer = await entryService.readFile({ entry, fileSystem, signal });
         let text = '';
         let i: number;
         for (i = 0; i < buffer.length; i++) {

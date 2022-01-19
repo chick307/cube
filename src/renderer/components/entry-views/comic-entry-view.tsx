@@ -97,7 +97,7 @@ export const ComicEntryView = (props: Props) => {
             return;
         }
         const loadImage = async (fileEntry: FileEntry) => {
-            const buffer = await entryService.readFile({ entry: fileEntry, fileSystem }, { signal });
+            const buffer = await entryService.readFile({ entry: fileEntry, fileSystem, signal });
             const extension = fileEntry.path.getExtension();
             const type = extension === '.png' ? 'image/png' : 'image/jpeg';
             const blob = new Blob([buffer], { type });

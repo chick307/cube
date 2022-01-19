@@ -62,7 +62,7 @@ export const MarkdownEntryView = (props: Props) => {
                     image.removeAttribute('src');
                     continue;
                 }
-                const content = await entryService.readFile({ entry: entry as FileEntry, fileSystem }, { signal });
+                const content = await entryService.readFile({ entry: entry as FileEntry, fileSystem, signal });
                 const type =
                     /\.jpe?g/i.test(entryPath.toString()) ? 'image/jpeg' :
                     /\.png/i.test(entryPath.toString()) ? 'image/png' :

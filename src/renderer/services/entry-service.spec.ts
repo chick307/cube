@@ -163,11 +163,11 @@ describe('EntryService type', () => {
             const entryService = createEntryService();
             const promise1 = entryService.readFile({ entry, fileSystem });
             await expect(promise1).resolves.toEqual(Buffer.from('abc'));
-            expect(readFile).toHaveBeenCalledWith({ entry }, { signal: undefined });
+            expect(readFile).toHaveBeenCalledWith({ entry, signal: undefined });
             readFile.mockClear();
-            const promise2 = entryService.readFile({ entry, fileSystem }, { signal });
+            const promise2 = entryService.readFile({ entry, fileSystem, signal });
             await expect(promise2).resolves.toEqual(Buffer.from('abc'));
-            expect(readFile).toHaveBeenCalledWith({ entry }, { signal });
+            expect(readFile).toHaveBeenCalledWith({ entry, signal });
         });
 
         test('it calls zipEntryService.readFile() method, if the zip file system is passed', async () => {
@@ -180,11 +180,11 @@ describe('EntryService type', () => {
             const entryService = createEntryService();
             const promise1 = entryService.readFile({ entry, fileSystem });
             await expect(promise1).resolves.toEqual(Buffer.from('def'));
-            expect(readFile).toHaveBeenCalledWith({ entry, entryService, fileSystem }, { signal: undefined });
+            expect(readFile).toHaveBeenCalledWith({ entry, entryService, fileSystem, signal: undefined });
             readFile.mockClear();
-            const promise2 = entryService.readFile({ entry, fileSystem }, { signal });
+            const promise2 = entryService.readFile({ entry, fileSystem, signal });
             await expect(promise2).resolves.toEqual(Buffer.from('def'));
-            expect(readFile).toHaveBeenCalledWith({ entry, entryService, fileSystem }, { signal });
+            expect(readFile).toHaveBeenCalledWith({ entry, entryService, fileSystem, signal });
         });
 
         test('it throws an error if the passed file system is unknown', async () => {

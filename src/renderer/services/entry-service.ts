@@ -5,15 +5,6 @@ import type { EntryPath } from '../../common/values/entry-path';
 import type { LocalEntryService } from './local-entry-service';
 import type { ZipEntryService } from './zip-entry-service';
 
-export type ReadFileParameters = {
-    entry: FileEntry;
-    fileSystem: FileSystem;
-};
-
-export type ReadFileOptions = {
-    signal?: CloseSignal | null;
-};
-
 export type ReadLinkParameters = {
     entry: SymbolicLinkEntry;
     fileSystem: FileSystem;
@@ -33,7 +24,7 @@ export type EntryService = {
 
     readDirectory(params: ReadDirectoryParams): Promise<Entry[]>;
 
-    readFile(params: ReadFileParameters, options?: ReadFileOptions | null): Promise<Buffer>;
+    readFile(params: ReadFileParams): Promise<Buffer>;
 
     readLink(params: ReadLinkParameters, options?: ReadLinkOptions | null): Promise<Link>;
 };
@@ -48,6 +39,14 @@ export type CreateEntryFromPathParams = {
 
 export type ReadDirectoryParams = {
     entry: DirectoryEntry;
+
+    fileSystem: FileSystem;
+
+    signal?: CloseSignal | null;
+};
+
+export type ReadFileParams = {
+    entry: FileEntry;
 
     fileSystem: FileSystem;
 
@@ -95,16 +94,15 @@ export class EntryServiceImpl implements EntryService {
         throw Error('Unknown file system');
     }
 
-    async readFile(params: ReadFileParameters, options?: ReadFileOptions | null): Promise<Buffer> {
-        const { entry, fileSystem } = params;
-        const { signal } = options ?? {};
+    async readFile(params: ReadFileParams): Promise<Buffer> {
+        const { entry, fileSystem, signal } = params;
 
         if (fileSystem.isLocal()) {
-            return this._localEntryService.readFile({ entry }, { signal });
+            return this._localEntryService.readFile({ entry, signal });
         }
 
         if (fileSystem.isZip()) {
-            return this._zipEntryService.readFile({ entry, entryService: this, fileSystem }, { signal });
+            return this._zipEntryService.readFile({ entry, entryService: this, fileSystem, signal });
         }
 
         throw Error('Unknown file system');

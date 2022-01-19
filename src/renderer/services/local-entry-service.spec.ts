@@ -157,7 +157,7 @@ describe('LocalEntryService type', () => {
             const { signal } = closeController;
             const localEntryService = new LocalEntryServiceImpl();
             const entry = new FileEntry(new EntryPath('/a/b'));
-            const promise = localEntryService.readFile({ entry }, { signal });
+            const promise = localEntryService.readFile({ entry, signal });
             await expect(promise).rejects.toBeInstanceOf(Closed);
         });
 
@@ -166,7 +166,7 @@ describe('LocalEntryService type', () => {
             const { signal } = closeController;
             const localEntryService = new LocalEntryServiceImpl();
             const entry = new FileEntry(new EntryPath('/a/b'));
-            const promise = localEntryService.readFile({ entry }, { signal });
+            const promise = localEntryService.readFile({ entry, signal });
             closeController.close();
             await expect(promise).rejects.toBeInstanceOf(Closed);
         });

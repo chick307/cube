@@ -8,14 +8,6 @@ import { EntryName } from '../../common/values/entry-name';
 import { EntryPath } from '../../common/values/entry-path';
 import type { Link } from './entry-service';
 
-export type ReadFileParameters = {
-    entry: FileEntry;
-};
-
-export type ReadFileOptions = {
-    signal?: CloseSignal | null;
-};
-
 export type ReadLinkParameters = {
     entry: SymbolicLinkEntry;
 };
@@ -31,7 +23,7 @@ export type LocalEntryService = {
 
     readDirectory(params: ReadDirectoryParams): Promise<Entry[]>;
 
-    readFile(params: ReadFileParameters, options?: ReadFileOptions | null): Promise<Buffer>;
+    readFile(params: ReadFileParams): Promise<Buffer>;
 
     readLink(params: ReadLinkParameters, options?: ReadLinkOptions | null): Promise<Link>;
 };
@@ -46,6 +38,12 @@ export type ReadDirectoryParams = {
     entry: DirectoryEntry;
 
     signal?: CloseSignal | null | undefined;
+};
+
+export type ReadFileParams = {
+    entry: FileEntry;
+
+    signal?: CloseSignal | null;
 };
 
 export class LocalEntryServiceImpl implements LocalEntryService {
@@ -95,10 +93,10 @@ export class LocalEntryServiceImpl implements LocalEntryService {
         return entries;
     }
 
-    async readFile(params: ReadFileParameters, options?: ReadFileOptions | null): Promise<Buffer> {
-        options?.signal?.throwIfClosed();
+    async readFile(params: ReadFileParams): Promise<Buffer> {
+        params.signal?.throwIfClosed();
         const promise = fs.readFile(params.entry.path.toString());
-        const buffer = await (options?.signal?.wrapPromise(promise) ?? promise);
+        const buffer = await (params.signal?.wrapPromise(promise) ?? promise);
         return buffer;
     }
 

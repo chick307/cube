@@ -14,7 +14,7 @@ export const useEntryText = (params: Params) => {
     const entryService = useEntryService();
 
     const [text = null] = useTask(async (signal) => {
-        const buffer = await entryService.readFile({ entry, fileSystem }, { signal });
+        const buffer = await entryService.readFile({ entry, fileSystem, signal });
         const text = buffer.toString('utf8');
         return text;
     }, [entry, fileSystem]);

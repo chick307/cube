@@ -143,7 +143,7 @@ describe('ZipEntryService type', () => {
             const zipEntryService = new ZipEntryServiceImpl();
             const promise1 = zipEntryService.readFile({ entry: entry1, entryService, fileSystem });
             await expect(promise1).resolves.toEqual(Buffer.from('abc\n'));
-            const promise2 = zipEntryService.readFile({ entry: entry2, entryService, fileSystem }, { signal });
+            const promise2 = zipEntryService.readFile({ entry: entry2, entryService, fileSystem, signal });
             await expect(promise2).resolves.toEqual(Buffer.from('def\n'));
             const promise3 = zipEntryService.readFile({ entry: entry1, entryService, fileSystem });
             await expect(promise3).resolves.toEqual(Buffer.from('abc\n'));
@@ -157,7 +157,7 @@ describe('ZipEntryService type', () => {
             const entry = new FileEntry(new EntryPath('/d-1/f-1-1'));
             const fileSystem = new ZipFileSystem({ container: dummyContainer });
             const zipEntryService = new ZipEntryServiceImpl();
-            const promise = zipEntryService.readFile({ entry, entryService, fileSystem }, { signal });
+            const promise = zipEntryService.readFile({ entry, entryService, fileSystem, signal });
             await expect(promise).rejects.toBeInstanceOf(Closed);
         });
 
@@ -167,7 +167,7 @@ describe('ZipEntryService type', () => {
             const entry = new FileEntry(new EntryPath('/d-1/f-1-1'));
             const fileSystem = new ZipFileSystem({ container: dummyContainer });
             const zipEntryService = new ZipEntryServiceImpl();
-            const promise = zipEntryService.readFile({ entry, entryService, fileSystem }, { signal });
+            const promise = zipEntryService.readFile({ entry, entryService, fileSystem, signal });
             closeController.close();
             await expect(promise).rejects.toBeInstanceOf(Closed);
         });

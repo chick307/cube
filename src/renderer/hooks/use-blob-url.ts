@@ -18,7 +18,7 @@ export const useBlobUrl = (params: Parameters) => {
     const entryService = useEntryService();
 
     const [buffer] = useTask(async (signal) => {
-        const buffer = await entryService.readFile({ entry, fileSystem }, { signal });
+        const buffer = await entryService.readFile({ entry, fileSystem, signal });
         return buffer;
     }, [entry, fileSystem]);
 

@@ -7,22 +7,12 @@ import type { CloseSignal } from '../../common/utils/close-controller';
 import { EntryPath } from '../../common/values/entry-path';
 import type { EntryService } from './entry-service';
 
-export type ReadFileParameters = {
-    entry: FileEntry;
-    entryService: EntryService;
-    fileSystem: ZipFileSystem;
-};
-
-export type ReadFileOptions = {
-    signal?: CloseSignal | null;
-};
-
 export type ZipEntryService = {
     createEntryFromPath(params: CreateEntryFromPathParams): Promise<Entry | null>;
 
     readDirectory(params: ReadDirectoryParams): Promise<Entry[]>;
 
-    readFile(params: ReadFileParameters, options?: ReadFileOptions | null): Promise<Buffer>;
+    readFile(params: ReadFileParams): Promise<Buffer>;
 };
 
 export type CreateEntryFromPathParams = {
@@ -37,6 +27,16 @@ export type CreateEntryFromPathParams = {
 
 export type ReadDirectoryParams = {
     entry: DirectoryEntry;
+
+    entryService: EntryService;
+
+    fileSystem: ZipFileSystem;
+
+    signal?: CloseSignal | null;
+};
+
+export type ReadFileParams = {
+    entry: FileEntry;
 
     entryService: EntryService;
 
@@ -113,15 +113,15 @@ export class ZipEntryServiceImpl implements ZipEntryService {
         return directoryEntries;
     }
 
-    async readFile(params: ReadFileParameters, options?: ReadFileOptions | null): Promise<Buffer> {
+    async readFile(params: ReadFileParams): Promise<Buffer> {
         const entries = await this._getZipEntries({
             container: params.fileSystem.container,
             entryService: params.entryService,
-        }, options?.signal);
+        }, params.signal);
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const { object } = entries.get(params.entry.path.toString())!;
         const bufferPromise = object.async('nodebuffer');
-        const buffer = await (options?.signal?.wrapPromise(bufferPromise) ?? bufferPromise);
+        const buffer = await (params.signal?.wrapPromise(bufferPromise) ?? bufferPromise);
         return buffer;
     }
 }
