@@ -68,49 +68,48 @@
     --close-button-foreground: var(--content-background);
     --tab-background: transparent;
     transition: background-color 0.1s;
-}
 
-.tab:not(.active):hover {
-    --tab-background: #FFFFFF44;
-}
+    @nest &:not(.active):hover {
+        --tab-background: #FFFFFF44;
+    }
 
-.tab.active {
-    color: var(--active-tab-foreground);
-    filter: drop-shadow(0 0 2px #00000022);
-    z-index: 1;
-    --close-button-background: var(--content-foreground);
-    --close-button-foreground: var(--content-background);
-    --tab-background: var(--active-tab-background);
-    transition: none;
-}
+    @nest &.active {
+        color: var(--active-tab-foreground);
+        filter: drop-shadow(0 0 2px #00000022);
+        z-index: 1;
+        --close-button-background: var(--content-foreground);
+        --close-button-foreground: var(--content-background);
+        --tab-background: var(--active-tab-background);
+        transition: none;
+    }
 
-.tab::before,
-.tab::after {
-    display: block;
-    position: absolute;
-    content: '';
-    width: var(--tab-radius);
-    height: var(--tab-radius);
-    bottom: 0;
-}
+    @nest &::before, &::after {
+        display: block;
+        position: absolute;
+        content: '';
+        width: var(--tab-radius);
+        height: var(--tab-radius);
+        bottom: 0;
+    }
 
-.tab::before {
-    left: calc(var(--tab-radius) * -1);
-    background: radial-gradient(circle at top left,
-        transparent calc(var(--tab-radius) - 1px),
-        var(--tab-background) var(--tab-radius),
-        var(--tab-background)
-    );
-}
+    @nest &::before {
+        left: calc(var(--tab-radius) * -1);
+        background: radial-gradient(circle at top left,
+            transparent calc(var(--tab-radius) - 1px),
+            var(--tab-background) var(--tab-radius),
+            var(--tab-background)
+        );
+    }
 
-.tab::after {
-    right: calc(var(--tab-radius) * -1);
-    background: radial-gradient(
-        circle at top right,
-        transparent calc(var(--tab-radius) - 1px),
-        var(--tab-background) var(--tab-radius),
-        var(--tab-background)
-    );
+    @nest &::after {
+        right: calc(var(--tab-radius) * -1);
+        background: radial-gradient(
+            circle at top right,
+            transparent calc(var(--tab-radius) - 1px),
+            var(--tab-background) var(--tab-radius),
+            var(--tab-background)
+        );
+    }
 }
 
 .tab-margin {
@@ -135,10 +134,8 @@
 
 .close-button {
     opacity: 0;
-}
 
-.tab.active > .close-button,
-.close-button:focus-within,
-.close-button:hover {
-    opacity: 0.5;
+    @nest .tab.active > &, &:is(:focus-within, :hover) {
+        opacity: 0.5;
+    }
 }
