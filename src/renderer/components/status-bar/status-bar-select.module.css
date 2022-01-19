@@ -9,14 +9,14 @@
     border-top: none;
     border-bottom: none;
     overflow: hidden;
-}
 
-.select-container + .select-container {
-    border-left: none;
-}
+    @nest & + & {
+        border-left: none;
+    }
 
-.select-container:focus-within {
-    background-color: #00000022;
+    @nest &:focus-within {
+        background-color: #00000022;
+    }
 }
 
 .label {
