@@ -12,15 +12,14 @@
     text-align: center;
     transition: background-color 0.1s, fill 0.1s;
     outline: none;
-}
 
-.tab-add-button:focus-within,
-.tab-add-button:hover {
-    opacity: 100%;
-    background-color: #FFFFFF44;
-    fill: #444444DD;
-}
+    @nest &:is(:focus-within, :hover) {
+        opacity: 100%;
+        background-color: #FFFFFF44;
+        fill: #444444DD;
+    }
 
-.tab-add-button:active {
-    background-color: #FFFFFF22;
+    @nest &:active {
+        background-color: #FFFFFF22;
+    }
 }
