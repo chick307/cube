@@ -5,24 +5,14 @@ import { CloseController } from '../../common/utils/close-controller';
 import { EntryPath } from '../../common/values/entry-path';
 import { EntryServiceImpl } from './entry-service';
 import type { LocalEntryService } from './local-entry-service';
+import { createLocalEntryService } from './local-entry-service.test-helper';
 import type { ZipEntryService } from './zip-entry-service';
 
 class UnknownFileSystem extends FileSystem {
     //
 }
 
-const dummyLocalEntryService: LocalEntryService = {
-    createEntryFromPath: async () => null,
-    getHomeDirectoryEntry: () => new DirectoryEntry(new EntryPath('/a')),
-    readDirectory: async () => [
-        new FileEntry(new EntryPath('/a/c/f')),
-    ],
-    readFile: async () => Buffer.from('abc'),
-    readLink: async () => ({
-        entry: new DummyEntry(new EntryPath('/a/e')),
-        linkString: '/a/e',
-    }),
-};
+let localEntryService: LocalEntryService;
 
 const dummyZipEntryService: ZipEntryService = {
     createEntryFromPath: async () => null,
@@ -39,13 +29,24 @@ const dummyContainer: ZipContainer = {
 
 const createEntryService = () => {
     return new EntryServiceImpl({
-        localEntryService: dummyLocalEntryService,
+        localEntryService,
         zipEntryService: dummyZipEntryService,
     });
 };
 
+beforeEach(() => {
+    ({ localEntryService } = createLocalEntryService());
+    jest.spyOn(localEntryService, 'createEntryFromPath').mockReturnValue(Promise.resolve(null));
+    jest.spyOn(localEntryService, 'readDirectory')
+        .mockReturnValue(Promise.resolve([new FileEntry(new EntryPath('/a/c/f'))]));
+    jest.spyOn(localEntryService, 'readFile').mockReturnValue(Promise.resolve(Buffer.from('abc')));
+    jest.spyOn(localEntryService, 'readLink')
+        .mockReturnValue(Promise.resolve(({ entry: new DummyEntry(new EntryPath('/a/e')), linkString: '/a/e' })));
+});
 
 afterEach(() => {
+    localEntryService = null!;
+
     jest.restoreAllMocks();
 });
 
@@ -53,7 +54,7 @@ describe('EntryService type', () => {
     describe('entryService.createEntryFromPath() method', () => {
         test('it calls localEntryService.createEntryFromPath() method, ' +
              'if the local file system is passed', async () => {
-            const createEntryFromPath = jest.spyOn(dummyLocalEntryService, 'createEntryFromPath');
+            const createEntryFromPath = jest.spyOn(localEntryService, 'createEntryFromPath');
             const closeController = new CloseController();
             const { signal } = closeController;
             const entryPath = new EntryPath('/a/b');
@@ -103,7 +104,7 @@ describe('EntryService type', () => {
         test('it calls localEntryService.readDirectory() method, if the local file system is passed', async () => {
             const closeController = new CloseController();
             const { signal } = closeController;
-            const readDirectory = jest.spyOn(dummyLocalEntryService, 'readDirectory');
+            const readDirectory = jest.spyOn(localEntryService, 'readDirectory');
             const entry = new DirectoryEntry(new EntryPath('/a/c'));
             const fileSystem = new LocalFileSystem();
             const entryService = createEntryService();
@@ -112,7 +113,6 @@ describe('EntryService type', () => {
                 new FileEntry(new EntryPath('/a/c/f')),
             ]);
             expect(readDirectory).toHaveBeenCalledWith({ entry }, { signal: undefined });
-            readDirectory.mockClear();
             const promise2 = entryService.readDirectory({ entry, fileSystem }, { signal });
             await expect(promise2).resolves.toEqual([
                 new FileEntry(new EntryPath('/a/c/f')),
@@ -154,7 +154,7 @@ describe('EntryService type', () => {
         test('it calls localEntryService.readFile() method, if the local file system is passed', async () => {
             const closeController = new CloseController();
             const { signal } = closeController;
-            const readFile = jest.spyOn(dummyLocalEntryService, 'readFile');
+            const readFile = jest.spyOn(localEntryService, 'readFile');
             const entry = new FileEntry(new EntryPath('/a/b'));
             const fileSystem = new LocalFileSystem();
             const entryService = createEntryService();
@@ -197,7 +197,7 @@ describe('EntryService type', () => {
         test('it calls localEntryService.readLink() method, if the local file system is passed', async () => {
             const closeController = new CloseController();
             const { signal } = closeController;
-            const readLink = jest.spyOn(dummyLocalEntryService, 'readLink');
+            const readLink = jest.spyOn(localEntryService, 'readLink');
             const entry = new SymbolicLinkEntry(new EntryPath('/a/d'));
             const fileSystem = new LocalFileSystem();
             const entryService = createEntryService();

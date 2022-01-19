@@ -5,19 +5,23 @@ import type { LocalEntryService } from '../services/local-entry-service';
 import { createLocalEntryService } from '../services/local-entry-service.test-helper';
 import { LocalEntryServiceProvider, useLocalEntryService } from './local-entry-service-context';
 
-const localEntryService = createLocalEntryService();
-
 let container: HTMLElement;
+
+let localEntryService: LocalEntryService;
 
 beforeEach(() => {
     container = document.createElement('div');
     document.body.appendChild(container);
+
+    ({ localEntryService } = createLocalEntryService());
 });
 
 afterEach(() => {
     ReactDom.unmountComponentAtNode(container);
     container.remove();
     container = null!;
+
+    localEntryService = null!;
 });
 
 describe('LocalEntryService context', () => {
