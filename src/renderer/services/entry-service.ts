@@ -53,27 +53,27 @@ export type ReadLinkParams = {
 };
 
 export class EntryServiceImpl implements EntryService {
-    private _localEntryService: LocalEntryService;
+    #localEntryService: LocalEntryService;
 
-    private _zipEntryService: ZipEntryService;
+    #zipEntryService: ZipEntryService;
 
-    constructor(container: {
-        localEntryService: LocalEntryService;
-        zipEntryService: ZipEntryService;
+    constructor(params: {
+        readonly localEntryService: LocalEntryService;
+        readonly zipEntryService: ZipEntryService;
     }) {
-        this._localEntryService = container.localEntryService;
-        this._zipEntryService = container.zipEntryService;
+        this.#localEntryService = params.localEntryService;
+        this.#zipEntryService = params.zipEntryService;
     }
 
     async createEntryFromPath(params: CreateEntryFromPathParams): Promise<Entry | null> {
         const { entryPath, fileSystem, signal } = params;
 
         if (fileSystem.isLocal()) {
-            return this._localEntryService.createEntryFromPath({ entryPath, signal });
+            return this.#localEntryService.createEntryFromPath({ entryPath, signal });
         }
 
         if (fileSystem.isZip()) {
-            return this._zipEntryService.createEntryFromPath({ entryPath, entryService: this, fileSystem, signal });
+            return this.#zipEntryService.createEntryFromPath({ entryPath, entryService: this, fileSystem, signal });
         }
 
         throw Error('Unknown file system');
@@ -83,11 +83,11 @@ export class EntryServiceImpl implements EntryService {
         const { entry, fileSystem, signal } = params;
 
         if (fileSystem.isLocal()) {
-            return this._localEntryService.readDirectory({ entry, signal });
+            return this.#localEntryService.readDirectory({ entry, signal });
         }
 
         if (fileSystem.isZip()) {
-            return this._zipEntryService.readDirectory({ entry, entryService: this, fileSystem, signal });
+            return this.#zipEntryService.readDirectory({ entry, entryService: this, fileSystem, signal });
         }
 
         throw Error('Unknown file system');
@@ -97,11 +97,11 @@ export class EntryServiceImpl implements EntryService {
         const { entry, fileSystem, signal } = params;
 
         if (fileSystem.isLocal()) {
-            return this._localEntryService.readFile({ entry, signal });
+            return this.#localEntryService.readFile({ entry, signal });
         }
 
         if (fileSystem.isZip()) {
-            return this._zipEntryService.readFile({ entry, entryService: this, fileSystem, signal });
+            return this.#zipEntryService.readFile({ entry, entryService: this, fileSystem, signal });
         }
 
         throw Error('Unknown file system');
@@ -111,7 +111,7 @@ export class EntryServiceImpl implements EntryService {
         const { entry, fileSystem, signal } = params;
 
         if (fileSystem.isLocal()) {
-            return this._localEntryService.readLink({ entry, signal });
+            return this.#localEntryService.readLink({ entry, signal });
         }
 
         if (fileSystem.isZip()) {
