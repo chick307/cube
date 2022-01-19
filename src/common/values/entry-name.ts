@@ -11,6 +11,10 @@ export class EntryName {
         return path.extname(this._value);
     }
 
+    startsWithDot(): boolean {
+        return this._value.startsWith('.');
+    }
+
     toString(): string {
         return this._value;
     }

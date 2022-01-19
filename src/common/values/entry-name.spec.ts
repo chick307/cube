@@ -9,7 +9,17 @@ describe('EntryName class', () => {
         });
     });
 
-    describe('entryName.toString() property', () => {
+    describe('entryName.startsWithDot() method', () => {
+        test('it returns whether the entry name starts with the dot', () => {
+            expect(new EntryName('a.txt').startsWithDot()).toBe(false);
+            expect(new EntryName('image.png').startsWithDot()).toBe(false);
+            expect(new EntryName('entry-name.spec.ts').startsWithDot()).toBe(false);
+            expect(new EntryName('.gitignore').startsWithDot()).toBe(true);
+            expect(new EntryName('.eslintrc.js').startsWithDot()).toBe(true);
+        });
+    });
+
+    describe('entryName.toString() method', () => {
         test('it returns the string passed when construction', () => {
             expect(new EntryName('a.txt').toString()).toBe('a.txt');
             expect(new EntryName('image.png').toString()).toBe('image.png');
