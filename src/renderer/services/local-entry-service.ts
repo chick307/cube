@@ -45,7 +45,7 @@ export type ReadLinkParams = {
 };
 
 export class LocalEntryServiceImpl implements LocalEntryService {
-    private async _createEntry(entryPath: EntryPath, signal?: CloseSignal | null): Promise<Entry | null> {
+    async #createEntry(entryPath: EntryPath, signal?: CloseSignal | null): Promise<Entry | null> {
         signal?.throwIfClosed();
         const promise = fs.lstat(entryPath.toString());
         const stat = await (signal?.wrapPromise(promise) ?? promise).catch((e) => {
@@ -65,7 +65,7 @@ export class LocalEntryServiceImpl implements LocalEntryService {
     }
 
     async createEntryFromPath(params: CreateEntryFromPathParams): Promise<Entry | null> {
-        const entry = await this._createEntry(params.entryPath, params.signal);
+        const entry = await this.#createEntry(params.entryPath, params.signal);
         return entry;
     }
 
@@ -83,7 +83,7 @@ export class LocalEntryServiceImpl implements LocalEntryService {
         for (const name of names) {
             const entryName = new EntryName(name);
             const entryPath = params.entry.path.join(entryName);
-            const entry = await this._createEntry(entryPath, params.signal);
+            const entry = await this.#createEntry(entryPath, params.signal);
             if (entry === null)
                 continue;
             entries.push(entry);
@@ -104,7 +104,7 @@ export class LocalEntryServiceImpl implements LocalEntryService {
         const linkString = await (params.signal?.wrapPromise(promise) ?? promise);
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const entryPath = params.entry.path.getParentPath()!.resolve(new EntryPath(linkString));
-        const entry = await this._createEntry(entryPath, params.signal)
+        const entry = await this.#createEntry(entryPath, params.signal)
             .catch(() => null);
         return { entry, linkString };
     }
