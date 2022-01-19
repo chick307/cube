@@ -46,16 +46,12 @@ export type ReadFileParams = {
 };
 
 export class ZipEntryServiceImpl implements ZipEntryService {
-    private _zipEntries = new WeakMap<ZipContainer, Promise<Map<string, {
+    #zipEntries = new WeakMap<ZipContainer, Promise<Map<string, {
         entry: Entry;
         object: JSZip.JSZipObject;
     }>>>();
 
-    constructor() {
-        //
-    }
-
-    private _getZipEntries(params: {
+    #getZipEntries(params: {
         container: ZipContainer;
         entryService: EntryService;
     }, signal?: CloseSignal | null): Promise<Map<string, {
@@ -63,11 +59,11 @@ export class ZipEntryServiceImpl implements ZipEntryService {
             object: JSZip.JSZipObject;
         }>> {
         signal?.throwIfClosed();
-        if (this._zipEntries.has(params.container)) {
+        if (this.#zipEntries.has(params.container)) {
             if (signal == null) // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                return this._zipEntries.get(params.container)!;
+                return this.#zipEntries.get(params.container)!;
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            return signal.wrapPromise(this._zipEntries.get(params.container)!);
+            return signal.wrapPromise(this.#zipEntries.get(params.container)!);
         }
         const zipEntriesPromise = (async () => {
             const zipBuffer = await params.entryService.readFile(params.container);
@@ -81,14 +77,14 @@ export class ZipEntryServiceImpl implements ZipEntryService {
             }
             return map;
         })();
-        this._zipEntries.set(params.container, zipEntriesPromise);
+        this.#zipEntries.set(params.container, zipEntriesPromise);
         if (signal == null)
             return zipEntriesPromise;
         return signal.wrapPromise(zipEntriesPromise);
     }
 
     async createEntryFromPath(params: CreateEntryFromPathParams): Promise<Entry | null> {
-        const entries = await this._getZipEntries({
+        const entries = await this.#getZipEntries({
             container: params.fileSystem.container,
             entryService: params.entryService,
         }, params.signal);
@@ -100,7 +96,7 @@ export class ZipEntryServiceImpl implements ZipEntryService {
     }
 
     async readDirectory(params: ReadDirectoryParams): Promise<Entry[]> {
-        const entries = await this._getZipEntries({
+        const entries = await this.#getZipEntries({
             container: params.fileSystem.container,
             entryService: params.entryService,
         }, params.signal);
@@ -114,7 +110,7 @@ export class ZipEntryServiceImpl implements ZipEntryService {
     }
 
     async readFile(params: ReadFileParams): Promise<Buffer> {
-        const entries = await this._getZipEntries({
+        const entries = await this.#getZipEntries({
             container: params.fileSystem.container,
             entryService: params.entryService,
         }, params.signal);
