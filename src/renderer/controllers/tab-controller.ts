@@ -1,3 +1,5 @@
+import type { Entry } from '../../common/entities/entry';
+import type { FileSystem } from '../../common/entities/file-system';
 import type { HistoryItem } from '../../common/entities/history-item';
 import { CloseController } from '../../common/utils/close-controller';
 import { EventController, EventSignal } from '../../common/utils/event-controller';
@@ -170,7 +172,24 @@ export class TabControllerImpl implements TabController {
                 this.#onHistoryStateChangedController.emit({ type: 'history-state-changed', tabId: id });
             }
         }, { signal: closeController.signal });
-        const titleState = historyController.state.map(({ current }) => current.entry.name.toString());
+        const titleState = historyController.state.map(({ current }) => {
+            let historyItem = current as { entry: Entry; fileSystem: FileSystem; };
+            for (;;) {
+                const { entry, fileSystem } = historyItem;
+
+                // Root entries has special titles
+                if (entry.getParentEntry() === null) {
+                    if (fileSystem.isZip()) {
+                        historyItem = fileSystem.container;
+                        continue;
+                    } else if (fileSystem.isLocal()) {
+                        return 'Local';
+                    }
+                }
+
+                return entry.name.toString();
+            }
+        });
         titleState.forEach((title) => {
             this.#restate.update((state) => ({
                 ...state,
