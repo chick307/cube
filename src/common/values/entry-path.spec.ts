@@ -40,6 +40,14 @@ describe('EntryPath class', () => {
         });
     });
 
+    describe('entryPath.isRoot() method', () => {
+        test('it returns whether the entry is the root', () => {
+            expect(new EntryPath('/').isRoot()).toBe(true);
+            expect(new EntryPath('/a').isRoot()).toBe(false);
+            expect(new EntryPath('/a/b').isRoot()).toBe(false);
+        });
+    });
+
     describe('entryPath.toString() method', () => {
         test('it returns the entry path', () => {
             expect(new EntryPath('/a.txt').toString()).toEqual('/a.txt');

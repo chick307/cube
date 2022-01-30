@@ -21,9 +21,13 @@ export class EntryPath {
     }
 
     getParentPath(): EntryPath | null {
-        if (this._value === '/')
+        if (this.isRoot())
             return null;
         return new EntryPath(path.join(this._value, '..'));
+    }
+
+    isRoot(): boolean {
+        return this._value === '/';
     }
 
     join(entryName: EntryName): EntryPath {
