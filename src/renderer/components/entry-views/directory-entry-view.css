@@ -18,9 +18,7 @@
 
 .icon {
     margin: 2px;
-    width: 16px;
-    height: 16px;
-    object-fit: contain;
+    --entry-icon-size: 16px;
 }
 
 .icon-placeholder {

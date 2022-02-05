@@ -1,4 +1,4 @@
-import type React from 'react';
+import React from 'react';
 
 import type { FileSystem } from '../../../common/entities/file-system';
 import type { EntryPath } from '../../../common/values/entry-path';
@@ -7,7 +7,7 @@ import { useEntryService } from '../../contexts/entry-service-context';
 import { useTask } from '../../hooks/use-task';
 import styles from './entry-icon.module.css';
 
-export type Props = React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement> & {
+export type Props = React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLSpanElement>, HTMLSpanElement> & {
     entryPath: EntryPath;
     fileSystem: FileSystem;
     iconPlaceholder?: React.ReactNode;
@@ -18,7 +18,14 @@ const defaultPlaceholder = (
 );
 
 export const EntryIcon = (props: Props) => {
-    const { entryPath, fileSystem, iconPlaceholder = defaultPlaceholder, src, ...imageProps } = props;
+    const {
+        className: classNameProp,
+        entryPath,
+        fileSystem,
+        iconPlaceholder = defaultPlaceholder,
+        src,
+        ...spanProps
+    } = props;
 
     const entryService = useEntryService();
 
@@ -36,8 +43,14 @@ export const EntryIcon = (props: Props) => {
         return iconUrl;
     }, [entryPath, fileSystem, src]);
 
+    const className = classNameProp == null ? styles.entryIcon : `${styles.entryIcon} ${classNameProp}`;
+
     if (iconUrl == null)
         return <>{iconPlaceholder}</>;
 
-    return <img src={iconUrl} width="16" height="16" draggable={false} {...imageProps} />;
+    return (
+        <span {...{ className, ...spanProps }}>
+            <img src={iconUrl} draggable={false} />
+        </span>
+    );
 };
