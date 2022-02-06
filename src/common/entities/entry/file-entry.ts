@@ -25,7 +25,7 @@ export class FileEntry extends Entry {
         return entry;
     }
 
-    equals(otherEntry: Entry): boolean {
+    equals(otherEntry: Entry | null | undefined): boolean {
         return otherEntry instanceof FileEntry && this.type === otherEntry.type && super.equals(otherEntry);
     }
 
