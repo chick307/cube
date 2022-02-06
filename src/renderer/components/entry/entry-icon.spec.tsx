@@ -7,9 +7,12 @@ import { immediate } from '../../../common/utils/immediate';
 import { EntryPath } from '../../../common/values/entry-path';
 import { EntryIconServiceProvider } from '../../contexts/entry-icon-service-context';
 import { EntryServiceProvider } from '../../contexts/entry-service-context';
+import { LocalEntryServiceProvider } from '../../contexts/local-entry-service-context';
 import { createEntryIconService } from '../../services/entry-icon-service.test-helper';
 import type { EntryService } from '../../services/entry-service';
 import { createEntryService } from '../../services/entry-service.test-helper';
+import { LocalEntryService } from '../../services/local-entry-service';
+import { createLocalEntryService } from '../../services/local-entry-service.test-helper';
 import { composeElements } from '../../utils/compose-elements';
 import { EntryIcon } from './entry-icon';
 
@@ -19,11 +22,17 @@ let container: HTMLElement;
 
 let entryService: EntryService;
 
+let localEntryService: LocalEntryService;
+
 beforeEach(() => {
     container = document.createElement('div');
     document.body.appendChild(container);
 
     ({ entryService } = createEntryService());
+    ({ localEntryService } = createLocalEntryService());
+
+    const homeDirectoryEntry = new DummyEntry(new EntryPath('/home'));
+    jest.spyOn(localEntryService, 'getHomeDirectoryEntry').mockReturnValue(homeDirectoryEntry as any);
 });
 
 afterEach(() => {
@@ -32,6 +41,7 @@ afterEach(() => {
     container = null!;
 
     entryService = null!;
+    localEntryService = null!;
 });
 
 describe('EntryIcon component', () => {
@@ -47,6 +57,7 @@ describe('EntryIcon component', () => {
         const Component = () => {
             return composeElements(
                 <EntryServiceProvider value={entryService} />,
+                <LocalEntryServiceProvider value={localEntryService} />,
                 <EntryIconServiceProvider value={entryIconService} />,
                 <EntryIcon className={'icon'} {...{ entryPath, fileSystem, iconPlaceholder }} />,
             );
@@ -60,7 +71,7 @@ describe('EntryIcon component', () => {
         expect(createEntryFromPath.mock.calls[0][0].fileSystem).toEqual(fileSystem);
         expect(getEntryIconUrl).toHaveBeenCalledTimes(1);
         expect(getEntryIconUrl.mock.calls[0][0]).toBe(entry);
-        expect(container.querySelector('.icon')?.getAttribute('src')).toBe('data:image/png;base64,AAAA');
+        expect(container.querySelector('.icon > img')?.getAttribute('src')).toBe('data:image/png;base64,AAAA');
     });
 
     test('it displays the passed placeholder while the icon URL is not resolved', async () => {
@@ -78,6 +89,7 @@ describe('EntryIcon component', () => {
         const Component = () => {
             return composeElements(
                 <EntryServiceProvider value={entryService} />,
+                <LocalEntryServiceProvider value={localEntryService} />,
                 <EntryIconServiceProvider value={entryIconService} />,
                 <EntryIcon className={'icon'} {...{ entryPath, fileSystem, iconPlaceholder }} />,
             );
@@ -92,7 +104,7 @@ describe('EntryIcon component', () => {
             resolve('data:image/png;base64,BBBB');
             await immediate();
         });
-        expect(container.querySelector('.icon')?.getAttribute('src')).toBe('data:image/png;base64,BBBB');
+        expect(container.querySelector('.icon > img')?.getAttribute('src')).toBe('data:image/png;base64,BBBB');
         expect(container.querySelector('.placeholder')).toBeNull();
     });
 
@@ -104,6 +116,7 @@ describe('EntryIcon component', () => {
         const Component = () => {
             return composeElements(
                 <EntryServiceProvider value={entryService} />,
+                <LocalEntryServiceProvider value={localEntryService} />,
                 <EntryIconServiceProvider value={entryIconService} />,
                 <EntryIcon className={'icon'} {...{ entryPath, fileSystem, iconPlaceholder, src }} />,
             );
@@ -112,6 +125,6 @@ describe('EntryIcon component', () => {
             ReactDom.render(<Component />, container);
             await immediate();
         });
-        expect(container.querySelector('.icon')?.getAttribute('src')).toBe('data:image/png;base64,CCCC');
+        expect(container.querySelector('.icon > img')?.getAttribute('src')).toBe('data:image/png;base64,CCCC');
     });
 });
