@@ -45,6 +45,10 @@ describe('FileSystem class', () => {
             expect(fileSystemB.equals(fileSystemA)).toBe(false);
             expect(fileSystemA.equals(new DummyFileSystem())).toBe(false);
             expect(fileSystemB.equals(new DummyFileSystem())).toBe(false);
+            expect(fileSystemA.equals(null)).toBe(false);
+            expect(fileSystemA.equals(undefined)).toBe(false);
+            expect(fileSystemB.equals(null)).toBe(false);
+            expect(fileSystemB.equals(undefined)).toBe(false);
         });
     });
 

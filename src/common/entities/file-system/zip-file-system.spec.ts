@@ -49,6 +49,10 @@ describe('ZipFileSystem entity class', () => {
             expect(zipFileSystemB.equals(new ZipFileSystem({ container: containerA }))).toBe(true);
             expect(zipFileSystemA.equals(new DummyFileSystem())).toBe(false);
             expect(zipFileSystemB.equals(new DummyFileSystem())).toBe(false);
+            expect(zipFileSystemA.equals(null)).toBe(false);
+            expect(zipFileSystemA.equals(undefined)).toBe(false);
+            expect(zipFileSystemB.equals(null)).toBe(false);
+            expect(zipFileSystemB.equals(undefined)).toBe(false);
         });
     });
 

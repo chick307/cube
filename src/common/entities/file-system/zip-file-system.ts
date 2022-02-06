@@ -52,7 +52,7 @@ export class ZipFileSystem extends FileSystem {
         return fileSystem;
     }
 
-    equals(otherFileSystem: FileSystem): boolean {
+    equals(otherFileSystem: FileSystem | null | undefined): boolean {
         return otherFileSystem instanceof ZipFileSystem &&
             otherFileSystem.type === this.type &&
             otherFileSystem.container.entry.equals(otherFileSystem.container.entry) &&

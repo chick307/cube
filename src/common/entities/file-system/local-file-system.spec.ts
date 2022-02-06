@@ -28,6 +28,10 @@ describe('LocalFileSystem entity class', () => {
             expect(localFileSystemB.equals(new LocalFileSystem())).toBe(true);
             expect(localFileSystemA.equals(new DummyFileSystem())).toBe(false);
             expect(localFileSystemB.equals(new DummyFileSystem())).toBe(false);
+            expect(localFileSystemA.equals(null)).toBe(false);
+            expect(localFileSystemA.equals(undefined)).toBe(false);
+            expect(localFileSystemB.equals(null)).toBe(false);
+            expect(localFileSystemB.equals(undefined)).toBe(false);
         });
     });
 
