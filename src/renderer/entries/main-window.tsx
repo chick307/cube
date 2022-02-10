@@ -8,6 +8,7 @@ import { TabView } from '../components/tab/tab-view';
 import { ContextMenuServiceProvider } from '../contexts/context-menu-service-context';
 import { EntryIconServiceProvider } from '../contexts/entry-icon-service-context';
 import { EntryServiceProvider } from '../contexts/entry-service-context';
+import { KeyboardServiceProvider } from '../contexts/keyboard-service-context';
 import { LocalEntryServiceProvider } from '../contexts/local-entry-service-context';
 import { TabControllerProvider } from '../contexts/tab-controller-context';
 import { ViewerServiceProvider } from '../contexts/viewer-service-context';
@@ -18,6 +19,7 @@ import { ApplicationServiceImpl } from '../services/application-service';
 import { ContextMenuServiceImpl } from '../services/context-menu-service';
 import { EntryIconServiceImpl } from '../services/entry-icon-service';
 import { EntryServiceImpl } from '../services/entry-service';
+import { KeyboardServiceImpl } from '../services/keyboard-service';
 import { LocalEntryService, LocalEntryServiceImpl } from '../services/local-entry-service';
 import { MainChannelServiceImpl } from '../services/main-channel-service';
 import { ViewerServiceImpl } from '../services/viewer-service';
@@ -47,6 +49,7 @@ const MainWindow = () => {
             entryIconService: EntryIconServiceImpl,
             entryService: EntryServiceImpl,
             historyControllerFactory: HistoryControllerFactoryImpl,
+            keyboardService: KeyboardServiceImpl,
             localEntryService: LocalEntryServiceImpl,
             mainChannelService: MainChannelServiceImpl,
             messagePort: createFactory(() => port),
@@ -56,6 +59,8 @@ const MainWindow = () => {
         });
 
         container.applicationService.initialize();
+
+        container.keyboardService.attachTo(document);
 
         return container;
     }, []);
@@ -70,6 +75,7 @@ const MainWindow = () => {
         <ContextMenuServiceProvider value={container.contextMenuService} />,
         <EntryIconServiceProvider value={container.entryIconService} />,
         <EntryServiceProvider value={container.entryService} />,
+        <KeyboardServiceProvider value={container.keyboardService} />,
         <LocalEntryServiceProvider value={container.localEntryService} />,
         <TabControllerProvider value={container.tabController} />,
         <ViewerServiceProvider value={container.viewerService} />,

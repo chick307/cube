@@ -13,12 +13,14 @@ import { TabAddButton } from './tab-add-button';
 import styles from './tab-view.module.css';
 import { TabViewContextMenu } from './tab-view-context-menu';
 import { TabViewDragOverIndicator } from './tab-view-drag-over-indicator';
+import { KeyboardServiceProvider, useKeyboardService } from '../../contexts/keyboard-service-context';
 
 export type Props = {
     className?: string;
 };
 
 export const TabView = (props: Props) => {
+    const keyboardService = useKeyboardService();
     const tabController = useTabController();
 
     const { tabs } = useRestate(tabController.state);
@@ -31,6 +33,7 @@ export const TabView = (props: Props) => {
         return composeElements(
             <div key={tab.id} className={`${styles.content} ${tab.active ? styles.active : ''}`} />,
             <HistoryControllerProvider value={tab.historyController} />,
+            <KeyboardServiceProvider value={tab.active ? keyboardService : null}/>,
             <EntryView />,
         );
     }), [tabs]);
