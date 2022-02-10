@@ -12,6 +12,7 @@ import {
 import { useHistoryController } from '../../contexts/history-controller-context';
 import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
 import { useBlobUrl } from '../../hooks/use-blob-url';
+import { useKeyDown } from '../../hooks/use-key-down';
 import { useTask } from '../../hooks/use-task';
 import { StatusBarSelect } from '../status-bar/status-bar-select';
 import { StatusBarSpace } from '../status-bar/status-bar-space';
@@ -154,30 +155,22 @@ export const PdfEntryView = (props: Props) => {
         };
     }, [canvasRef.current, direction, doc, spread, pageDisplay]);
 
-    React.useEffect(() => {
+    useKeyDown((e) => {
         if (doc === null)
             return;
 
         const [nextPageKey, prevPageKey] =
             direction === 'R2L' ? ['ArrowLeft', 'ArrowRight'] : ['ArrowRight', 'ArrowLeft'];
 
-        const onKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'End') {
-                setCurrentSpreadIndex(() => Math.max(spreads.length - 1, 0));
-            } else if (e.key === 'Home') {
-                setCurrentSpreadIndex(() => 0);
-            } else if (e.key === nextPageKey || e.key === 'ArrowDown') {
-                setCurrentSpreadIndex((n) => Math.min(n + 1, spreads.length - 1));
-            } else if (e.key === 'ArrowUp' || e.key === prevPageKey) {
-                setCurrentSpreadIndex((n) => Math.max(n - 1, 0));
-            }
-        };
-
-        document.addEventListener('keydown', onKeyDown, false);
-
-        return () => {
-            document.removeEventListener('keydown', onKeyDown);
-        };
+        if (e.key === 'End') {
+            setCurrentSpreadIndex(() => Math.max(spreads.length - 1, 0));
+        } else if (e.key === 'Home') {
+            setCurrentSpreadIndex(() => 0);
+        } else if (e.key === nextPageKey || e.key === 'ArrowDown') {
+            setCurrentSpreadIndex((n) => Math.min(n + 1, spreads.length - 1));
+        } else if (e.key === 'ArrowUp' || e.key === prevPageKey) {
+            setCurrentSpreadIndex((n) => Math.max(n - 1, 0));
+        }
     }, [direction, spreads]);
 
     const directionOptions = StatusBarSelect.useOptions<PdfViewerDirection>(() => [
