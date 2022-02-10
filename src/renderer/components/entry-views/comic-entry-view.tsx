@@ -7,6 +7,7 @@ import { ComicViewerPageDisplay, ComicViewerState } from '../../../common/values
 import { useEntryService } from '../../contexts/entry-service-context';
 import { useHistoryController } from '../../contexts/history-controller-context';
 import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
+import { useKeyDown } from '../../hooks/use-key-down';
 import { useTask } from '../../hooks/use-task';
 import { EntryDraggable, EntryDragImage } from '../entry/entry-draggable';
 import { EntryIcon } from '../entry/entry-icon';
@@ -64,27 +65,19 @@ export const ComicEntryView = (props: Props) => {
 
     const currentSpread = React.useMemo(() => spreads && spreads[currentSpreadIndex], [spreads, currentSpreadIndex]);
 
-    React.useEffect(() => {
+    useKeyDown((e) => {
         if (spreads == null)
             return;
 
-        const onKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'End') {
-                setCurrentSpreadIndex(() => Math.max(spreads.length - 1, 0));
-            } else if (e.key === 'Home') {
-                setCurrentSpreadIndex(() => 0);
-            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
-                setCurrentSpreadIndex((n) => Math.min(n + 1, spreads.length - 1));
-            } else if (e.key === 'ArrowUp' || e.key === 'ArrowRight') {
-                setCurrentSpreadIndex((n) => Math.max(n - 1, 0));
-            }
-        };
-
-        document.addEventListener('keydown', onKeyDown, false);
-
-        return () => {
-            document.removeEventListener('keydown', onKeyDown);
-        };
+        if (e.key === 'End') {
+            setCurrentSpreadIndex(() => Math.max(spreads.length - 1, 0));
+        } else if (e.key === 'Home') {
+            setCurrentSpreadIndex(() => 0);
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+            setCurrentSpreadIndex((n) => Math.min(n + 1, spreads.length - 1));
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowRight') {
+            setCurrentSpreadIndex((n) => Math.max(n - 1, 0));
+        }
     }, [spreads]);
 
     const canvasRef = React.useRef<HTMLCanvasElement>(null);
