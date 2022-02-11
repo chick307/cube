@@ -5,13 +5,6 @@ import ReactDom from 'react-dom';
 import { LocalFileSystem } from '../../common/entities/file-system';
 import { createContainer, createFactory } from '../../common/utils/create-container';
 import { TabView } from '../components/tab/tab-view';
-import { ContextMenuServiceProvider } from '../contexts/context-menu-service-context';
-import { EntryIconServiceProvider } from '../contexts/entry-icon-service-context';
-import { EntryServiceProvider } from '../contexts/entry-service-context';
-import { KeyboardServiceProvider } from '../contexts/keyboard-service-context';
-import { LocalEntryServiceProvider } from '../contexts/local-entry-service-context';
-import { TabControllerProvider } from '../contexts/tab-controller-context';
-import { ViewerServiceProvider } from '../contexts/viewer-service-context';
 import { TabControllerImpl } from '../controllers/tab-controller';
 import { HistoryControllerFactoryImpl } from '../factories/history-controller-factory';
 import { ServicesProvider } from '../hooks/use-service';
@@ -74,13 +67,6 @@ const MainWindow = () => {
 
     return composeElements(
         <ServicesProvider value={container} />,
-        <ContextMenuServiceProvider value={container.contextMenuService} />,
-        <EntryIconServiceProvider value={container.entryIconService} />,
-        <EntryServiceProvider value={container.entryService} />,
-        <KeyboardServiceProvider value={container.keyboardService} />,
-        <LocalEntryServiceProvider value={container.localEntryService} />,
-        <TabControllerProvider value={container.tabController} />,
-        <ViewerServiceProvider value={container.viewerService} />,
         <TabView />,
     );
 };

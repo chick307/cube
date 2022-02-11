@@ -1,8 +1,6 @@
 import React from 'react';
 
 import type { HistoryItem } from '../../../common/entities/history-item';
-import { HistoryControllerProvider } from '../../contexts/history-controller-context';
-import { KeyboardServiceProvider } from '../../contexts/keyboard-service-context';
 import type { TabController } from '../../controllers/tab-controller';
 import { useRestate } from '../../hooks/use-restate';
 import { ServiceProvider, ServicesProvider, useService } from '../../hooks/use-service';
@@ -36,8 +34,6 @@ export const TabView = (props: Props) => {
             <div key={tab.id} className={`${styles.content} ${tab.active ? styles.active : ''}`} />,
             <ServicesProvider value={tab.services} />,
             <ServiceProvider name={'keyboardService'} value={tab.active ? keyboardService : null} />,
-            <HistoryControllerProvider value={tab.historyController} />,
-            <KeyboardServiceProvider value={tab.active ? keyboardService : null}/>,
             <EntryView />,
         );
     }), [tabs]);
