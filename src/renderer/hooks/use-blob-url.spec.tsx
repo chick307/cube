@@ -5,24 +5,31 @@ import { FileEntry } from '../../common/entities/entry';
 import { DummyFileSystem } from '../../common/entities/file-system.test-helper';
 import { immediate } from '../../common/utils/immediate';
 import { EntryPath } from '../../common/values/entry-path';
-import { EntryServiceProvider } from '../contexts/entry-service-context';
 import type { EntryService } from '../services/entry-service';
 import { createEntryService } from '../services/entry-service.test-helper';
+import { composeElements } from '../utils/compose-elements';
 import { useBlobUrl } from './use-blob-url';
+import { ServicesProvider } from './use-service';
 
 const entry = new FileEntry(new EntryPath('/a/b'));
 const fileSystem = new DummyFileSystem();
 
 let container: HTMLElement;
 
-let entryService: EntryService;
+let services: {
+    entryService: EntryService;
+};
 
 beforeEach(() => {
     container = document.createElement('div');
     document.body.appendChild(container);
 
-    ({ entryService } = createEntryService());
+    const { entryService } = createEntryService();
     jest.spyOn(entryService, 'readFile').mockReturnValue(Promise.resolve(Buffer.from('abc')));
+
+    services = {
+        entryService,
+    };
 });
 
 afterEach(() => {
@@ -30,7 +37,7 @@ afterEach(() => {
     container.remove();
     container = null!;
 
-    entryService = null!;
+    services = null!;
 });
 
 describe('useBlobUrl() hook', () => {
@@ -46,10 +53,9 @@ describe('useBlobUrl() hook', () => {
             return <></>;
         };
         await TestUtils.act(async () => {
-            ReactDom.render((
-                <EntryServiceProvider value={entryService}>
-                    <Component />
-                </EntryServiceProvider>
+            ReactDom.render(composeElements(
+                <ServicesProvider value={services} />,
+                <Component />,
             ), container);
             await immediate();
         });
@@ -61,10 +67,9 @@ describe('useBlobUrl() hook', () => {
         expect(revokeObjectURL).not.toHaveBeenCalled();
         expect(url).toBe('blob:abc');
         await TestUtils.act(async () => {
-            ReactDom.render((
-                <EntryServiceProvider value={entryService}>
-                    <Component type={'text/plain'} />
-                </EntryServiceProvider>
+            ReactDom.render(composeElements(
+                <ServicesProvider value={services} />,
+                <Component type={'text/plain'} />,
             ), container);
             await immediate();
         });

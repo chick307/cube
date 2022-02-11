@@ -1,23 +1,36 @@
 import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-import { EventController } from '../../common/utils/event-controller';
-import { KeyboardServiceProvider } from '../contexts/keyboard-service-context';
-import { KeyboardService, KeyboardServiceEvent } from '../services/keyboard-service';
+import type { EventController } from '../../common/utils/event-controller';
+import type { KeyboardService, KeyboardServiceEvent } from '../services/keyboard-service';
 import { createKeyboardService } from '../services/keyboard-service.test-helper';
+import { composeElements } from '../utils/compose-elements';
 import { useKeyDown } from './use-key-down';
+import { ServiceProvider, ServicesProvider } from './use-service';
 
 let container: HTMLElement;
 
-let keyDownEventController: EventController<KeyboardServiceEvent>;
+let controllers: {
+    keyDownEventController: EventController<KeyboardServiceEvent>;
+};
 
-let keyboardService: KeyboardService;
+let services: {
+    keyboardService: KeyboardService;
+};
 
 beforeEach(() => {
     container = document.createElement('div');
     document.body.appendChild(container);
 
-    ({ keyDownEventController, keyboardService } = createKeyboardService());
+    const { keyDownEventController, keyboardService } = createKeyboardService();
+
+    controllers = {
+        keyDownEventController,
+    };
+
+    services = {
+        keyboardService,
+    };
 });
 
 afterEach(() => {
@@ -25,8 +38,8 @@ afterEach(() => {
     container.remove();
     container = null!;
 
-    keyDownEventController = null!;
-    keyboardService = null!;
+    controllers = null!;
+    services = null!;
 });
 
 describe('useKeyDown() hook', () => {
@@ -37,15 +50,14 @@ describe('useKeyDown() hook', () => {
             return <></>;
         };
         TestUtils.act(() => {
-            ReactDom.render((
-                <KeyboardServiceProvider value={keyboardService}>
-                    <Component />
-                </KeyboardServiceProvider>
+            ReactDom.render(composeElements(
+                <ServicesProvider value={services} />,
+                <Component />,
             ), container);
         });
         expect(listener).not.toHaveBeenCalled();
         const event = { key: 'A' };
-        keyDownEventController.emit(event);
+        controllers.keyDownEventController.emit(event);
         await Promise.resolve();
         expect(listener).toHaveBeenCalledTimes(1);
         expect(listener).toHaveBeenCalledWith(event);
@@ -60,28 +72,26 @@ describe('useKeyDown() hook', () => {
             return <></>;
         };
         TestUtils.act(() => {
-            ReactDom.render((
-                <KeyboardServiceProvider value={keyboardService}>
-                    <Component value={0} />
-                </KeyboardServiceProvider>
+            ReactDom.render(composeElements(
+                <ServicesProvider value={services} />,
+                <Component value={0} />,
             ), container);
         });
         expect(listener).not.toHaveBeenCalled();
         const event = { key: 'A' };
-        keyDownEventController.emit(event);
+        controllers.keyDownEventController.emit(event);
         await Promise.resolve();
         expect(listener).toHaveBeenCalledTimes(1);
         expect(listener).toHaveBeenCalledWith(0, event);
         listener.mockClear();
         TestUtils.act(() => {
-            ReactDom.render((
-                <KeyboardServiceProvider value={keyboardService}>
-                    <Component value={123} />
-                </KeyboardServiceProvider>
+            ReactDom.render(composeElements(
+                <ServicesProvider value={services} />,
+                <Component value={123} />,
             ), container);
         });
         expect(listener).not.toHaveBeenCalled();
-        keyDownEventController.emit(event);
+        controllers.keyDownEventController.emit(event);
         await Promise.resolve();
         expect(listener).toHaveBeenCalledTimes(1);
         expect(listener).toHaveBeenCalledWith(123, event);
@@ -98,18 +108,14 @@ describe('useKeyDown() hook', () => {
             return <></>;
         };
         TestUtils.act(() => {
-            ReactDom.render(<Component value={0} />, container);
+            ReactDom.render(composeElements(
+                <ServiceProvider name="keyboardService" value={null} />,
+                <Component value={0} />,
+            ), container);
         });
         expect(listener).not.toHaveBeenCalled();
         const event = { key: 'A' };
-        keyDownEventController.emit(event);
-        await Promise.resolve();
-        expect(listener).not.toHaveBeenCalled();
-        TestUtils.act(() => {
-            ReactDom.render(<Component value={123} />, container);
-        });
-        expect(listener).not.toHaveBeenCalled();
-        keyDownEventController.emit(event);
+        controllers.keyDownEventController.emit(event);
         await Promise.resolve();
         expect(listener).not.toHaveBeenCalled();
     });

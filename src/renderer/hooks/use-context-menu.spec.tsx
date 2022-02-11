@@ -1,8 +1,9 @@
 import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
+import { composeElements } from '../utils/compose-elements';
 
-import { ContextMenuServiceProvider } from '../contexts/context-menu-service-context';
 import { useContextMenu } from './use-context-menu';
+import { ServicesProvider } from './use-service';
 
 let container: HTMLElement;
 
@@ -21,16 +22,15 @@ describe('useContextMenu() hook', () => {
     test('it returns a component', () => {
         const popupContextMenu = jest.fn();
         const contextMenuService = { popupContextMenu };
+        const services = { contextMenuService };
         const Component = () => {
             const ContextMenu = useContextMenu(() => [
                 { label: 'A' },
             ], []);
-            return (
-                <ContextMenuServiceProvider value={contextMenuService}>
-                    <ContextMenu>
-                        <div id="content" />
-                    </ContextMenu>
-                </ContextMenuServiceProvider>
+            return composeElements(
+                <ServicesProvider value={services} />,
+                <ContextMenu />,
+                <div id="content" />,
             );
         };
         TestUtils.act(() => {
