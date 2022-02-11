@@ -7,6 +7,7 @@ import { createContainer, createFactory } from '../../common/utils/create-contai
 import { TabView } from '../components/tab/tab-view';
 import { TabControllerImpl } from '../controllers/tab-controller';
 import { HistoryControllerFactoryImpl } from '../factories/history-controller-factory';
+import { ViewerControllerFactoryImpl } from '../factories/viewer-controller-factory';
 import { ServicesProvider } from '../hooks/use-service';
 import { useTask } from '../hooks/use-task';
 import { ApplicationServiceImpl } from '../services/application-service';
@@ -48,6 +49,7 @@ const MainWindow = () => {
             mainChannelService: MainChannelServiceImpl,
             messagePort: createFactory(() => port),
             tabController: TabControllerImpl,
+            viewerControllerFactory: ViewerControllerFactoryImpl,
             viewerService: ViewerServiceImpl,
             zipEntryService: ZipEntryServiceImpl,
         });
