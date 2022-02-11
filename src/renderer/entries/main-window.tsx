@@ -14,6 +14,7 @@ import { TabControllerProvider } from '../contexts/tab-controller-context';
 import { ViewerServiceProvider } from '../contexts/viewer-service-context';
 import { TabControllerImpl } from '../controllers/tab-controller';
 import { HistoryControllerFactoryImpl } from '../factories/history-controller-factory';
+import { ServicesProvider } from '../hooks/use-service';
 import { useTask } from '../hooks/use-task';
 import { ApplicationServiceImpl } from '../services/application-service';
 import { ContextMenuServiceImpl } from '../services/context-menu-service';
@@ -72,6 +73,7 @@ const MainWindow = () => {
         return null;
 
     return composeElements(
+        <ServicesProvider value={container} />,
         <ContextMenuServiceProvider value={container.contextMenuService} />,
         <EntryIconServiceProvider value={container.entryIconService} />,
         <EntryServiceProvider value={container.entryService} />,
