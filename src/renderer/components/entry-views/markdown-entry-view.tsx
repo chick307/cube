@@ -9,10 +9,11 @@ import type { FileEntry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
 import { HistoryItem } from '../../../common/entities/history-item';
 import { EntryPath } from '../../../common/values/entry-path';
-import { useEntryService } from '../../contexts/entry-service-context';
-import { useHistoryController } from '../../contexts/history-controller-context';
+import type { HistoryController } from '../../controllers/history-controller';
 import { useEntryText } from '../../hooks/use-entry-text';
+import { useService } from '../../hooks/use-service';
 import { useTask } from '../../hooks/use-task';
+import type { EntryService } from '../../services/entry-service';
 import { Highlight } from '../highlight';
 import styles from './markdown-entry-view.css';
 
@@ -25,8 +26,8 @@ export type Props = {
 export const MarkdownEntryView = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
 
-    const entryService = useEntryService();
-    const historyController = useHistoryController();
+    const entryService = useService('entryService');
+    const historyController = useService('historyController');
 
     const baseUrl = `file://${entry.path.toString()}`;
 
@@ -110,3 +111,13 @@ export const MarkdownEntryView = (props: Props) => {
         </div>
     );
 };
+
+declare module '../../hooks/use-service' {
+    interface Services {
+        'components/entry-views/markdown-entry-view': {
+            entryService: EntryService;
+
+            historyController: HistoryController;
+        };
+    }
+}

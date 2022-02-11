@@ -1,7 +1,8 @@
 import type { FileEntry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
-import { useEntryService } from '../../contexts/entry-service-context';
+import { useService } from '../../hooks/use-service';
 import { useTask } from '../../hooks/use-task';
+import type { EntryService } from '../../services/entry-service';
 import styles from './binary-entry-view.css';
 
 export type Props = {
@@ -13,7 +14,7 @@ export type Props = {
 export const BinaryEntryView = (props: Props) => {
     const { className, entry, fileSystem } = props;
 
-    const entryService = useEntryService();
+    const entryService = useService('entryService');
 
     const [text = ''] = useTask(async (signal) => {
         const buffer = await entryService.readFile({ entry, fileSystem, signal });
@@ -38,3 +39,11 @@ export const BinaryEntryView = (props: Props) => {
         </div>
     );
 };
+
+declare module '../../hooks/use-service' {
+    interface Services {
+        'components/entry-views/binary-entry-view': {
+            entryService: EntryService;
+        };
+    }
+}

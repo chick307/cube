@@ -1,11 +1,12 @@
 import React from 'react';
 
-import { useTabController } from '../../contexts/tab-controller-context';
+import type { TabController } from '../../controllers/tab-controller';
+import { useService } from '../../hooks/use-service';
 import { PlusSmallIcon } from '../icons';
 import styles from './tab-add-button.css';
 
 export const TabAddButton = () => {
-    const tabController = useTabController();
+    const tabController = useService('tabController');
 
     const className = `${styles.tabAddButton}`;
 
@@ -20,3 +21,11 @@ export const TabAddButton = () => {
         </button>
     );
 };
+
+declare module '../../hooks/use-service' {
+    interface Services {
+        'components/tab/tab-add-button': {
+            tabController: TabController;
+        };
+    }
+}

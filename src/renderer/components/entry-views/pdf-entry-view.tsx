@@ -9,10 +9,11 @@ import {
     PdfViewerPageDisplay,
     PdfViewerState,
 } from '../../../common/values/viewer-state/pdf-viewer-state';
-import { useHistoryController } from '../../contexts/history-controller-context';
+import type { HistoryController } from '../../controllers/history-controller';
 import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
 import { useBlobUrl } from '../../hooks/use-blob-url';
 import { useKeyDown } from '../../hooks/use-key-down';
+import { useService } from '../../hooks/use-service';
 import { useTask } from '../../hooks/use-task';
 import { StatusBarSelect } from '../status-bar/status-bar-select';
 import { StatusBarSpace } from '../status-bar/status-bar-space';
@@ -45,7 +46,7 @@ const docCache = new WeakMap<PdfDocumentProxy, {
 export const PdfEntryView = (props: Props) => {
     const { className = '', entry, fileSystem, direction: selectedDirection, pageDisplay } = props;
 
-    const historyController = useHistoryController();
+    const historyController = useService('historyController');
 
     const StatusBarGateway = useStatusBarGateway();
 
@@ -217,3 +218,11 @@ export const PdfEntryView = (props: Props) => {
         </div>
     );
 };
+
+declare module '../../hooks/use-service' {
+    interface Services {
+        'components/entry-views/pdf-entry-view': {
+            historyController: HistoryController;
+        };
+    }
+}

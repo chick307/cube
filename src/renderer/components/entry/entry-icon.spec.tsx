@@ -5,9 +5,8 @@ import { DummyEntry } from '../../../common/entities/entry.test-helper';
 import { DummyFileSystem } from '../../../common/entities/file-system.test-helper';
 import { immediate } from '../../../common/utils/immediate';
 import { EntryPath } from '../../../common/values/entry-path';
-import { EntryIconServiceProvider } from '../../contexts/entry-icon-service-context';
-import { EntryServiceProvider } from '../../contexts/entry-service-context';
-import { LocalEntryServiceProvider } from '../../contexts/local-entry-service-context';
+import { ServicesProvider } from '../../hooks/use-service';
+import { EntryIconService } from '../../services/entry-icon-service';
 import { createEntryIconService } from '../../services/entry-icon-service.test-helper';
 import type { EntryService } from '../../services/entry-service';
 import { createEntryService } from '../../services/entry-service.test-helper';
@@ -16,23 +15,33 @@ import { createLocalEntryService } from '../../services/local-entry-service.test
 import { composeElements } from '../../utils/compose-elements';
 import { EntryIcon } from './entry-icon';
 
-const { entryIconService } = createEntryIconService();
-
 let container: HTMLElement;
 
-let entryService: EntryService;
+let services: {
+    entryIconService: EntryIconService;
 
-let localEntryService: LocalEntryService;
+    entryService: EntryService;
+
+    localEntryService: LocalEntryService;
+};
 
 beforeEach(() => {
     container = document.createElement('div');
     document.body.appendChild(container);
 
-    ({ entryService } = createEntryService());
-    ({ localEntryService } = createLocalEntryService());
+    const { entryIconService } = createEntryIconService();
 
+    const { entryService } = createEntryService();
+
+    const { localEntryService } = createLocalEntryService();
     const homeDirectoryEntry = new DummyEntry(new EntryPath('/home'));
     jest.spyOn(localEntryService, 'getHomeDirectoryEntry').mockReturnValue(homeDirectoryEntry as any);
+
+    services = {
+        entryIconService,
+        entryService,
+        localEntryService,
+    };
 });
 
 afterEach(() => {
@@ -40,8 +49,7 @@ afterEach(() => {
     container.remove();
     container = null!;
 
-    entryService = null!;
-    localEntryService = null!;
+    services = null!;
 });
 
 describe('EntryIcon component', () => {
@@ -49,16 +57,14 @@ describe('EntryIcon component', () => {
         const entryPath = new EntryPath('/a/b');
         const entry = new DummyEntry(entryPath);
         const fileSystem = new DummyFileSystem();
-        const createEntryFromPath = jest.spyOn(entryService, 'createEntryFromPath');
+        const createEntryFromPath = jest.spyOn(services.entryService, 'createEntryFromPath');
         createEntryFromPath.mockReturnValue(Promise.resolve(entry));
-        const getEntryIconUrl = jest.spyOn(entryIconService, 'getEntryIconUrl');
+        const getEntryIconUrl = jest.spyOn(services.entryIconService, 'getEntryIconUrl');
         getEntryIconUrl.mockReturnValue(Promise.resolve('data:image/png;base64,AAAA'));
         const iconPlaceholder = <></>;
         const Component = () => {
             return composeElements(
-                <EntryServiceProvider value={entryService} />,
-                <LocalEntryServiceProvider value={localEntryService} />,
-                <EntryIconServiceProvider value={entryIconService} />,
+                <ServicesProvider value={services} />,
                 <EntryIcon className={'icon'} {...{ entryPath, fileSystem, iconPlaceholder }} />,
             );
         };
@@ -79,18 +85,16 @@ describe('EntryIcon component', () => {
         const entry = new DummyEntry(entryPath);
         const fileSystem = new DummyFileSystem();
         let resolve: (url: string) => void = () => {};
-        const createEntryFromPath = jest.spyOn(entryService, 'createEntryFromPath');
+        const createEntryFromPath = jest.spyOn(services.entryService, 'createEntryFromPath');
         createEntryFromPath.mockReturnValue(Promise.resolve(entry));
-        const getEntryIconUrl = jest.spyOn(entryIconService, 'getEntryIconUrl');
+        const getEntryIconUrl = jest.spyOn(services.entryIconService, 'getEntryIconUrl');
         getEntryIconUrl.mockReturnValue(new Promise((r) => {
             resolve = r;
         }));
         const iconPlaceholder = <div className={'placeholder'}>PLACEHOLDER</div>;
         const Component = () => {
             return composeElements(
-                <EntryServiceProvider value={entryService} />,
-                <LocalEntryServiceProvider value={localEntryService} />,
-                <EntryIconServiceProvider value={entryIconService} />,
+                <ServicesProvider value={services} />,
                 <EntryIcon className={'icon'} {...{ entryPath, fileSystem, iconPlaceholder }} />,
             );
         };
@@ -115,9 +119,7 @@ describe('EntryIcon component', () => {
         const src = 'data:image/png;base64,CCCC';
         const Component = () => {
             return composeElements(
-                <EntryServiceProvider value={entryService} />,
-                <LocalEntryServiceProvider value={localEntryService} />,
-                <EntryIconServiceProvider value={entryIconService} />,
+                <ServicesProvider value={services} />,
                 <EntryIcon className={'icon'} {...{ entryPath, fileSystem, iconPlaceholder, src }} />,
             );
         };

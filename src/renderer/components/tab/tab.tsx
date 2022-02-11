@@ -1,8 +1,8 @@
 import React from 'react';
 
 import type { HistoryItem } from '../../../common/entities/history-item';
-import { useTabController } from '../../contexts/tab-controller-context';
-import type { TabState } from '../../controllers/tab-controller';
+import type { TabController, TabState } from '../../controllers/tab-controller';
+import { useService } from '../../hooks/use-service';
 import { composeElements } from '../../utils/compose-elements';
 import { EntryIcon } from '../entry/entry-icon';
 import { EntryDropArea } from '../entry/entry-drop-area';
@@ -18,7 +18,7 @@ export type Props = {
 export const Tab = (props: Props) => {
     const { tab } = props;
 
-    const tabController = useTabController();
+    const tabController = useService('tabController');
 
     const className = `${styles.tab} ${tab.active ? styles.active : ''}`;
 
@@ -86,3 +86,11 @@ export const Tab = (props: Props) => {
         </div>,
     );
 };
+
+declare module '../../hooks/use-service' {
+    interface Services {
+        'components/tab/tab': {
+            tabController: TabController;
+        };
+    }
+}

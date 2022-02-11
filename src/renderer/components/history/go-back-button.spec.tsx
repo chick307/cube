@@ -7,8 +7,8 @@ import { DummyFileSystem } from '../../../common/entities/file-system.test-helpe
 import { HistoryItem } from '../../../common/entities/history-item';
 import { immediate } from '../../../common/utils/immediate';
 import { State } from '../../../common/utils/restate';
-import { HistoryControllerProvider } from '../../contexts/history-controller-context';
 import type { HistoryController, HistoryControllerState } from '../../controllers/history-controller';
+import { ServicesProvider } from '../../hooks/use-service';
 import { composeElements } from '../../utils/compose-elements';
 import buttonStyles from '../button.css';
 import { GoBackButton } from './go-back-button';
@@ -61,9 +61,10 @@ describe('GoBackButton component', () => {
         });
         const goBack = jest.spyOn(historyController, 'goBack');
         await immediate();
+        const services = { historyController };
         const Component = () => {
             return composeElements(
-                <HistoryControllerProvider value={historyController} />,
+                <ServicesProvider value={services} />,
                 <GoBackButton />,
             );
         };
@@ -84,12 +85,13 @@ describe('GoBackButton component', () => {
         });
         const goBack = jest.spyOn(historyController, 'goBack');
         await immediate();
+        const services = { historyController };
         const Component = () => {
             const onClick: React.MouseEventHandler<HTMLButtonElement> = (event) => {
                 event.preventDefault();
             };
             return composeElements(
-                <HistoryControllerProvider value={historyController} />,
+                <ServicesProvider value={services} />,
                 <GoBackButton onClick={onClick} />,
             );
         };

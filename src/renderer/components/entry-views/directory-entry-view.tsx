@@ -4,11 +4,12 @@ import type { DirectoryEntry, Entry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
 import { HistoryItem } from '../../../common/entities/history-item';
 import { DirectoryViewerState } from '../../../common/values/viewer-state';
-import { useEntryService } from '../../contexts/entry-service-context';
-import { useHistoryController } from '../../contexts/history-controller-context';
+import type { HistoryController } from '../../controllers/history-controller';
 import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
 import { useContextMenu } from '../../hooks/use-context-menu';
+import { useService } from '../../hooks/use-service';
 import { useTask } from '../../hooks/use-task';
+import type { EntryService } from '../../services/entry-service';
 import { EntryDraggable } from '../entry/entry-draggable';
 import { EntryIcon } from '../entry/entry-icon';
 import styles from './directory-entry-view.css';
@@ -28,7 +29,7 @@ const DirectoryItemView = (props: {
 }) => {
     const { entry, fileSystem } = props;
 
-    const historyController = useHistoryController();
+    const historyController = useService('historyController');
 
     const itemRef = React.useRef<HTMLElement>(null);
 
@@ -53,7 +54,7 @@ export const DirectoryEntryView = (props: Props) => {
 
     const { hiddenEntriesVisible } = viewerState;
 
-    const entryService = useEntryService();
+    const entryService = useService('entryService');
 
     const [allEntries = []] = useTask(async (signal) => {
         const allEntries = await entryService.readDirectory({ entry, fileSystem, signal });
@@ -83,7 +84,7 @@ export const DirectoryEntryView = (props: Props) => {
 
     const StatusBarGateway = useStatusBarGateway();
 
-    const historyController = useHistoryController();
+    const historyController = useService('historyController');
 
     const ItemCountContextMenu = useContextMenu(() => {
         return [
@@ -128,3 +129,13 @@ export const DirectoryEntryView = (props: Props) => {
         </div>
     );
 };
+
+declare module '../../hooks/use-service' {
+    interface Services {
+        'components/entry-views/directory-entry-view': {
+            entryService: EntryService;
+
+            historyController: HistoryController;
+        };
+    }
+}

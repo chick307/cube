@@ -4,11 +4,12 @@ import type { DirectoryEntry, FileEntry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
 import { HistoryItem } from '../../../common/entities/history-item';
 import { ComicViewerPageDisplay, ComicViewerState } from '../../../common/values/viewer-state/comic-viewer-state';
-import { useEntryService } from '../../contexts/entry-service-context';
-import { useHistoryController } from '../../contexts/history-controller-context';
+import type { HistoryController } from '../../controllers/history-controller';
 import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
 import { useKeyDown } from '../../hooks/use-key-down';
+import { useService } from '../../hooks/use-service';
 import { useTask } from '../../hooks/use-task';
+import type { EntryService } from '../../services/entry-service';
 import { EntryDraggable, EntryDragImage } from '../entry/entry-draggable';
 import { EntryIcon } from '../entry/entry-icon';
 import { StatusBarSelect } from '../status-bar/status-bar-select';
@@ -25,8 +26,9 @@ export type Props = {
 export const ComicEntryView = (props: Props) => {
     const { className = '', entry, fileSystem, pageDisplay } = props;
 
-    const historyController = useHistoryController();
-    const entryService = useEntryService();
+    const entryService = useService('entryService');
+    const historyController = useService('historyController');
+
     const StatusBarGateway = useStatusBarGateway();
 
     const [pages] = useTask(async (signal) => {
@@ -176,3 +178,13 @@ export const ComicEntryView = (props: Props) => {
         </div>
     );
 };
+
+declare module '../../hooks/use-service' {
+    interface Services {
+        'components/entry-views/comic-entry-view': {
+            entryService: EntryService;
+
+            historyController: HistoryController;
+        };
+    }
+}
