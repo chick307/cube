@@ -14,6 +14,7 @@ import styles from './tab-view.module.css';
 import { TabViewContextMenu } from './tab-view-context-menu';
 import { TabViewDragOverIndicator } from './tab-view-drag-over-indicator';
 import { KeyboardServiceProvider, useKeyboardService } from '../../contexts/keyboard-service-context';
+import { ServicesProvider } from '../../hooks/use-service';
 
 export type Props = {
     className?: string;
@@ -32,6 +33,7 @@ export const TabView = (props: Props) => {
     const contents = React.useMemo(() => tabs.map((tab) => {
         return composeElements(
             <div key={tab.id} className={`${styles.content} ${tab.active ? styles.active : ''}`} />,
+            <ServicesProvider value={tab.services} />,
             <HistoryControllerProvider value={tab.historyController} />,
             <KeyboardServiceProvider value={tab.active ? keyboardService : null}/>,
             <EntryView />,
