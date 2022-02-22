@@ -65,6 +65,7 @@ module.exports = {
             /* eslint-disable-next-line @typescript-eslint/naming-convention */
             SwitchCase: 1,
             flatTernaryExpressions: true,
+            ignoredNodes: ['TSConditionalType *'],
         }],
         '@typescript-eslint/member-delimiter-style': ['error', {
             multiline: { delimiter: 'semi', requireLast: true },

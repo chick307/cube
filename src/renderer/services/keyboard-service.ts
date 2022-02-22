@@ -1,4 +1,4 @@
-import { EventController, EventSignal } from "../../common/utils/event-controller";
+import { EventController, EventSignal } from '../../common/utils/event-controller';
 
 export type KeyboardService = {
     onKeyDown: EventSignal<KeyboardServiceEvent>;
