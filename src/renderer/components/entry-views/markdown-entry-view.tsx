@@ -1,7 +1,7 @@
 import dompurify from 'dompurify';
 import { shell } from 'electron';
 import { JSDOM } from 'jsdom';
-import marked from 'marked';
+import { marked } from 'marked';
 import React from 'react';
 import ReactDomServer from 'react-dom/server';
 
