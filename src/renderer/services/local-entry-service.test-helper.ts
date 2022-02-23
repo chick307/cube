@@ -7,7 +7,7 @@ rejectedPromise.catch(() => {});
 export const createLocalEntryService = () => {
     const localEntryService: LocalEntryService = {
         createEntryFromPath: () => rejectedPromise,
-        getHomeDirectoryEntry: () => DirectoryEntry.fromJson({ path: '/home' }),
+        getHomeDirectoryEntry: () => DirectoryEntry.fromJson({ type: 'directory', path: '/home' }),
         readDirectory: () => rejectedPromise,
         readFile: () => rejectedPromise,
         readLink: () => rejectedPromise,
