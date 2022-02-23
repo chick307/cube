@@ -102,7 +102,7 @@ describe('EntryIcon component', () => {
             ReactDom.render(<Component />, container);
             await immediate();
         });
-        expect(container.querySelector('.icon')).toBeNull();
+        expect(container.querySelector('.icon > img')).toBeNull();
         expect(container.querySelector('.placeholder')?.textContent).toBe('PLACEHOLDER');
         await TestUtils.act(async () => {
             resolve('data:image/png;base64,BBBB');

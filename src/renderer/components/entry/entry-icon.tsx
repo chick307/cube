@@ -68,8 +68,13 @@ export const EntryIcon = (props: Props) => {
         );
     }
 
-    if (iconUrl == null)
-        return <>{iconPlaceholder}</>;
+    if (iconUrl == null) {
+        return (
+            <span {...{ className, ...spanProps }}>
+                {iconPlaceholder}
+            </span>
+        );
+    }
 
     return (
         <span {...{ className, ...spanProps }}>
