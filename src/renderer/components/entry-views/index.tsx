@@ -1,7 +1,6 @@
 export { BinaryEntryView } from './binary-entry-view';
 export { ComicEntryView } from './comic-entry-view';
 export { CssEntryView } from './css-entry-view';
-export { DirectoryEntryView } from './directory-entry-view';
 export { ImageEntryView } from './image-entry-view';
 export { JavaScriptEntryView } from './javascript-entry-view';
 export { MarkdownEntryView } from './markdown-entry-view';
