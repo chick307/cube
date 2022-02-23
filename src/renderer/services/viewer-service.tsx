@@ -5,6 +5,7 @@ import { CloseSignal } from '../../common/utils/close-controller';
 import { EntryPath } from '../../common/values/entry-path';
 import * as ViewerStates from '../../common/values/viewer-state';
 import * as EntryViews from '../components/entry-views';
+import * as Viewers from '../components/viewers';
 import type { EntryService } from './entry-service';
 
 export type ViewerService = {
@@ -73,10 +74,9 @@ const directoryViewer: Viewer = {
     render(historyItem: HistoryItem) {
         if (!historyItem.entry.isDirectory() && !historyItem.entry.isSymbolicLink())
             return null;
-        const entry = historyItem.entry as DirectoryEntry;
-        const { fileSystem } = historyItem;
+        const { entry, fileSystem } = historyItem;
         const viewerState = historyItem.viewerState as ViewerStates.DirectoryViewerState;
-        return <EntryViews.DirectoryEntryView {...{ entry, fileSystem, viewerState }} />;
+        return <Viewers.DirectoryViewer {...{ entry, fileSystem, viewerState }} />;
     },
 };
 
@@ -110,10 +110,9 @@ const zipViewer: Viewer = {
     render(historyItem: HistoryItem) {
         if (!historyItem.entry.isDirectory() && !historyItem.entry.isSymbolicLink())
             return null;
-        const entry = historyItem.entry as DirectoryEntry;
-        const { fileSystem } = historyItem;
+        const { entry, fileSystem } = historyItem;
         const viewerState = historyItem.viewerState as ViewerStates.DirectoryViewerState;
-        return <EntryViews.DirectoryEntryView {...{ entry, fileSystem, viewerState }} />;
+        return <Viewers.DirectoryViewer {...{ entry, fileSystem, viewerState }} />;
     },
 };
 
