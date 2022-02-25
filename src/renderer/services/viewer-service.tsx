@@ -56,10 +56,12 @@ const symbolicLinkViewer: Viewer = {
         const viewerState = new ViewerStates.SymbolicLinkViewerState();
         return new HistoryItem({ ...historyItem, viewerState });
     },
-    render({ entry, fileSystem }: HistoryItem) {
+    render(historyItem: HistoryItem) {
+        const { entry, fileSystem } = historyItem;
         if (!entry.isSymbolicLink())
             return null;
-        return <EntryViews.SymbolicLinkEntryView {...{ entry: entry as SymbolicLinkEntry, fileSystem }} />;
+        const viewerState = historyItem.viewerState as ViewerStates.SymbolicLinkViewerState;
+        return <Viewers.SymbolicLinkViewer {...{ entry, fileSystem, viewerState }} />;
     },
 };
 
