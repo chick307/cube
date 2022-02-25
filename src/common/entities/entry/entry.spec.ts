@@ -42,6 +42,10 @@ describe('Entry class', () => {
             expect(entryB.equals(new DummyEntry(new EntryPath('/a/b')))).toBe(true);
             expect(entryA.equals(entryB)).toBe(false);
             expect(entryB.equals(entryA)).toBe(false);
+            expect(entryA.equals(null)).toBe(false);
+            expect(entryA.equals(undefined)).toBe(false);
+            expect(entryB.equals(null)).toBe(false);
+            expect(entryB.equals(undefined)).toBe(false);
         });
     });
 

@@ -35,6 +35,10 @@ describe('FileEntry class', () => {
             expect(fileEntryB.equals(entryA)).toBe(false);
             expect(fileEntryB.equals(entryB)).toBe(false);
             expect(fileEntryB.equals(fileEntryA)).toBe(false);
+            expect(fileEntryA.equals(null)).toBe(false);
+            expect(fileEntryA.equals(undefined)).toBe(false);
+            expect(fileEntryB.equals(null)).toBe(false);
+            expect(fileEntryB.equals(undefined)).toBe(false);
         });
     });
 

@@ -35,6 +35,10 @@ describe('DirectoryEntry class', () => {
             expect(directoryEntryB.equals(entryA)).toBe(false);
             expect(directoryEntryB.equals(entryB)).toBe(false);
             expect(directoryEntryB.equals(directoryEntryA)).toBe(false);
+            expect(directoryEntryA.equals(null)).toBe(false);
+            expect(directoryEntryA.equals(undefined)).toBe(false);
+            expect(directoryEntryB.equals(null)).toBe(false);
+            expect(directoryEntryB.equals(undefined)).toBe(false);
         });
     });
 

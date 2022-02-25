@@ -17,7 +17,9 @@ export class FileSystem {
         throw Error();
     }
 
-    equals(otherFileSystem: FileSystem): boolean {
+    equals(otherFileSystem: FileSystem | null | undefined): boolean {
+        if (otherFileSystem == null)
+            return false;
         return this === otherFileSystem;
     }
 

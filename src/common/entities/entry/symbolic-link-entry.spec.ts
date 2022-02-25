@@ -35,6 +35,10 @@ describe('SymbolicLinkEntry class', () => {
             expect(symbolicLinkEntryB.equals(entryA)).toBe(false);
             expect(symbolicLinkEntryB.equals(entryB)).toBe(false);
             expect(symbolicLinkEntryB.equals(symbolicLinkEntryA)).toBe(false);
+            expect(symbolicLinkEntryA.equals(null)).toBe(false);
+            expect(symbolicLinkEntryA.equals(undefined)).toBe(false);
+            expect(symbolicLinkEntryB.equals(null)).toBe(false);
+            expect(symbolicLinkEntryB.equals(undefined)).toBe(false);
         });
     });
 

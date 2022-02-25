@@ -20,7 +20,7 @@ export class LocalFileSystem extends FileSystem {
         return new LocalFileSystem();
     }
 
-    equals(otherFileSystem: FileSystem): boolean {
+    equals(otherFileSystem: FileSystem | null | undefined): boolean {
         return otherFileSystem instanceof LocalFileSystem && otherFileSystem.type === this.type;
     }
 

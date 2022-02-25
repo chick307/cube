@@ -33,7 +33,9 @@ export abstract class Entry {
         throw Error();
     }
 
-    equals(otherEntry: Entry): boolean {
+    equals(otherEntry: Entry | null | undefined): boolean {
+        if (otherEntry == null)
+            return false;
         return this.path.equals(otherEntry.path);
     }
 
