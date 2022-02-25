@@ -1,10 +1,12 @@
-.view {}
+.symbolic-link-viewer {
+    /**/
+}
 
 .link-string {
     margin: 1em;
 }
 
-.dest-container {
+.linked-entry {
     display: flex;
     margin: 0 1em 1em;
     align-items: center;
@@ -15,20 +17,14 @@
     height: 16px;
 }
 
-.icon-container {
+.linked-entry-icon {
     display: inline-block;
     margin: 0 0.5em;
     height: 16px;
     cursor: pointer;
 }
 
-.icon-placeholder {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-}
-
-.dest-path {
+.linked-entry-path {
     display: inline-block;
     line-height: 16px;
     cursor: pointer;
