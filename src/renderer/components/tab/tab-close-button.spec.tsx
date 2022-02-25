@@ -1,11 +1,11 @@
 import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-import { TabControllerProvider } from '../../contexts/tab-controller-context';
 import { createTabController } from '../../controllers/tab-controller.test-helper';
 import { composeElements } from '../../utils/compose-elements';
 import styles from './tab-close-button.css';
 import { TabCloseButton } from './tab-close-button';
+import { ServicesProvider } from '../../hooks/use-service';
 
 let container: HTMLElement;
 
@@ -27,9 +27,10 @@ afterEach(() => {
 describe('TabCloseButton component', () => {
     test('it renders an element with the passed class name', async () => {
         const { tabController } = createTabController();
+        const services = { tabController };
         const Component = () => {
             return composeElements(
-                <TabControllerProvider value={tabController} />,
+                <ServicesProvider value={services} />,
                 <TabCloseButton className={'class-name'} tabId={123} />,
             );
         };
@@ -43,9 +44,10 @@ describe('TabCloseButton component', () => {
     test('it calls tabContoller.removeTab() method when clicked', async () => {
         const { tabController } = createTabController();
         const removeTab = jest.spyOn(tabController, 'removeTab');
+        const services = { tabController };
         const Component = () => {
             return composeElements(
-                <TabControllerProvider value={tabController} />,
+                <ServicesProvider value={services} />,
                 <TabCloseButton tabId={123} />,
             );
         };

@@ -3,7 +3,8 @@ import React from 'react';
 import { Entry } from '../../../common/entities/entry';
 import { FileSystem } from '../../../common/entities/file-system';
 import { EntryPath } from '../../../common/values/entry-path';
-import { useLocalEntryService } from '../../contexts/local-entry-service-context';
+import { useService } from '../../hooks/use-service';
+import type { LocalEntryService } from '../../services/local-entry-service';
 import { ChevronRightSmallIcon, MoreHorizontalIcon } from '../icons';
 import { EntryDraggable, EntryDragImage } from './entry-draggable';
 import { EntryIcon } from './entry-icon';
@@ -26,7 +27,7 @@ const shrinkIndicator = (
 export const EntryPathView = (props: Props) => {
     const { entry, fileSystem } = props;
 
-    const localEntryService = useLocalEntryService();
+    const localEntryService = useService('localEntryService');
 
     const viewRef = React.useRef<HTMLDivElement>(null);
     const contentRef = React.useRef<HTMLDivElement>(null);
@@ -161,3 +162,11 @@ export const EntryPathView = (props: Props) => {
         </div>
     );
 };
+
+declare module '../../hooks/use-service' {
+    interface Services {
+        'components/entry/entry-path-view': {
+            localEntryService: LocalEntryService;
+        };
+    }
+}

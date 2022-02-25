@@ -1,5 +1,7 @@
 import React from 'react';
-import { useTabController } from '../../contexts/tab-controller-context';
+
+import { TabController } from '../../controllers/tab-controller';
+import { useService } from '../../hooks/use-service';
 import { XSmallIcon } from '../icons';
 import styles from './tab-close-button.css';
 
@@ -9,7 +11,7 @@ export type Props = {
 };
 
 export const TabCloseButton = (props: Props) => {
-    const tabController = useTabController();
+    const tabController = useService('tabController');
 
     const { tabId } = props;
 
@@ -25,3 +27,11 @@ export const TabCloseButton = (props: Props) => {
         </button>
     );
 };
+
+declare module '../../hooks/use-service' {
+    interface Services {
+        'components/tab/tab-close-button': {
+            tabController: TabController;
+        };
+    }
+}

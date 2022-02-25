@@ -1,9 +1,10 @@
 import React from 'react';
 
 import type { HistoryItem } from '../../../common/entities/history-item';
-import { HistoryControllerProvider } from '../../contexts/history-controller-context';
-import { useTabController } from '../../contexts/tab-controller-context';
+import type { TabController } from '../../controllers/tab-controller';
 import { useRestate } from '../../hooks/use-restate';
+import { ServiceProvider, ServicesProvider, useService } from '../../hooks/use-service';
+import type { KeyboardService } from '../../services/keyboard-service';
 import { composeElements } from '../../utils/compose-elements';
 import { EntryDropArea } from '../entry/entry-drop-area';
 import { EntryView } from '../entry/entry-view';
@@ -13,15 +14,14 @@ import { TabAddButton } from './tab-add-button';
 import styles from './tab-view.module.css';
 import { TabViewContextMenu } from './tab-view-context-menu';
 import { TabViewDragOverIndicator } from './tab-view-drag-over-indicator';
-import { KeyboardServiceProvider, useKeyboardService } from '../../contexts/keyboard-service-context';
 
 export type Props = {
     className?: string;
 };
 
 export const TabView = (props: Props) => {
-    const keyboardService = useKeyboardService();
-    const tabController = useTabController();
+    const keyboardService = useService('keyboardService');
+    const tabController = useService('tabController');
 
     const { tabs } = useRestate(tabController.state);
 
@@ -32,8 +32,8 @@ export const TabView = (props: Props) => {
     const contents = React.useMemo(() => tabs.map((tab) => {
         return composeElements(
             <div key={tab.id} className={`${styles.content} ${tab.active ? styles.active : ''}`} />,
-            <HistoryControllerProvider value={tab.historyController} />,
-            <KeyboardServiceProvider value={tab.active ? keyboardService : null}/>,
+            <ServicesProvider value={tab.services} />,
+            <ServiceProvider name={'keyboardService'} value={tab.active ? keyboardService : null} />,
             <EntryView />,
         );
     }), [tabs]);
@@ -72,3 +72,13 @@ export const TabView = (props: Props) => {
         </div>
     );
 };
+
+declare module '../../hooks/use-service' {
+    interface Services {
+        'components/tab/tab-view': {
+            keyboardService: KeyboardService | null;
+
+            tabController: TabController;
+        };
+    }
+}

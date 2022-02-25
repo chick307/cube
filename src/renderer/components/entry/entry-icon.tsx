@@ -2,10 +2,11 @@ import React from 'react';
 
 import type { FileSystem } from '../../../common/entities/file-system';
 import type { EntryPath } from '../../../common/values/entry-path';
-import { useEntryIconService } from '../../contexts/entry-icon-service-context';
-import { useEntryService } from '../../contexts/entry-service-context';
-import { useLocalEntryService } from '../../contexts/local-entry-service-context';
+import { useService } from '../../hooks/use-service';
 import { useTask } from '../../hooks/use-task';
+import type { EntryIconService } from '../../services/entry-icon-service';
+import type { EntryService } from '../../services/entry-service';
+import type { LocalEntryService } from '../../services/local-entry-service';
 import { HomeIcon, MonitorIcon, ZipFolderIcon } from '../icons';
 import styles from './entry-icon.module.css';
 
@@ -29,10 +30,9 @@ export const EntryIcon = (props: Props) => {
         ...spanProps
     } = props;
 
-    const entryService = useEntryService();
-    const localEntryService = useLocalEntryService();
-
-    const entryIconService = useEntryIconService();
+    const entryIconService = useService('entryIconService');
+    const entryService = useService('entryService');
+    const localEntryService = useService('localEntryService');
 
     const homeDirectory = React.useMemo(() => localEntryService.getHomeDirectoryEntry(), [localEntryService]);
 
@@ -77,3 +77,15 @@ export const EntryIcon = (props: Props) => {
         </span>
     );
 };
+
+declare module '../../hooks/use-service' {
+    interface Services {
+        'components/entry/entry-icon': {
+            entryIconService: EntryIconService;
+
+            entryService: EntryService;
+
+            localEntryService: LocalEntryService;
+        };
+    }
+}

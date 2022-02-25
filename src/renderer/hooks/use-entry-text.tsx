@@ -1,6 +1,7 @@
 import type { FileEntry } from '../../common/entities/entry';
-import { FileSystem } from '../../common/entities/file-system';
-import { useEntryService } from '../contexts/entry-service-context';
+import type { FileSystem } from '../../common/entities/file-system';
+import type { EntryService } from '../services/entry-service';
+import { useService } from './use-service';
 import { useTask } from './use-task';
 
 export type Params = {
@@ -11,7 +12,7 @@ export type Params = {
 export const useEntryText = (params: Params) => {
     const { entry, fileSystem } = params;
 
-    const entryService = useEntryService();
+    const entryService = useService('entryService');
 
     const [text = null] = useTask(async (signal) => {
         const buffer = await entryService.readFile({ entry, fileSystem, signal });
@@ -21,3 +22,11 @@ export const useEntryText = (params: Params) => {
 
     return text;
 };
+
+declare module './use-service' {
+    interface Services {
+        'hooks/use-entry-text': {
+            entryService: EntryService;
+        };
+    }
+}

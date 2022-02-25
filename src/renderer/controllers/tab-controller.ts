@@ -5,12 +5,14 @@ import { CloseController } from '../../common/utils/close-controller';
 import { EventController, EventSignal } from '../../common/utils/event-controller';
 import { Restate, State } from '../../common/utils/restate';
 import type { HistoryControllerFactory } from '../factories/history-controller-factory';
+import type { ServiceTypes } from '../hooks/use-service';
 import type { HistoryController } from './history-controller';
 
 export type TabState = {
     active: boolean;
     historyController: HistoryController;
     id: number;
+    services: Partial<ServiceTypes>;
     title: string;
 };
 
@@ -80,6 +82,7 @@ type InternalState = {
         closeController: CloseController;
         historyController: HistoryController;
         id: number;
+        services: Partial<ServiceTypes>;
         title: string;
     }[];
 };
@@ -114,6 +117,7 @@ export class TabControllerImpl implements TabController {
                 active: tab.active,
                 historyController: tab.historyController,
                 id: tab.id,
+                services: tab.services,
                 title: tab.title,
             })),
         }));
@@ -196,7 +200,14 @@ export class TabControllerImpl implements TabController {
                 tabs: state.tabs.map((tab) => tab.id !== id ? tab : ({ ...tab, title })),
             }));
         }, { signal: closeController.signal });
-        const tab = { active: false, closeController, historyController, id, title: titleState.current };
+        const tab = {
+            active: false,
+            closeController,
+            historyController,
+            id,
+            services: { historyController },
+            title: titleState.current,
+        };
         return { idCounter, tab };
     }
 

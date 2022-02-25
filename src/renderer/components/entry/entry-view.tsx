@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { useHistoryController } from '../../contexts/history-controller-context';
-import { useViewerService } from '../../contexts/viewer-service-context';
+import type { HistoryController } from '../../controllers/history-controller';
 import { useStatusBar } from '../../gateways/status-bar-gateway';
 import { useRestate } from '../../hooks/use-restate';
+import { useService } from '../../hooks/use-service';
 import { useTask } from '../../hooks/use-task';
-import type { Viewer } from '../../services/viewer-service';
+import type { Viewer, ViewerService } from '../../services/viewer-service';
 import { Button } from '../button';
 import { GoBackButton } from '../history/go-back-button';
 import { GoForwardButton } from '../history/go-forward-button';
@@ -21,9 +21,9 @@ export type Props = {
 export const EntryView = (props: Props) => {
     const { className = '' } = props;
 
-    const viewerService = useViewerService();
+    const viewerService = useService('viewerService');
 
-    const historyController = useHistoryController();
+    const historyController = useService('historyController');
 
     const { current: historyItem } = useRestate(historyController.state);
 
@@ -101,3 +101,13 @@ export const EntryView = (props: Props) => {
         </div>
     );
 };
+
+declare module '../../hooks/use-service' {
+    interface Services {
+        'components/entry/entry-view': {
+            historyController: HistoryController;
+
+            viewerService: ViewerService;
+        };
+    }
+}

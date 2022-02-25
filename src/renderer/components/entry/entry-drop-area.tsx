@@ -4,7 +4,8 @@ import { Entry } from '../../../common/entities/entry';
 import { FileSystem } from '../../../common/entities/file-system';
 import { HistoryItem } from '../../../common/entities/history-item';
 import { EntryPath } from '../../../common/values/entry-path';
-import { useLocalEntryService } from '../../contexts/local-entry-service-context';
+import { useService } from '../../hooks/use-service';
+import type { LocalEntryService } from '../../services/local-entry-service';
 import styles from './entry-drop-area.module.css';
 
 export type Props = {
@@ -18,7 +19,7 @@ export type Props = {
 export const EntryDropArea = (props: Props) => {
     const { children, dragOverClassName, onEntryDrop } = props;
 
-    const localEntryService = useLocalEntryService();
+    const localEntryService = useService('localEntryService');
 
     const dragOverRef = React.useRef(false);
 
@@ -94,3 +95,11 @@ export const EntryDropArea = (props: Props) => {
         </div>
     );
 };
+
+declare module '../../hooks/use-service' {
+    interface Services {
+        'components/entry/entry-drop-area': {
+            localEntryService: LocalEntryService;
+        };
+    }
+}

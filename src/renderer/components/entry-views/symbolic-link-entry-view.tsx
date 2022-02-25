@@ -3,9 +3,10 @@ import React from 'react';
 import type { SymbolicLinkEntry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
 import { HistoryItem } from '../../../common/entities/history-item';
-import { useEntryService } from '../../contexts/entry-service-context';
-import { useHistoryController } from '../../contexts/history-controller-context';
+import type { HistoryController } from '../../controllers/history-controller';
+import { useService } from '../../hooks/use-service';
 import { useTask } from '../../hooks/use-task';
+import type { EntryService } from '../../services/entry-service';
 import { EntryIcon } from '../entry/entry-icon';
 import styles from './symbolic-link-entry-view.css';
 
@@ -22,9 +23,9 @@ export type Props = {
 export const SymbolicLinkEntryView = (props: Props) => {
     const { className = '', entry, fileSystem } = props;
 
-    const entryService = useEntryService();
+    const entryService = useService('entryService');
 
-    const historyController = useHistoryController();
+    const historyController = useService('historyController');
 
     const [link] = useTask(async (signal) => {
         const link = await entryService.readLink({ entry, fileSystem, signal });
@@ -59,3 +60,13 @@ export const SymbolicLinkEntryView = (props: Props) => {
         </div>
     );
 };
+
+declare module '../../hooks/use-service' {
+    interface Services {
+        'components/entry-views/symbolic-link-entry-view': {
+            entryService: EntryService;
+
+            historyController: HistoryController;
+        };
+    }
+}

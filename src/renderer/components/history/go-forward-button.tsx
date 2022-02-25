@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { useHistoryController } from '../../contexts/history-controller-context';
+import type { HistoryController } from '../../controllers/history-controller';
 import { useRestate } from '../../hooks/use-restate';
+import { useService } from '../../hooks/use-service';
 import { Button, Props as ButtonProps } from '../button';
 import { ArrowRightIcon } from '../icons';
 import styles from './go-forward-button.module.css';
@@ -23,7 +24,7 @@ export const GoForwardButton = (props: Props) => {
         ...buttonProps
     } = props;
 
-    const historyController = useHistoryController();
+    const historyController = useService('historyController');
 
     const { ableToGoForward } = useRestate(historyController.state);
 
@@ -44,3 +45,11 @@ export const GoForwardButton = (props: Props) => {
         <Button {...{ className, disabled, onClick, children, ...buttonProps }} />
     </>;
 };
+
+declare module '../../hooks/use-service' {
+    interface Services {
+        'components/history/go-forward-button': {
+            historyContorller: HistoryController;
+        };
+    }
+}

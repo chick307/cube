@@ -1,5 +1,6 @@
-import { useTabController } from '../../contexts/tab-controller-context';
+import type { TabController } from '../../controllers/tab-controller';
 import { useContextMenu } from '../../hooks/use-context-menu';
+import { useService } from '../../hooks/use-service';
 
 export type Props = {
     children?: React.ReactNode;
@@ -9,7 +10,7 @@ export type Props = {
 export const TabContextMenu = (props: Props) => {
     const { children, tabId } = props;
 
-    const tabController = useTabController();
+    const tabController = useService('tabController');
 
     const ContextMenu = useContextMenu(() => {
         return [
@@ -37,3 +38,11 @@ export const TabContextMenu = (props: Props) => {
         </ContextMenu>
     );
 };
+
+declare module '../../hooks/use-service' {
+    interface Services {
+        'components/tab/tab-context-menu': {
+            tabController: TabController;
+        };
+    }
+}

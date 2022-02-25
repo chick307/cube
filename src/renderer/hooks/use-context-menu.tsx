@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { useContextMenuService } from '../contexts/context-menu-service-context';
-import { ContextMenuItemTemplate } from '../services/context-menu-service';
+import { ContextMenuItemTemplate, ContextMenuService } from '../services/context-menu-service';
 import styles from './use-context-menu.css';
+import { useService } from './use-service';
 
 export type Props = {
     children?: React.ReactNode;
@@ -19,7 +19,7 @@ export const useContextMenu = (
     const ContextMenu = React.useCallback((props: Props) => {
         const { children } = props;
 
-        const contextMenuService = useContextMenuService();
+        const contextMenuService = useService('contextMenuService');
 
         const onContextMenu = React.useCallback((event: React.MouseEvent) => {
             event.preventDefault();
@@ -39,3 +39,11 @@ export const useContextMenu = (
 
     return ContextMenu;
 };
+
+declare module './use-service' {
+    interface Services {
+        'hooks/use-context-menu': {
+            contextMenuService: ContextMenuService;
+        };
+    }
+}

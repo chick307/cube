@@ -1,10 +1,9 @@
 import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-import { ContextMenuServiceProvider } from '../../contexts/context-menu-service-context';
-import { TabControllerProvider } from '../../contexts/tab-controller-context';
 import { createTabController } from '../../controllers/tab-controller.test-helper';
 import { createContextMenuService } from '../../hooks/use-context-menu.test-helper';
+import { ServicesProvider } from '../../hooks/use-service';
 import { composeElements } from '../../utils/compose-elements';
 import { TabContextMenu } from './tab-context-menu';
 
@@ -30,10 +29,10 @@ describe('TabContextMenu component', () => {
         const { clickContextMenuItem, contextMenuService } = createContextMenuService();
         const { tabController } = createTabController();
         const addTab = jest.spyOn(tabController, 'addTab');
+        const services = { contextMenuService, tabController };
         const Component = () => {
             return composeElements(
-                <ContextMenuServiceProvider value={contextMenuService} />,
-                <TabControllerProvider value={tabController} />,
+                <ServicesProvider value={services} />,
                 <TabContextMenu tabId={123} />,
                 <div id="content" />,
             );
@@ -51,10 +50,10 @@ describe('TabContextMenu component', () => {
         const { clickContextMenuItem, contextMenuService } = createContextMenuService();
         const { tabController } = createTabController();
         const removeTab = jest.spyOn(tabController, 'removeTab');
+        const services = { contextMenuService, tabController };
         const Component = () => {
             return composeElements(
-                <ContextMenuServiceProvider value={contextMenuService} />,
-                <TabControllerProvider value={tabController} />,
+                <ServicesProvider value={services} />,
                 <TabContextMenu tabId={123} />,
                 <div id="content" />,
             );
