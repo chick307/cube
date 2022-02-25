@@ -11,6 +11,8 @@ export type SymbolicLinkViewerController = {
     readonly state: State<SymbolicLinkViewerControllerState>;
 
     initialize(params: InitializeParams): void;
+
+    openLink(): void;
 };
 
 export type SymbolicLinkViewerControllerState = {
