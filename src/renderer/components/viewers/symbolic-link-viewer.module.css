@@ -1,0 +1,35 @@
+.symbolic-link-viewer {
+    /**/
+}
+
+.link-string {
+    margin: 1em;
+}
+
+.linked-entry {
+    display: flex;
+    margin: 0 1em 1em;
+    align-items: center;
+}
+
+.arrow {
+    display: inline-block;
+    height: 16px;
+}
+
+.linked-entry-icon {
+    display: inline-block;
+    margin: 0 0.5em;
+    height: 16px;
+    cursor: pointer;
+}
+
+.linked-entry-path {
+    display: inline-block;
+    line-height: 16px;
+    cursor: pointer;
+
+    @nest .icon-container:hover + &, &:hover {
+        text-decoration: underline;
+    }
+}
