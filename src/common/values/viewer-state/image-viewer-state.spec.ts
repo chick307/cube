@@ -1,4 +1,4 @@
-import { ImageViewerState } from '.';
+import { ImageViewerState } from '../viewer-state';
 
 describe('ImageViewerState class', () => {
     describe('ImageViewerState.fromJson() method', () => {

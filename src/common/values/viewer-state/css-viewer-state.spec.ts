@@ -1,4 +1,4 @@
-import { CssViewerState } from '.';
+import { CssViewerState } from '../viewer-state';
 
 describe('CssViewerState class', () => {
     describe('CssViewerState.fromJson() method', () => {

@@ -1,4 +1,4 @@
-import { JavaScriptViewerState } from '.';
+import { JavaScriptViewerState } from '../viewer-state';
 
 describe('JavaScriptViewerState class', () => {
     describe('JavaScriptViewerState.fromJson() method', () => {

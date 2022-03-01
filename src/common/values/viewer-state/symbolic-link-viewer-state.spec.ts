@@ -1,4 +1,4 @@
-import { SymbolicLinkViewerState } from '.';
+import { SymbolicLinkViewerState } from '../viewer-state';
 
 describe('SymbolicLinkViewerState class', () => {
     describe('SymbolicLinkViewerState.fromJson() method', () => {

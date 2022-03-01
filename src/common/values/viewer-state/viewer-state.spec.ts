@@ -1,4 +1,4 @@
-import * as ViewerStates from '.';
+import * as ViewerStates from '../viewer-state';
 
 describe('ViewerState class', () => {
     describe('ViewerState.fromJson() method', () => {

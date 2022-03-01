@@ -1,4 +1,4 @@
-import { MarkdownViewerState } from '.';
+import { MarkdownViewerState } from '../viewer-state';
 
 describe('MarkdownViewerState class', () => {
     describe('MarkdownViewerState.fromJson() method', () => {

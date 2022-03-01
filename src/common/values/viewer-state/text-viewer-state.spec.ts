@@ -1,4 +1,4 @@
-import { TextViewerState } from '.';
+import { TextViewerState } from '../viewer-state';
 
 describe('TextViewerState class', () => {
     describe('TextViewerState.fromJson() method', () => {

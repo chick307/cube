@@ -1,4 +1,4 @@
-import { ViewerState } from '.';
+import { ViewerState } from '../viewer-state';
 import { viewerStateTypes } from './viewer-state';
 
 export class DummyViewerState extends ViewerState {

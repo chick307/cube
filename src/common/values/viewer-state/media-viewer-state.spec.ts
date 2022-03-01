@@ -1,4 +1,4 @@
-import { MediaViewerState } from '.';
+import { MediaViewerState } from '../viewer-state';
 
 describe('MediaViewerState class', () => {
     describe('MediaViewerState.fromJson() method', () => {
