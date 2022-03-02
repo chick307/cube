@@ -155,6 +155,7 @@ module.exports = {
         'quotes': ['error', 'single', { allowTemplateLiterals: true, avoidEscape: true }],
         'radix': ['error'],
         'react/jsx-curly-spacing': ['error', { children: true, when: 'never' }],
+        'react/prop-types': ['off'],
         'react/react-in-jsx-scope': ['off'],
         'rest-spread-spacing': ['error', 'never'],
         'semi': ['error'],

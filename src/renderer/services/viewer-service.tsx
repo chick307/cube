@@ -1,4 +1,4 @@
-import { DirectoryEntry, Entry, FileEntry, SymbolicLinkEntry } from '../../common/entities/entry';
+import { DirectoryEntry, Entry, FileEntry } from '../../common/entities/entry';
 import { FileSystem, ZipFileSystem } from '../../common/entities/file-system';
 import { HistoryItem } from '../../common/entities/history-item';
 import { CloseSignal } from '../../common/utils/close-controller';

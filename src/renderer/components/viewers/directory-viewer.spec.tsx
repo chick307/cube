@@ -1,7 +1,6 @@
 import ReactDom from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-import { DirectoryEntry } from '../../../common/entities/entry';
 import { createEntryMap } from '../../../common/entities/entry.test-helper';
 import { DummyFileSystem } from '../../../common/entities/file-system.test-helper';
 import { immediate } from '../../../common/utils/immediate';
@@ -37,7 +36,7 @@ const entries = createEntryMap([
 const fileSystem = new DummyFileSystem();
 
 let services: {
-    _viewerController: DirectoryViewerController;
+    $viewerController: DirectoryViewerController;
 
     contextMenuService: ContextMenuService;
 
@@ -77,7 +76,7 @@ beforeEach(() => {
     const { localEntryService } = createLocalEntryService();
 
     const viewerControllerFactory: DirectoryViewerControllerFactory = {
-        createDirectoryViewerController: () => _viewerController,
+        createDirectoryViewerController: () => $viewerController,
     };
 
     const restate = new Restate<DirectoryViewerControllerState>({
@@ -88,7 +87,7 @@ beforeEach(() => {
         randomItemOpenable: false,
     });
 
-    const _viewerController: DirectoryViewerController = {
+    const $viewerController: DirectoryViewerController = {
         state: restate.state,
         initialize: () => {},
         openItem: () => {},
@@ -102,7 +101,7 @@ beforeEach(() => {
     };
 
     services = {
-        _viewerController,
+        $viewerController,
         contextMenuService,
         entryIconService,
         entryService,
@@ -123,7 +122,7 @@ afterEach(() => {
 
 describe('DirectoryViewer component', () => {
     test('it displays the directory items', async () => {
-        const initialize = jest.spyOn(services._viewerController, 'initialize');
+        const initialize = jest.spyOn(services.$viewerController, 'initialize');
         const entry = entries.get('/a')!;
         const viewerState = new DirectoryViewerState();
         const Component = () => {
@@ -175,7 +174,7 @@ describe('DirectoryViewer component', () => {
     });
 
     test('it opens the directory items when double-clicked', async () => {
-        const openItem = jest.spyOn(services._viewerController, 'openItem');
+        const openItem = jest.spyOn(services.$viewerController, 'openItem');
         const entry = entries.get('/a')!;
         const viewerState = new DirectoryViewerState();
         const Component = () => {
@@ -214,7 +213,7 @@ describe('DirectoryViewer component', () => {
     });
 
     test('it does nothing if out of the list items is double-clicked', async () => {
-        const openItem = jest.spyOn(services._viewerController, 'openItem');
+        const openItem = jest.spyOn(services.$viewerController, 'openItem');
         const entry = entries.get('/a')!;
         const viewerState = new DirectoryViewerState();
         const Component = () => {
@@ -251,7 +250,7 @@ describe('DirectoryViewer component', () => {
     });
 
     test('it opens a random item if context menu item clicked', async () => {
-        const openRandomItem = jest.spyOn(services._viewerController, 'openRandomItem');
+        const openRandomItem = jest.spyOn(services.$viewerController, 'openRandomItem');
         const entry = entries.get('/a')!;
         const viewerState = new DirectoryViewerState();
         const Component = () => {
@@ -288,7 +287,7 @@ describe('DirectoryViewer component', () => {
     });
 
     test('it toggles the hidden entries visible if context menu item clicked', async () => {
-        const toggleHiddenEntryVisible = jest.spyOn(services._viewerController, 'toggleHiddenEntryVisible');
+        const toggleHiddenEntryVisible = jest.spyOn(services.$viewerController, 'toggleHiddenEntryVisible');
         const entry = entries.get('/a')!;
         const viewerState = new DirectoryViewerState();
         const Component = () => {

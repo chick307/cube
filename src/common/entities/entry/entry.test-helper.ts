@@ -20,7 +20,7 @@ export const createEntryMap = (paths: string[]): Map<string, Entry> => {
             entries.set(pathString, new DirectoryEntry(new EntryPath(pathString)));
         } else {
             let parentPath = path;
-            while ((parentPath = parentPath.replace(/\/[^\/]+?$/, '')) !== '') {
+            while ((parentPath = parentPath.replace(/\/[^/]+?$/, '')) !== '') {
                 const parentEntry = entries.get(parentPath);
                 if (parentEntry != null) {
                     if (parentEntry.isDirectory())
