@@ -1,0 +1,8 @@
+.markdown-link {
+    color: #0099FF;
+    text-decoration: none;
+}
+
+.markdown-link:hover {
+    text-decoration: underline;
+}

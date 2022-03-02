@@ -1,0 +1,12 @@
+.markdown-code {
+    border-radius: 4px;
+
+    @nest &code {
+        padding: 2px 4px;
+    }
+
+    @nest pre > &code {
+        padding: 8px;
+        line-height: 1.5;
+    }
+}

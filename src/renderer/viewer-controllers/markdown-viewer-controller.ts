@@ -180,7 +180,6 @@ export class MarkdownViewerControllerImpl implements MarkdownViewerController {
     #update(callback: (state: InternalState) => InternalState): void {
         this.#restate.update((previousState) => {
             const state = callback(previousState);
-            const { } = state;
 
             return {
                 ...state,

@@ -1,0 +1,6 @@
+.markdown-blockquote {
+    margin: 1em;
+    border-left: 4px solid #888;
+    padding-left: calc(40px - 1em - 4px);
+    overflow: hidden;
+}
