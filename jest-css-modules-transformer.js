@@ -1,9 +1,9 @@
-const path = require('path');
+import path from 'node:path';
 
-const postcss = require('postcss');
-const selectorParser = require('postcss-selector-parser');
+import postcss from 'postcss';
+import selectorParser from 'postcss-selector-parser';
 
-module.exports = {
+export default {
     process(src, filePath) {
         const root = postcss.parse(src);
 
@@ -20,7 +20,8 @@ module.exports = {
         });
 
         const exports = {};
-        const prefix = path.relative(__dirname, filePath).replace(/\.css$/, '--');
+        const rootDir = path.dirname(new URL(import.meta.url).pathname);
+        const prefix = path.relative(rootDir, filePath).replace(/(?:\.module)?\.css$/, '--').replaceAll(/[^\w]/g, '-');
         for (const n of names) {
             exports[n] = prefix + n;
             exports[n.replaceAll(/-+(\w)/g, (_, c) => c.toUpperCase())] = prefix + n;

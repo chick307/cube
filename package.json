@@ -74,10 +74,11 @@
     "build:prod:mac:x64": "npm run build:prod:webpack && electron-builder --mac --x64",
     "build:prod:mac:arm64": "npm run build:prod:webpack && electron-builder --mac --arm64",
     "build:prod:webpack": "webpack --config webpack.prod.js",
-    "coverage": "jest --collect-coverage",
-    "lint": "eslint --ext .js,.ts,.tsx .",
-    "start:dev": "electron dist/webpack/dev/entries/main.js",
-    "test": "jest",
+    "coverage": "NODE_OPTIONS=--experimental-vm-modules jest --collect-coverage",
+    "lint": "eslint --ext .cjs,.js,.ts,.tsx .",
+    "start:dev": "electron dist/webpack/dev/entries/main.cjs",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "watch": "webpack --config webpack.dev.js --watch"
-  }
+  },
+  "type": "module"
 }

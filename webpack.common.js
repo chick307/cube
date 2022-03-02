@@ -1,12 +1,12 @@
-const path = require('path');
+import path from 'path';
 
-const CopyPlugin = require('copy-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const webpack = require('webpack');
+import CopyPlugin from 'copy-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import webpack from 'webpack';
 
 const common = (options) => {
     return {
-        context: __dirname,
+        context: path.resolve(new URL(import.meta.url).pathname, '..'),
         devtool: options.devtool,
         entry: {},
         mode: options.mode,
@@ -22,7 +22,7 @@ const common = (options) => {
             ],
         },
         output: {
-            filename: path.join('entries', '[name].js'),
+            filename: path.join('entries', '[name].cjs'),
             path: options.path,
         },
         plugins: [
@@ -50,7 +50,7 @@ const electronCommon = (options) => {
                 ...base.module.rules,
                 {
                     exclude: [
-                        path.resolve(__dirname, 'node_modules'),
+                        path.resolve(new URL(import.meta.url).pathname, '../node_modules'),
                     ],
                     test: /\.tsx?$/,
                     use: [
@@ -154,7 +154,7 @@ const assets = (options) => {
     };
 };
 
-module.exports = (options) => {
+export const config = (options) => {
     return [
         electronMain(options),
         electronRenderer(options),

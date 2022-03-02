@@ -1,8 +1,8 @@
-const path = require('path');
+import path from 'path';
 
-const config = require('./webpack.common.js');
+import { config } from './webpack.common.js';
 
-module.exports = config({
+export default config({
     mode: 'production',
-    path: path.resolve(__dirname, 'dist/webpack/prod'),
+    path: path.resolve(new URL(import.meta.url).pathname, '../dist/webpack/prod'),
 });
