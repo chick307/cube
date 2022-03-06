@@ -3,7 +3,6 @@ export { ComicEntryView } from './entry-views/comic-entry-view';
 export { CssEntryView } from './entry-views/css-entry-view';
 export { ImageEntryView } from './entry-views/image-entry-view';
 export { JavaScriptEntryView } from './entry-views/javascript-entry-view';
-export { MarkdownEntryView } from './entry-views/markdown-entry-view';
 export { MediaEntryView } from './entry-views/media-entry-view';
 export { PdfEntryView } from './entry-views/pdf-entry-view';
 export { TextEntryView } from './entry-views/text-entry-view';
