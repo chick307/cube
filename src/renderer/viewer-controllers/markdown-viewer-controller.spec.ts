@@ -5,6 +5,7 @@ import { DummyFileSystem } from '../../common/entities/file-system.test-helper';
 import { HistoryItem } from '../../common/entities/history-item';
 import { Closed, CloseSignal } from '../../common/utils/close-controller';
 import { immediate } from '../../common/utils/immediate';
+import { Point } from '../../common/values/point';
 import { MarkdownViewerState } from '../../common/values/viewer-state';
 import type { HistoryController } from '../controllers/history-controller';
 import { createHistoryController } from '../controllers/history-controller.test-helper';
@@ -89,6 +90,7 @@ afterEach(() => {
 });
 
 const defaultState: MarkdownViewerControllerState = {
+    scrollPosition: new Point(0, 0),
     tree: null,
 };
 
@@ -131,6 +133,27 @@ describe('MarkdownViewerControllerImpl class', () => {
             expect(controller.state.current).toEqual({
                 ...defaultState,
                 tree: previousTree,
+            });
+        });
+
+        test('it updates the state of the viewer', async () => {
+            const controller = new MarkdownViewerControllerImpl({ ...services });
+            const entry = entries.get('/a.md')!;
+            const viewerStateA = new MarkdownViewerState({ scrollPosition: new Point(0, 0) });
+            const viewerStateB = new MarkdownViewerState({ scrollPosition: new Point(0, 100) });
+            controller.initialize({ entry, fileSystem, viewerState: viewerStateA });
+            await immediate();
+            expect(controller.state.current).toEqual({
+                ...defaultState,
+                scrollPosition: new Point(0, 0),
+                tree: expect.any(Object),
+            });
+            controller.initialize({ entry, fileSystem, viewerState: viewerStateB });
+            await immediate();
+            expect(controller.state.current).toEqual({
+                ...defaultState,
+                scrollPosition: new Point(0, 100),
+                tree: expect.any(Object),
             });
         });
     });
@@ -305,6 +328,41 @@ describe('MarkdownViewerControllerImpl class', () => {
             expect(createEntryFromPathParams.signal?.closed).toBe(true);
             deferred.reject(new Closed());
             await immediate();
+        });
+    });
+
+    describe('markdownViewerController.scrollTo() method', () => {
+        test('it replaces the history item', async () => {
+            const replace = jest.spyOn(services.historyController, 'replace');
+            const controller = new MarkdownViewerControllerImpl({ ...services });
+            const entry = entries.get('/a.md')!;
+            const viewerStateA = new MarkdownViewerState();
+            controller.initialize({ entry, fileSystem, viewerState: viewerStateA });
+            await immediate();
+            expect(replace).not.toHaveBeenCalled();
+            controller.scrollTo({ position: new Point(100, 200) });
+            const viewerStateB = new MarkdownViewerState({ scrollPosition: new Point(100, 200) });
+            expect(replace).toHaveBeenCalledTimes(1);
+            expect(replace).toHaveBeenCalledWith(new HistoryItem({ entry, fileSystem, viewerState: viewerStateB }));
+        });
+
+        test('it does nothing if the passed position is the same as the current position', async () => {
+            const replace = jest.spyOn(services.historyController, 'replace');
+            const controller = new MarkdownViewerControllerImpl({ ...services });
+            const entry = entries.get('/a.md')!;
+            const viewerState = new MarkdownViewerState({ scrollPosition: new Point(0, 0) });
+            controller.initialize({ entry, fileSystem, viewerState });
+            await immediate();
+            expect(replace).not.toHaveBeenCalled();
+            controller.scrollTo({ position: new Point(0, 0) });
+            expect(replace).not.toHaveBeenCalled();
+        });
+
+        test('it does nothing before initialization', async () => {
+            const replace = jest.spyOn(services.historyController, 'replace');
+            const controller = new MarkdownViewerControllerImpl({ ...services });
+            controller.scrollTo({ position: new Point(100, 200) });
+            expect(replace).not.toHaveBeenCalled();
         });
     });
 });

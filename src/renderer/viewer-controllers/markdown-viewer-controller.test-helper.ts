@@ -1,8 +1,10 @@
 import { Restate } from '../../common/utils/restate';
+import { Point } from '../../common/values/point';
 import { MarkdownViewerController, MarkdownViewerControllerState } from './markdown-viewer-controller';
 
 export const createMarkdownViewerController = () => {
     const markdownViewerControllerRestate = new Restate<MarkdownViewerControllerState>({
+        scrollPosition: new Point(0, 0),
         tree: null,
     });
 
@@ -11,6 +13,7 @@ export const createMarkdownViewerController = () => {
         initialize: () => {},
         loadImage: async () => null,
         openLink: () => {},
+        scrollTo: () => {},
     };
 
     return {

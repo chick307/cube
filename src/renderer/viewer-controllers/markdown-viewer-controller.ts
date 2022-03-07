@@ -16,6 +16,7 @@ import { HistoryItem } from '../../common/entities/history-item';
 import { CloseController, CloseSignal } from '../../common/utils/close-controller';
 import { Restate, State } from '../../common/utils/restate';
 import { EntryPath } from '../../common/values/entry-path';
+import { Point } from '../../common/values/point';
 import { MarkdownViewerState } from '../../common/values/viewer-state';
 import type { HistoryController } from '../controllers/history-controller';
 import { TabController } from '../controllers/tab-controller';
@@ -29,9 +30,13 @@ export type MarkdownViewerController = {
     loadImage(params: LoadImageParams): Promise<Blob | null>;
 
     openLink(params: OpenLinkParams): void;
+
+    scrollTo(params: ScrollToParams): void;
 };
 
 export type MarkdownViewerControllerState = {
+    readonly scrollPosition: Point;
+
     readonly tree: Root | null;
 };
 
@@ -51,6 +56,10 @@ export type OpenLinkParams = {
     readonly inNewTab: boolean;
 
     readonly href: string;
+};
+
+export type ScrollToParams = {
+    readonly position: Point;
 };
 
 type InternalState = {
@@ -118,8 +127,10 @@ export class MarkdownViewerControllerImpl implements MarkdownViewerController {
         this.#restate = new Restate<InternalState>(initialState);
 
         this.#state = this.#restate.state.map((state) => {
-            const { tree } = state;
+            const { tree, viewerState } = state;
+            const { scrollPosition } = viewerState;
             return {
+                scrollPosition,
                 tree,
             };
         });
@@ -262,5 +273,21 @@ export class MarkdownViewerControllerImpl implements MarkdownViewerController {
         })().catch(() => {
             //
         });
+    }
+
+    scrollTo(params: ScrollToParams): void {
+        const entry = this.#entry;
+        if (entry == null)
+            return;
+
+        const { position } = params;
+        const markdownViewerState = this.#viewerState as MarkdownViewerState;
+        if (markdownViewerState.scrollPosition.equals(position))
+            return;
+        const fileSystem = this.#fileSystem as FileSystem;
+        const viewerState = markdownViewerState.setScrollPosition(position);
+        this.#viewerState = viewerState;
+        const historyItem = new HistoryItem({ entry, fileSystem, viewerState });
+        this.#historyController.replace(historyItem);
     }
 }
