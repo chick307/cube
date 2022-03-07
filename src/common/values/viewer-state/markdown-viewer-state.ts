@@ -1,11 +1,23 @@
+import { Point, PointJson } from '../point';
 import { ViewerState, viewerStateTypes } from './viewer-state';
 
 export type MarkdownViewerStateJson = {
     type: 'markdown';
+
+    scrollPosition?: PointJson | null | undefined;
 };
 
 export class MarkdownViewerState extends ViewerState {
+    readonly scrollPosition: Point;
+
     readonly type = 'markdown';
+
+    constructor(params?: {
+        readonly scrollPosition?: Point | null | undefined;
+    }) {
+        super();
+        this.scrollPosition = params?.scrollPosition ?? new Point(0, 0);
+    }
 
     static fromJson(json: MarkdownViewerStateJson): MarkdownViewerState;
 
@@ -15,13 +27,21 @@ export class MarkdownViewerState extends ViewerState {
     static fromJson(json: any): MarkdownViewerState {
         if (json == null || json.type !== 'markdown')
             throw Error();
-        const markdownViewerState = new MarkdownViewerState();
+        const scrollPosition = json.scrollPosition == null ? null : Point.fromJson(json.scrollPosition);
+        const markdownViewerState = new MarkdownViewerState({ scrollPosition });
         return markdownViewerState;
+    }
+
+    setScrollPosition(position: Point): MarkdownViewerState {
+        return new MarkdownViewerState({
+            scrollPosition: position,
+        });
     }
 
     override toJson(): MarkdownViewerStateJson {
         return {
             type: 'markdown',
+            scrollPosition: this.scrollPosition.toJson(),
         };
     }
 }
