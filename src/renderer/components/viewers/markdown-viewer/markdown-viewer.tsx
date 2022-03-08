@@ -6,6 +6,7 @@ import { unified } from 'unified';
 
 import type { Entry } from '../../../../common/entities/entry';
 import type { FileSystem } from '../../../../common/entities/file-system';
+import { Point } from '../../../../common/values/point';
 import type { MarkdownViewerState } from '../../../../common/values/viewer-state';
 import type { HistoryController } from '../../../controllers/history-controller';
 import type { TabController } from '../../../controllers/tab-controller';
@@ -50,7 +51,10 @@ export const MarkdownViewer = (props: Props) => {
 
     viewerController.initialize({ entry, fileSystem, viewerState });
 
+    const viewerElementRef = React.useRef<HTMLDivElement>(null);
+
     const {
+        scrollPosition,
         tree,
     } = useRestate(viewerController.state);
 
@@ -84,8 +88,48 @@ export const MarkdownViewer = (props: Props) => {
         return element;
     }, [tree]);
 
+    // save scroll position
+    React.useEffect(() => {
+        const viewerElement = viewerElementRef.current as HTMLDivElement;
+        const container = viewerElement?.offsetParent as HTMLElement | null | undefined;
+        if (container == null)
+            return;
+
+        let saving: ReturnType<typeof setTimeout> | null = null;
+
+        const handleScroll = () => {
+            if (saving !== null)
+                clearTimeout(saving);
+            saving = setTimeout(() => {
+                const position = new Point(container.scrollLeft, container.scrollTop);
+                viewerController.scrollTo({ position });
+            }, 100);
+        };
+
+        container.addEventListener('scroll', handleScroll, { passive: true });
+
+        return () => {
+            container.removeEventListener('scroll', handleScroll);
+            if (saving != null)
+                clearTimeout(saving);
+        };
+    }, [viewerController]);
+
+    // restore scroll position
+    React.useEffect(() => {
+        // return if not rendered yet
+        if (markdownElement == null)
+            return;
+
+        const viewerElement = viewerElementRef.current as HTMLDivElement;
+        const container = viewerElement?.offsetParent as HTMLElement | null | undefined;
+        if (container == null)
+            return;
+        container.scrollTo(scrollPosition.x, scrollPosition.y);
+    }, [markdownElement]);
+
     return (
-        <div {...{ className }}>
+        <div ref={viewerElementRef} {...{ className }}>
             <ServiceProvider name={'markdownViewerController'} value={viewerController}>
                 <div className={styles.markdownRoot}>
                     {markdownElement}

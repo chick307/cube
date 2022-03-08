@@ -6,6 +6,7 @@ import { h } from 'hastscript';
 import { createEntryMap } from '../../../../common/entities/entry.test-helper';
 import { DummyFileSystem } from '../../../../common/entities/file-system.test-helper';
 import { immediate } from '../../../../common/utils/immediate';
+import { Point } from '../../../../common/values/point';
 import { MarkdownViewerState } from '../../../../common/values/viewer-state';
 import type { HistoryController } from '../../../controllers/history-controller';
 import { createHistoryController } from '../../../controllers/history-controller.test-helper';
@@ -53,6 +54,8 @@ let services: {
 };
 
 let controller: {
+    setScrollPosition(position: Point): Promise<void>;
+
     setTree(tree: Root): Promise<void>;
 };
 
@@ -82,6 +85,8 @@ beforeEach(() => {
     };
 
     controller = {
+        setScrollPosition: (position) =>
+            markdownViewerControllerRestate.update((state) => ({ ...state, scrollPosition: position })),
         setTree: (tree) => markdownViewerControllerRestate.update((state) => ({ ...state, tree })),
     };
 
@@ -94,6 +99,8 @@ beforeEach(() => {
         tabController,
         viewerControllerFactory,
     };
+
+    jest.useFakeTimers();
 });
 
 afterEach(() => {
@@ -103,6 +110,9 @@ afterEach(() => {
 
     services = null!;
     controller = null!;
+
+    jest.clearAllTimers();
+    jest.useRealTimers();
 });
 
 describe('MarkdownViewer component', () => {
@@ -229,6 +239,76 @@ describe('MarkdownViewer component', () => {
             });
             const markdownViewer = container.getElementsByClassName(styles.markdownViewer)[0];
             expect(markdownViewer.classList.contains('test-class')).toBe(true);
+        });
+    });
+
+    describe('if rendered in a scrollable element', () => {
+        const offsetParentPropertyDescriptor = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetParent')!;
+
+        beforeEach(() => {
+            Object.defineProperty(HTMLElement.prototype, 'offsetParent', {
+                configurable: true,
+                enumerable: true,
+                value: container,
+                writable: false,
+            });
+
+            container.scrollTo = () => {};
+        });
+
+        afterEach(() => {
+            Object.defineProperty(HTMLElement.prototype, 'offsetParent', offsetParentPropertyDescriptor);
+
+            Reflect.deleteProperty(container, 'scrollTo');
+        });
+
+        test('it saves the scroll position after scrolled', async () => {
+            const scrollTo = jest.spyOn(services.$viewerController, 'scrollTo');
+            const entry = entries.get('/a.md')!;
+            const viewerState = new MarkdownViewerState();
+            const Component = () => {
+                return composeElements(
+                    <ServicesProvider value={services} />,
+                    <MarkdownViewer {...{ entry, fileSystem, viewerState }} />,
+                );
+            };
+            await TestUtils.act(async () => {
+                ReactDom.render(<Component />, container);
+                await immediate();
+            });
+            container.scrollLeft = 50;
+            container.scrollTop = 150;
+            container.dispatchEvent(new UIEvent('scroll'));
+            jest.advanceTimersByTime(10);
+            expect(scrollTo).not.toHaveBeenCalled();
+            container.scrollLeft = 100;
+            container.scrollTop = 200;
+            container.dispatchEvent(new UIEvent('scroll'));
+            jest.advanceTimersByTime(100);
+            expect(scrollTo).toHaveBeenCalledTimes(1);
+            expect(scrollTo).toHaveBeenCalledWith({ position: new Point(100, 200) });
+        });
+
+        test('it restores the scroll position after rendered', async () => {
+            const scrollTo = jest.spyOn(container, 'scrollTo');
+            const entry = entries.get('/a.md')!;
+            const viewerState = new MarkdownViewerState({ scrollPosition: new Point(100, 200) });
+            const Component = () => {
+                return composeElements(
+                    <ServicesProvider value={services} />,
+                    <MarkdownViewer {...{ entry, fileSystem, viewerState }} />,
+                );
+            };
+            await TestUtils.act(async () => {
+                await controller.setScrollPosition(new Point(100, 200));
+                ReactDom.render(<Component />, container);
+            });
+            expect(scrollTo).not.toHaveBeenCalled();
+            await TestUtils.act(async () => {
+                await controller.setTree(h(null, h('div')));
+            });
+            expect(scrollTo).toHaveBeenCalledTimes(1);
+            expect(scrollTo).toHaveBeenCalledWith(100, 200);
         });
     });
 });
