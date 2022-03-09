@@ -75,7 +75,7 @@ describe('MarkdownLink component', () => {
         const Component = () => {
             return composeElements(
                 <ServicesProvider value={services} />,
-                <MarkdownLink href='./b.md'>
+                <MarkdownLink href='https://example.com'>
                     link
                 </MarkdownLink>,
             );
@@ -87,7 +87,7 @@ describe('MarkdownLink component', () => {
         const markdownLink = container.getElementsByClassName(styles.markdownLink)[0];
         TestUtils.Simulate.click(markdownLink, { type: 'auxclick' });
         expect(openLink).toHaveBeenCalledTimes(1);
-        expect(openLink).toHaveBeenCalledWith({ href: './b.md', inNewTab: true });
+        expect(openLink).toHaveBeenCalledWith({ href: 'https://example.com', inNewTab: true });
     });
 
     test('it does nothing when clicked if the link does not have a URL', () => {
