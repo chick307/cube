@@ -16,8 +16,8 @@ const entries = createEntryMap([
     '/a/a1',
 ]);
 
-entries.set('/a/a2', new SymbolicLinkEntry(new EntryPath('/a/a2')))
-entries.set('/a/a3', new SymbolicLinkEntry(new EntryPath('/a/a3')))
+entries.set('/a/a2', new SymbolicLinkEntry(new EntryPath('/a/a2')));
+entries.set('/a/a3', new SymbolicLinkEntry(new EntryPath('/a/a3')));
 
 const fileSystem = new DummyFileSystem();
 

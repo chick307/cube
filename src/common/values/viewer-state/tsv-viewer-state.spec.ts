@@ -1,4 +1,4 @@
-import { TsvViewerState } from '.';
+import { TsvViewerState } from '../viewer-state';
 
 describe('TsvViewerState class', () => {
     describe('TsvViewerState.fromJson() method', () => {

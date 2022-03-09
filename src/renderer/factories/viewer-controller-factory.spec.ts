@@ -1,9 +1,12 @@
 import { createHistoryController } from '../controllers/history-controller.test-helper';
+import { createTabController } from '../controllers/tab-controller.test-helper';
 import { createEntryService } from '../services/entry-service.test-helper';
 import { DirectoryViewerControllerImpl } from '../viewer-controllers/directory-viewer-controller';
+import { MarkdownViewerControllerImpl } from '../viewer-controllers/markdown-viewer-controller';
 import { SymbolicLinkViewerControllerImpl } from '../viewer-controllers/symbolic-link-viewer-controller';
 import {
     DirectoryViewerControllerFactory,
+    MarkdownViewerControllerFactory,
     SymbolicLinkViewerControllerFactory,
     ViewerControllerFactoryImpl,
 } from './viewer-controller-factory';
@@ -22,6 +25,18 @@ describe('ViewerControllerFactoryImpl class', () => {
                 createViewerControllerFactory().viewerControllerFactory;
             const viewerController = viewerControllerFactory.createDirectoryViewerController({ historyController });
             expect(viewerController).toBeInstanceOf(DirectoryViewerControllerImpl);
+        });
+    });
+
+    describe('markdownViewerControllerFactory.createMarkdownViewerController() method', () => {
+        test('it creates an instance of `MarkdownViewerControllerImpl` class', () => {
+            const { historyController } = createHistoryController();
+            const { tabController } = createTabController();
+            const viewerControllerFactory: MarkdownViewerControllerFactory =
+                createViewerControllerFactory().viewerControllerFactory;
+            const viewerController =
+                viewerControllerFactory.createMarkdownViewerController({ historyController, tabController });
+            expect(viewerController).toBeInstanceOf(MarkdownViewerControllerImpl);
         });
     });
 

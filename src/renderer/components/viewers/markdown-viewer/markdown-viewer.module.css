@@ -1,0 +1,9 @@
+.markdown-viewer {
+    flex: 0;
+}
+
+.markdown-root {
+    margin: 2em;
+    line-height: 1.75;
+    user-select: text;
+}

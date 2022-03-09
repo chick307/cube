@@ -35,7 +35,7 @@ entries.set('/a/a2', new SymbolicLinkEntry(new EntryPath('/a/a2')));
 const fileSystem = new DummyFileSystem();
 
 let services: {
-    _viewerController: SymbolicLinkViewerController;
+    $viewerController: SymbolicLinkViewerController;
 
     entryService: EntryService;
 
@@ -69,7 +69,7 @@ beforeEach(() => {
     const { localEntryService } = createLocalEntryService();
 
     const viewerControllerFactory: SymbolicLinkViewerControllerFactory = {
-        createSymbolicLinkViewerController: () => _viewerController,
+        createSymbolicLinkViewerController: () => $viewerController,
     };
 
     const restate = new Restate<SymbolicLinkViewerControllerState>({
@@ -77,7 +77,7 @@ beforeEach(() => {
         linkedEntry: null,
     });
 
-    const _viewerController: SymbolicLinkViewerController = {
+    const $viewerController: SymbolicLinkViewerController = {
         state: restate.state,
         initialize: () => {},
         openLink: () => {},
@@ -88,7 +88,7 @@ beforeEach(() => {
     };
 
     services = {
-        _viewerController,
+        $viewerController,
         entryIconService,
         entryService,
         historyController,
@@ -108,7 +108,7 @@ afterEach(() => {
 
 describe('SymbolicLinkViewer component', () => {
     test('it displays the symbolic link', async () => {
-        const initialize = jest.spyOn(services._viewerController, 'initialize');
+        const initialize = jest.spyOn(services.$viewerController, 'initialize');
         const entry = entries.get('/a/a2')!;
         const viewerState = new SymbolicLinkViewerState();
         const Component = () => {
@@ -146,7 +146,7 @@ describe('SymbolicLinkViewer component', () => {
     });
 
     test('it opens the linked entry when clicked', async () => {
-        const openLink = jest.spyOn(services._viewerController, 'openLink');
+        const openLink = jest.spyOn(services.$viewerController, 'openLink');
         const entry = entries.get('/a/a2')!;
         const viewerState = new SymbolicLinkViewerState();
         const Component = () => {

@@ -1,4 +1,4 @@
-import { DirectoryViewerState } from '.';
+import { DirectoryViewerState } from '../viewer-state';
 
 describe('DirectoryViewerState class', () => {
     describe('DirectoryViewerState.fromJson() method', () => {

@@ -16,7 +16,7 @@ const entries = createEntryMap([
     '/b/',
     '/b/.b1',
     '/b/b2',
-    '/empty/'
+    '/empty/',
 ]);
 
 const fileSystem = new DummyFileSystem();

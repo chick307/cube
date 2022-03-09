@@ -1,0 +1,19 @@
+.markdown-image {
+    display: inline-flex;
+    vertical-align: text-top;
+}
+
+.alt-text {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5em;
+    background-color: #FF8888;
+    color: #880000;
+
+    @nest & > svg {
+        margin-right: 0.5em;
+        width: 1em;
+        height: 1em;
+        fill: currentColor;
+    }
+}

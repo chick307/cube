@@ -1,4 +1,4 @@
-import { PdfViewerState } from '.';
+import { PdfViewerState } from '../viewer-state';
 
 describe('PdfViewerState class', () => {
     describe('PdfViewerState.fromJson() method', () => {

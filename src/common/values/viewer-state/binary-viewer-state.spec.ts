@@ -1,4 +1,4 @@
-import { BinaryViewerState } from '.';
+import { BinaryViewerState } from '../viewer-state';
 
 describe('BinaryViewerState class', () => {
     describe('BinaryViewerState.fromJson() method', () => {

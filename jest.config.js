@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     collectCoverage: false,
     collectCoverageFrom: [
         '<rootDir>/src/**/*.(js|ts|tsx)',
@@ -8,12 +8,20 @@ module.exports = {
         '\\.test-helper\\.(?:js|ts|tsx)$',
     ],
     coverageReporters: ['lcov'],
-    preset: 'ts-jest/presets/default',
+    globals: {
+        'ts-jest': {
+            useESM: true,
+        },
+    },
+    preset: 'ts-jest/presets/default-esm',
     testEnvironment: 'jsdom',
     testMatch: ['<rootDir>/src/**/*.spec.(js|ts|tsx)'],
     transform: {
-        '\\.(css)$': '<rootDir>/jest-css-modules-transformer.js',
+        '\\.css$': '<rootDir>/jest-css-modules-transformer.js',
     },
+    transformIgnorePatterns: [
+        '/node_modules/(?!.*\\.css$)',
+    ],
     setupFiles: [
         '<rootDir>/jest-setup.js',
     ],

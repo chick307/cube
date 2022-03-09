@@ -1,4 +1,4 @@
-import { DirectoryEntry, Entry, FileEntry, SymbolicLinkEntry } from '../../common/entities/entry';
+import { DirectoryEntry, Entry, FileEntry } from '../../common/entities/entry';
 import { FileSystem, ZipFileSystem } from '../../common/entities/file-system';
 import { HistoryItem } from '../../common/entities/history-item';
 import { CloseSignal } from '../../common/utils/close-controller';
@@ -118,12 +118,12 @@ const zipViewer: Viewer = {
     },
 };
 
-const createFileViewer = (params: {
+const createFileViewer = <ViewerState extends ViewerStates.ViewerState>(params: {
     id?: string | null;
     name: string;
     viewerStateType?: string | null;
-    viewerStateFactory: () => ViewerStates.ViewerState;
-    render: (historyItem: HistoryItem & { entry: FileEntry; }) => { node: React.ReactNode; };
+    viewerStateFactory: () => ViewerState;
+    render: (historyItem: HistoryItem & { entry: FileEntry; viewerState: ViewerState; }) => { node: React.ReactNode; };
 }): Viewer => {
     const { name } = params;
     const id = params.id ?? name.toLowerCase();
@@ -138,7 +138,7 @@ const createFileViewer = (params: {
         },
         render: (historyItem) => {
             if (historyItem.entry.isFile() || historyItem.entry.isSymbolicLink())
-                return params.render(historyItem as HistoryItem & { entry: FileEntry; }).node;
+                return params.render(historyItem as HistoryItem & { entry: FileEntry; viewerState: ViewerState; }).node;
             return null;
         },
     };
@@ -171,7 +171,9 @@ const javascriptViewer = createFileViewer({
 const markdownViewer = createFileViewer({
     name: 'Markdown',
     viewerStateFactory: () => new ViewerStates.MarkdownViewerState(),
-    render: ({ entry, fileSystem }) => ({ node: <EntryViews.MarkdownEntryView {...{ entry, fileSystem }} /> }),
+    render: ({ entry, fileSystem, viewerState }) => ({
+        node: <Viewers.MarkdownViewer {...{ entry, fileSystem, viewerState }} />,
+    }),
 });
 
 const mediaViewer = createFileViewer({

@@ -1,8 +1,8 @@
-const path = require('path');
+import path from 'node:path';
 
-const config = require('./webpack.common.js');
+import { config } from './webpack.common.js';
 
-module.exports = config({
+export default config({
     cssLoaderOptions: {
         modules: {
             localIdentName: '[local]__[path][name]',
@@ -10,7 +10,7 @@ module.exports = config({
     },
     devtool: 'inline-source-map',
     mode: 'development',
-    path: path.resolve(__dirname, 'dist/webpack/dev'),
+    path: path.resolve(new URL(import.meta.url).pathname, '../dist/webpack/dev'),
     tsLoaderOptions: {
         compilerOptions: {
             jsx: 'react-jsxdev',

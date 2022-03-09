@@ -1,4 +1,4 @@
-import { ComicViewerState } from '.';
+import { ComicViewerState } from '../viewer-state';
 
 describe('ComicViewerState class', () => {
     describe('ComicViewerState.fromJson() method', () => {

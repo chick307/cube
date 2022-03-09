@@ -1,0 +1,5 @@
+.markdown-paragraph {
+    @nest li > & {
+        margin: 0;
+    }
+}

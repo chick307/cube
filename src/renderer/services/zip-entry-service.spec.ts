@@ -20,7 +20,7 @@ beforeEach(() => {
 
     jest.spyOn(entryService, 'readFile').mockImplementation(async (params) => {
         expect(params.entry.path.toString()).toBe('/path/to/zip');
-        const buffer = await fs.readFile(path.resolve(__dirname, './fixtures/a.zip'));
+        const buffer = await fs.readFile(path.resolve(new URL(import.meta.url).pathname, '../fixtures/a.zip'));
         return buffer;
     });
 
