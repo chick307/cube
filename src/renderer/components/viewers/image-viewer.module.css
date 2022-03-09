@@ -1,0 +1,11 @@
+.image-viewer {
+    display: grid;
+    inline-size: max-content;
+    min-inlin-size: 100%;
+    block-size: max-content;
+    min-block-size: 100%;
+}
+
+.image {
+    place-self: center;
+}
