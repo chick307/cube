@@ -2,10 +2,12 @@ import { createHistoryController } from '../controllers/history-controller.test-
 import { createTabController } from '../controllers/tab-controller.test-helper';
 import { createEntryService } from '../services/entry-service.test-helper';
 import { DirectoryViewerControllerImpl } from '../viewer-controllers/directory-viewer-controller';
+import { ImageViewerControllerImpl } from '../viewer-controllers/image-viewer-controller';
 import { MarkdownViewerControllerImpl } from '../viewer-controllers/markdown-viewer-controller';
 import { SymbolicLinkViewerControllerImpl } from '../viewer-controllers/symbolic-link-viewer-controller';
 import {
     DirectoryViewerControllerFactory,
+    ImageViewerControllerFactory,
     MarkdownViewerControllerFactory,
     SymbolicLinkViewerControllerFactory,
     ViewerControllerFactoryImpl,
@@ -37,6 +39,16 @@ describe('ViewerControllerFactoryImpl class', () => {
             const viewerController =
                 viewerControllerFactory.createMarkdownViewerController({ historyController, tabController });
             expect(viewerController).toBeInstanceOf(MarkdownViewerControllerImpl);
+        });
+    });
+
+    describe('imageViewerControllerFactory.createImageViewerController() method', () => {
+        test('it creates an instance of `ImageViewerControllerImpl` class', () => {
+            const viewerControllerFactory: ImageViewerControllerFactory =
+                createViewerControllerFactory().viewerControllerFactory;
+            const viewerController =
+                viewerControllerFactory.createImageViewerController();
+            expect(viewerController).toBeInstanceOf(ImageViewerControllerImpl);
         });
     });
 
