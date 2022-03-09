@@ -11,6 +11,8 @@ export const createMarkdownViewerController = () => {
     const markdownViewerController: MarkdownViewerController = {
         state: markdownViewerControllerRestate.state,
         initialize: () => {},
+        isExternalLink: (href: string | null | undefined) =>
+            href != null && new URL(href, 'file:///').protocol !== 'file:',
         loadImage: async () => null,
         openLink: () => {},
         scrollTo: () => {},

@@ -27,6 +27,8 @@ export type MarkdownViewerController = {
 
     initialize(params: InitializeParams): void;
 
+    isExternalLink(href: string | null | undefined): boolean;
+
     loadImage(params: LoadImageParams): Promise<Blob | null>;
 
     openLink(params: OpenLinkParams): void;
@@ -221,6 +223,13 @@ export class MarkdownViewerControllerImpl implements MarkdownViewerController {
         this.#update(() => ({ ...initialState, viewerState }));
 
         this.#initialize({ entry, fileSystem, viewerState, signal });
+    }
+
+    isExternalLink(href: string | null | undefined): boolean {
+        if (href == null)
+            return false;
+        const url = new URL(href, `file:///`);
+        return url.protocol !== 'file:';
     }
 
     async loadImage(params: LoadImageParams): Promise<Blob | null> {

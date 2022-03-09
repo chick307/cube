@@ -158,6 +158,21 @@ describe('MarkdownViewerControllerImpl class', () => {
         });
     });
 
+    describe('markdownViewerController.isExternalLink() method', () => {
+        test('it returns whether the passed link is external or not', () => {
+            const controller = new MarkdownViewerControllerImpl({ ...services });
+            expect(controller.isExternalLink(null)).toBe(false);
+            expect(controller.isExternalLink(undefined)).toBe(false);
+            expect(controller.isExternalLink('a')).toBe(false);
+            expect(controller.isExternalLink('/b')).toBe(false);
+            expect(controller.isExternalLink('./c')).toBe(false);
+            expect(controller.isExternalLink('../d')).toBe(false);
+            expect(controller.isExternalLink('file:///e')).toBe(false);
+            expect(controller.isExternalLink('http://example.com')).toBe(true);
+            expect(controller.isExternalLink('https://example.com/g')).toBe(true);
+        });
+    });
+
     describe('markdownViewerController.loadImage() method', () => {
         test('it loads the entry', async () => {
             const controller = new MarkdownViewerControllerImpl({ ...services });
