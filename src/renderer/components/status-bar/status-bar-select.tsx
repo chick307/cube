@@ -2,6 +2,8 @@ import React from 'react';
 import styles from './status-bar-select.module.css';
 
 export type Props<T> = {
+    className?: string | undefined;
+
     onChange: (value: T) => unknown;
 
     options: Option<T>[];
@@ -15,21 +17,28 @@ export type Option<T> = {
 };
 
 export const StatusBarSelect = Object.assign(<T, >(props: Props<T>) => {
-    const index = props.options.findIndex((option) => Object.is(option.value, props.value));
+    const {
+        className: classNameProp,
+        options: optionsProp,
+    } = props;
 
-    const label = index === -1 ? null : props.options[index].label;
+    const className = classNameProp == null ? styles.selectContainer : `${classNameProp} ${styles.selectContainer}`;
+
+    const index = optionsProp.findIndex((option) => Object.is(option.value, props.value));
+
+    const label = index === -1 ? null : optionsProp[index].label;
 
     const onChange = React.useCallback((event: React.ChangeEvent) => {
         const target = event.target as HTMLSelectElement;
         const index = parseInt(target.value, 10);
-        const option = props.options[index];
+        const option = optionsProp[index];
         if (option == null)
             return;
         props.onChange(option.value);
         target.blur();
-    }, [props.options]);
+    }, [optionsProp]);
 
-    const options = props.options.map(({ label }, index) => {
+    const options = optionsProp.map(({ label }, index) => {
         return (
             <option key={index} value={`${index}`}>{label}</option>
         );
@@ -38,7 +47,7 @@ export const StatusBarSelect = Object.assign(<T, >(props: Props<T>) => {
     const value = `${index}`;
 
     return (
-        <div className={styles.selectContainer}>
+        <div {...{ className }}>
             <div className={styles.label}>
                 {label}
             </div>
