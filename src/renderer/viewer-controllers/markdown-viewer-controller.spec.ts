@@ -5,6 +5,7 @@ import { DummyFileSystem } from '../../common/entities/file-system.test-helper';
 import { HistoryItem } from '../../common/entities/history-item';
 import { Closed, CloseSignal } from '../../common/utils/close-controller';
 import { immediate } from '../../common/utils/immediate';
+import { EntryPath } from '../../common/values/entry-path';
 import { Point } from '../../common/values/point';
 import { MarkdownViewerState } from '../../common/values/viewer-state';
 import type { HistoryController } from '../controllers/history-controller';
@@ -13,6 +14,8 @@ import type { TabController } from '../controllers/tab-controller';
 import { createTabController } from '../controllers/tab-controller.test-helper';
 import type { EntryService } from '../services/entry-service';
 import { createEntryService } from '../services/entry-service.test-helper';
+import { ImageService } from '../services/image-service';
+import { createImageService } from '../services/image-service.test-helper';
 import { MarkdownViewerControllerImpl, MarkdownViewerControllerState } from './markdown-viewer-controller';
 
 const entries = createEntryMap([
@@ -20,12 +23,6 @@ const entries = createEntryMap([
     '/b.md',
     '/images/',
     '/images/a',
-    '/images/a.gif',
-    '/images/a.jpeg',
-    '/images/a.jpg',
-    '/images/a.png',
-    '/images/a.svg',
-    '/images/a.webp',
 ]);
 
 const fileSystem = new DummyFileSystem();
@@ -33,6 +30,7 @@ const fileSystem = new DummyFileSystem();
 let services: {
     entryService: EntryService;
     historyController: HistoryController;
+    imageService: ImageService;
     tabController: TabController;
 };
 
@@ -55,30 +53,27 @@ beforeEach(() => {
             return Buffer.from('# a.md');
         if (params.entry.path.toString() === '/b.md')
             return Buffer.from('# b.md');
-        if (params.entry.path.toString() === '/images/a')
-            return Buffer.from([0]);
-        if (params.entry.path.toString() === '/images/a.gif')
-            return Buffer.from([1]);
-        if (params.entry.path.toString() === '/images/a.jpeg')
-            return Buffer.from([2]);
-        if (params.entry.path.toString() === '/images/a.jpg')
-            return Buffer.from([3]);
-        if (params.entry.path.toString() === '/images/a.png')
-            return Buffer.from([4]);
-        if (params.entry.path.toString() === '/images/a.svg')
-            return Buffer.from('<svg />');
-        if (params.entry.path.toString() === '/images/a.webp')
-            return Buffer.from([5]);
         throw Error();
     });
 
     const { historyController } = createHistoryController();
+
+    const { imageService } = createImageService();
+    const loadBlob = jest.spyOn(imageService, 'loadBlob');
+    loadBlob.mockImplementation(async (params) => {
+        if (params.fileSystem !== fileSystem)
+            throw Error();
+        if (params.entryPath.toString() === '/images/a')
+            return new Blob([Buffer.from([0])]);
+        throw Error();
+    });
 
     const { tabController } = createTabController();
 
     services = {
         entryService,
         historyController,
+        imageService,
         tabController,
     };
 });
@@ -175,49 +170,33 @@ describe('MarkdownViewerControllerImpl class', () => {
 
     describe('markdownViewerController.loadImage() method', () => {
         test('it loads the entry', async () => {
+            const loadBlob = jest.spyOn(services.imageService, 'loadBlob');
             const controller = new MarkdownViewerControllerImpl({ ...services });
             const entry = entries.get('/a.md')!;
             const viewerState = new MarkdownViewerState();
             controller.initialize({ entry, fileSystem, viewerState });
             await immediate();
-            const promise = controller.loadImage({ src: '/images/a.svg' });
+            const promise = controller.loadImage({ src: './images/a' });
+            expect(loadBlob).toHaveBeenCalledTimes(1);
+            expect(loadBlob).toHaveBeenCalledWith({
+                entryPath: new EntryPath('/images/a'),
+                fileSystem,
+                signal: expect.any(CloseSignal),
+            });
             await expect(promise).resolves.toBeInstanceOf(Blob);
             const blob = await promise;
             const arrayBuffer = await blob!.arrayBuffer();
-            expect(Buffer.from(arrayBuffer)).toEqual(Buffer.from('<svg />'));
-            expect(blob!.type).toBe('image/svg+xml');
+            expect(Buffer.from(arrayBuffer)).toEqual(Buffer.from([0]));
         });
 
-        test('it returns a blob with the appropriate media type', async () => {
+        test('it throws an error if entry does not exists', async () => {
             const controller = new MarkdownViewerControllerImpl({ ...services });
             const entry = entries.get('/a.md')!;
             const viewerState = new MarkdownViewerState();
             controller.initialize({ entry, fileSystem, viewerState });
             await immediate();
-            await expect(controller.loadImage({ src: '/images/a' }))
-                .resolves.toMatchObject({ type: '' });
-            await expect(controller.loadImage({ src: '/images/a.gif' }))
-                .resolves.toMatchObject({ type: 'image/gif' });
-            await expect(controller.loadImage({ src: '/images/a.jpeg' }))
-                .resolves.toMatchObject({ type: 'image/jpeg' });
-            await expect(controller.loadImage({ src: '/images/a.jpg' }))
-                .resolves.toMatchObject({ type: 'image/jpeg' });
-            await expect(controller.loadImage({ src: '/images/a.png' }))
-                .resolves.toMatchObject({ type: 'image/png' });
-            await expect(controller.loadImage({ src: '/images/a.svg' }))
-                .resolves.toMatchObject({ type: 'image/svg+xml' });
-            await expect(controller.loadImage({ src: '/images/a.webp' }))
-                .resolves.toMatchObject({ type: 'image/webp' });
-        });
-
-        test('it returns null if entry does not exists', async () => {
-            const controller = new MarkdownViewerControllerImpl({ ...services });
-            const entry = entries.get('/a.md')!;
-            const viewerState = new MarkdownViewerState();
-            controller.initialize({ entry, fileSystem, viewerState });
-            await immediate();
-            const promise = controller.loadImage({ src: '/images/none.svg' });
-            await expect(promise).resolves.toBe(null);
+            const promise = controller.loadImage({ src: '/images/none' });
+            await expect(promise).rejects.toThrow();
         });
 
         test('it returns null if source URL is not for files', async () => {

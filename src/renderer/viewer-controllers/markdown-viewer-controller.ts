@@ -21,6 +21,7 @@ import { MarkdownViewerState } from '../../common/values/viewer-state';
 import type { HistoryController } from '../controllers/history-controller';
 import { TabController } from '../controllers/tab-controller';
 import type { EntryService } from '../services/entry-service';
+import { ImageService } from '../services/image-service';
 
 export type MarkdownViewerController = {
     readonly state: State<MarkdownViewerControllerState>;
@@ -102,6 +103,8 @@ export class MarkdownViewerControllerImpl implements MarkdownViewerController {
 
     #historyController: HistoryController;
 
+    #imageService: ImageService;
+
     #restate: Restate<InternalState>;
 
     #state: State<MarkdownViewerControllerState>;
@@ -115,10 +118,13 @@ export class MarkdownViewerControllerImpl implements MarkdownViewerController {
 
         readonly historyController: HistoryController;
 
+        readonly imageService: ImageService;
+
         readonly tabController: TabController;
     }) {
         this.#entryService = params.entryService;
         this.#historyController = params.historyController;
+        this.#imageService = params.imageService;
         this.#tabController = params.tabController;
 
         this.#closeController = null;
@@ -140,18 +146,6 @@ export class MarkdownViewerControllerImpl implements MarkdownViewerController {
 
     get state(): State<MarkdownViewerControllerState> {
         return this.#state;
-    }
-
-    #getMediaType(entryPath: EntryPath): string | undefined {
-        const extension = entryPath.getExtension().toLowerCase();
-        switch (extension) {
-            case '.jpg': case '.jpeg': return 'image/jpeg';
-            case '.png': return 'image/png';
-            case '.gif': return 'image/gif';
-            case '.webp': return 'image/webp';
-            case '.svg': return 'image/svg+xml';
-            default: return undefined;
-        }
     }
 
     async #initialize(params: {
@@ -243,12 +237,7 @@ export class MarkdownViewerControllerImpl implements MarkdownViewerController {
         if (url.protocol === 'file:') {
             const entryPath = new EntryPath(decodeURI(url.pathname));
             const fileSystem = this.#fileSystem as FileSystem;
-            const entry = await this.#entryService.createEntryFromPath({ entryPath, fileSystem, signal });
-            if (entry === null)
-                return null;
-            const buffer = await this.#entryService.readFile({ entry: entry as FileEntry, fileSystem, signal });
-            const type = this.#getMediaType(entryPath) ?? undefined;
-            const blob = new Blob([buffer], { type });
+            const blob = await this.#imageService.loadBlob({ entryPath, fileSystem, signal });
             return blob;
         }
 

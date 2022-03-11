@@ -2,9 +2,8 @@ import type { Entry, FileEntry } from '../../common/entities/entry';
 import type { FileSystem } from '../../common/entities/file-system';
 import { CloseController, CloseSignal } from '../../common/utils/close-controller';
 import { Restate, State } from '../../common/utils/restate';
-import { EntryPath } from '../../common/values/entry-path';
 import { ImageViewerState } from '../../common/values/viewer-state';
-import type { EntryService } from '../services/entry-service';
+import type { ImageService } from '../services/image-service';
 
 export type ImageViewerController = {
     readonly state: State<ImageViewerControllerState>;
@@ -42,9 +41,9 @@ export class ImageViewerControllerImpl implements ImageViewerController {
 
     #entry: Entry | null;
 
-    #entryService: EntryService;
-
     #fileSystem: FileSystem | null;
+
+    #imageService: ImageService;
 
     #restate: Restate<InternalState>;
 
@@ -53,9 +52,9 @@ export class ImageViewerControllerImpl implements ImageViewerController {
     #viewerState: ImageViewerState | null;
 
     constructor(params: {
-        readonly entryService: EntryService;
+        readonly imageService: ImageService;
     }) {
-        this.#entryService = params.entryService;
+        this.#imageService = params.imageService;
 
         this.#closeController = null;
         this.#entry = null;
@@ -76,18 +75,6 @@ export class ImageViewerControllerImpl implements ImageViewerController {
         return this.#state;
     }
 
-    #getMediaType(entryPath: EntryPath): string | undefined {
-        const extension = entryPath.getExtension().toLowerCase();
-        switch (extension) {
-            case '.jpg': case '.jpeg': return 'image/jpeg';
-            case '.png': return 'image/png';
-            case '.gif': return 'image/gif';
-            case '.webp': return 'image/webp';
-            case '.svg': return 'image/svg+xml';
-            default: return undefined;
-        }
-    }
-
     async #initialize(params: {
         entry: Entry;
         fileSystem: FileSystem;
@@ -96,9 +83,7 @@ export class ImageViewerControllerImpl implements ImageViewerController {
     }): Promise<void> {
         const { fileSystem, signal } = params;
         const entry = params.entry as FileEntry;
-        const buffer = await this.#entryService.readFile({ entry, fileSystem, signal });
-        const type = this.#getMediaType(entry.path);
-        const blob = new Blob([buffer], { type });
+        const blob = await this.#imageService.loadBlob({ entryPath: entry.path, fileSystem, signal });
         this.#update((state) => ({ ...state, blob }));
     }
 

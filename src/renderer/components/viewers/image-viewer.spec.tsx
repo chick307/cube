@@ -57,8 +57,6 @@ beforeEach(() => {
     const { entryIconService } = createEntryIconService();
 
     const { entryService } = createEntryService();
-    const createEntryFromPath = jest.spyOn(entryService, 'createEntryFromPath');
-    createEntryFromPath.mockImplementation(async (params) => entries.get(params.entryPath.toString()) ?? null);
 
     const { historyController } = createHistoryController();
 
