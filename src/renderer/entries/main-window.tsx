@@ -14,6 +14,7 @@ import { ApplicationServiceImpl } from '../services/application-service';
 import { ContextMenuServiceImpl } from '../services/context-menu-service';
 import { EntryIconServiceImpl } from '../services/entry-icon-service';
 import { EntryServiceImpl } from '../services/entry-service';
+import { ImageServiceImpl } from '../services/image-service';
 import { KeyboardServiceImpl } from '../services/keyboard-service';
 import { LocalEntryService, LocalEntryServiceImpl } from '../services/local-entry-service';
 import { MainChannelServiceImpl } from '../services/main-channel-service';
@@ -44,6 +45,7 @@ const MainWindow = () => {
             entryIconService: EntryIconServiceImpl,
             entryService: EntryServiceImpl,
             historyControllerFactory: HistoryControllerFactoryImpl,
+            imageService: ImageServiceImpl,
             keyboardService: KeyboardServiceImpl,
             localEntryService: LocalEntryServiceImpl,
             mainChannelService: MainChannelServiceImpl,
