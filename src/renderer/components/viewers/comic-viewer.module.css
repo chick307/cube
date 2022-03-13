@@ -1,4 +1,4 @@
-.view {
+.comic-viewer {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -27,4 +27,8 @@
 
 .entry-name-text {
     margin-left: 4px;
+}
+
+.page-display-select {
+    /**/
 }

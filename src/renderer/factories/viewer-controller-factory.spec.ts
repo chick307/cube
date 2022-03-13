@@ -2,11 +2,13 @@ import { createHistoryController } from '../controllers/history-controller.test-
 import { createTabController } from '../controllers/tab-controller.test-helper';
 import { createEntryService } from '../services/entry-service.test-helper';
 import { createImageService } from '../services/image-service.test-helper';
+import { ComicViewerControllerImpl } from '../viewer-controllers/comic-viewer-controller';
 import { DirectoryViewerControllerImpl } from '../viewer-controllers/directory-viewer-controller';
 import { ImageViewerControllerImpl } from '../viewer-controllers/image-viewer-controller';
 import { MarkdownViewerControllerImpl } from '../viewer-controllers/markdown-viewer-controller';
 import { SymbolicLinkViewerControllerImpl } from '../viewer-controllers/symbolic-link-viewer-controller';
 import {
+    ComicViewerControllerFactory,
     DirectoryViewerControllerFactory,
     ImageViewerControllerFactory,
     MarkdownViewerControllerFactory,
@@ -28,6 +30,16 @@ const createViewerControllerFactory = () => {
 };
 
 describe('ViewerControllerFactoryImpl class', () => {
+    describe('comicViewerControllerFactory.createComicViewerController() method', () => {
+        test('it creates an instance of `ComicViewerControllerImpl` class', () => {
+            const { historyController } = createHistoryController();
+            const viewerControllerFactory: ComicViewerControllerFactory =
+                createViewerControllerFactory().viewerControllerFactory;
+            const viewerController = viewerControllerFactory.createComicViewerController({ historyController });
+            expect(viewerController).toBeInstanceOf(ComicViewerControllerImpl);
+        });
+    });
+
     describe('directoryViewerControllerFactory.createDirectoryViewerController() method', () => {
         test('it creates an instance of `DirectoryViewerControllerImpl` class', () => {
             const { historyController } = createHistoryController();

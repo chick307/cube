@@ -93,11 +93,9 @@ const comicViewer: Viewer = {
     render(historyItem) {
         if (!historyItem.entry.isDirectory() && !historyItem.entry.isSymbolicLink())
             return null;
-        const entry = historyItem.entry as DirectoryEntry;
-        const { fileSystem } = historyItem;
+        const { entry, fileSystem } = historyItem;
         const viewerState = historyItem.viewerState as ViewerStates.ComicViewerState;
-        const pageDisplay = viewerState.pageDisplay;
-        return <EntryViews.ComicEntryView {...{ entry, fileSystem, pageDisplay }} />;
+        return <Viewers.ComicViewer {...{ entry, fileSystem, viewerState }} />;
     },
 };
 

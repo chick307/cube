@@ -2,6 +2,7 @@ import type { HistoryController } from '../controllers/history-controller';
 import type { TabController } from '../controllers/tab-controller';
 import type { EntryService } from '../services/entry-service';
 import { ImageService } from '../services/image-service';
+import { ComicViewerController, ComicViewerControllerImpl } from '../viewer-controllers/comic-viewer-controller';
 import {
     DirectoryViewerController,
     DirectoryViewerControllerImpl,
@@ -15,6 +16,14 @@ import {
     SymbolicLinkViewerController,
     SymbolicLinkViewerControllerImpl,
 } from '../viewer-controllers/symbolic-link-viewer-controller';
+
+export type ComicViewerControllerFactory = {
+    createComicViewerController(params: CreateComicViewerControllerParams): ComicViewerController;
+};
+
+export type CreateComicViewerControllerParams = {
+    historyController: HistoryController;
+};
 
 export type DirectoryViewerControllerFactory = {
     createDirectoryViewerController(params: CreateDirectoryViewerControllerParams): DirectoryViewerController;
@@ -46,6 +55,7 @@ export type CreateSymbolicLinkViewerControllerParams = {
 };
 
 export class ViewerControllerFactoryImpl implements
+    ComicViewerControllerFactory,
     DirectoryViewerControllerFactory,
     ImageViewerControllerFactory,
     MarkdownViewerControllerFactory,
@@ -61,6 +71,14 @@ export class ViewerControllerFactoryImpl implements
     }) {
         this.#entryService = params.entryService;
         this.#imageService = params.imageService;
+    }
+
+    createComicViewerController(params: CreateComicViewerControllerParams): ComicViewerController {
+        return new ComicViewerControllerImpl({
+            entryService: this.#entryService,
+            historyController: params.historyController,
+            imageService: this.#imageService,
+        });
     }
 
     createDirectoryViewerController(params: CreateDirectoryViewerControllerParams): DirectoryViewerController {
