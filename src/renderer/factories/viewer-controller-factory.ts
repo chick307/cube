@@ -1,6 +1,7 @@
 import type { HistoryController } from '../controllers/history-controller';
 import type { TabController } from '../controllers/tab-controller';
 import type { EntryService } from '../services/entry-service';
+import { ImageService } from '../services/image-service';
 import {
     DirectoryViewerController,
     DirectoryViewerControllerImpl,
@@ -51,10 +52,15 @@ export class ViewerControllerFactoryImpl implements
     SymbolicLinkViewerControllerFactory {
     #entryService: EntryService;
 
+    #imageService: ImageService;
+
     constructor(params: {
         readonly entryService: EntryService;
+
+        readonly imageService: ImageService;
     }) {
         this.#entryService = params.entryService;
+        this.#imageService = params.imageService;
     }
 
     createDirectoryViewerController(params: CreateDirectoryViewerControllerParams): DirectoryViewerController {
@@ -66,7 +72,7 @@ export class ViewerControllerFactoryImpl implements
 
     createImageViewerController(): ImageViewerController {
         return new ImageViewerControllerImpl({
-            entryService: this.#entryService,
+            imageService: this.#imageService,
         });
     }
 
@@ -74,6 +80,7 @@ export class ViewerControllerFactoryImpl implements
         return new MarkdownViewerControllerImpl({
             entryService: this.#entryService,
             historyController: params.historyController,
+            imageService: this.#imageService,
             tabController: params.tabController,
         });
     }

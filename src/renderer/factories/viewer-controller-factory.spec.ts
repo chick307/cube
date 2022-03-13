@@ -1,6 +1,7 @@
 import { createHistoryController } from '../controllers/history-controller.test-helper';
 import { createTabController } from '../controllers/tab-controller.test-helper';
 import { createEntryService } from '../services/entry-service.test-helper';
+import { createImageService } from '../services/image-service.test-helper';
 import { DirectoryViewerControllerImpl } from '../viewer-controllers/directory-viewer-controller';
 import { ImageViewerControllerImpl } from '../viewer-controllers/image-viewer-controller';
 import { MarkdownViewerControllerImpl } from '../viewer-controllers/markdown-viewer-controller';
@@ -15,7 +16,14 @@ import {
 
 const createViewerControllerFactory = () => {
     const { entryService } = createEntryService();
-    const viewerControllerFactory = new ViewerControllerFactoryImpl({ entryService });
+
+    const { imageService } = createImageService();
+
+    const viewerControllerFactory = new ViewerControllerFactoryImpl({
+        entryService,
+        imageService,
+    });
+
     return { entryService, viewerControllerFactory };
 };
 
@@ -46,8 +54,7 @@ describe('ViewerControllerFactoryImpl class', () => {
         test('it creates an instance of `ImageViewerControllerImpl` class', () => {
             const viewerControllerFactory: ImageViewerControllerFactory =
                 createViewerControllerFactory().viewerControllerFactory;
-            const viewerController =
-                viewerControllerFactory.createImageViewerController();
+            const viewerController = viewerControllerFactory.createImageViewerController();
             expect(viewerController).toBeInstanceOf(ImageViewerControllerImpl);
         });
     });
