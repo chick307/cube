@@ -5,6 +5,7 @@ import {
     DirectoryViewerController,
     DirectoryViewerControllerImpl,
 } from '../viewer-controllers/directory-viewer-controller';
+import { ImageViewerController, ImageViewerControllerImpl } from '../viewer-controllers/image-viewer-controller';
 import {
     MarkdownViewerController,
     MarkdownViewerControllerImpl,
@@ -20,6 +21,10 @@ export type DirectoryViewerControllerFactory = {
 
 export type CreateDirectoryViewerControllerParams = {
     historyController: HistoryController;
+};
+
+export type ImageViewerControllerFactory = {
+    createImageViewerController(): ImageViewerController;
 };
 
 export type MarkdownViewerControllerFactory = {
@@ -41,6 +46,7 @@ export type CreateSymbolicLinkViewerControllerParams = {
 
 export class ViewerControllerFactoryImpl implements
     DirectoryViewerControllerFactory,
+    ImageViewerControllerFactory,
     MarkdownViewerControllerFactory,
     SymbolicLinkViewerControllerFactory {
     #entryService: EntryService;
@@ -55,6 +61,12 @@ export class ViewerControllerFactoryImpl implements
         return new DirectoryViewerControllerImpl({
             entryService: this.#entryService,
             historyController: params.historyController,
+        });
+    }
+
+    createImageViewerController(): ImageViewerController {
+        return new ImageViewerControllerImpl({
+            entryService: this.#entryService,
         });
     }
 

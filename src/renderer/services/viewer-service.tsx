@@ -159,7 +159,9 @@ const cssViewer = createFileViewer({
 const imageViewer = createFileViewer({
     name: 'Image',
     viewerStateFactory: () => new ViewerStates.ImageViewerState(),
-    render: ({ entry, fileSystem }) => ({ node: <EntryViews.ImageEntryView {...{ entry, fileSystem }} /> }),
+    render: ({ entry, fileSystem, viewerState }) => ({
+        node: <Viewers.ImageViewer {...{ entry, fileSystem, viewerState }} />,
+    }),
 });
 
 const javascriptViewer = createFileViewer({
