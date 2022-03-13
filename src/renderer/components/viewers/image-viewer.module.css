@@ -1,11 +1,19 @@
 .image-viewer {
     display: grid;
-    inline-size: max-content;
-    min-inlin-size: 100%;
-    block-size: max-content;
-    min-block-size: 100%;
+    grid-template-columns: minmax(2em, auto) max-content minmax(2em, auto);
+    grid-template-rows: minmax(2em, auto) max-content minmax(2em, auto);
+}
+
+.image-viewer::after {
+    content: '';
+    display: block;
+    inline-size: 2em;
+    block-size: 2em;
+    grid-column: 3;
+    grid-row: 3;
 }
 
 .image {
-    place-self: center;
+    grid-column: 2;
+    grid-row: 2;
 }
