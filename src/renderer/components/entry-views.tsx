@@ -4,4 +4,3 @@ export { JavaScriptEntryView } from './entry-views/javascript-entry-view';
 export { MediaEntryView } from './entry-views/media-entry-view';
 export { PdfEntryView } from './entry-views/pdf-entry-view';
 export { TextEntryView } from './entry-views/text-entry-view';
-export { TsvEntryView } from './entry-views/tsv-entry-view';
