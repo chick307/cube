@@ -1,0 +1,48 @@
+.tsv-viewer {
+    margin: 2em;
+    block-size: max-content;
+}
+
+.tsv-table {
+    border-collapse: collapse;
+
+    @nest & > tbody {
+        counter-reset: row-number;
+    }
+
+    @nest & > tbody > tr {
+        counter-increment: row-number;
+    }
+
+    @nest & > tbody > tr:nth-child(odd) {
+        background-color: #505050;
+    }
+
+    @nest & > tbody > tr:nth-child(even) {
+        background-color: #606060;
+    }
+
+    @nest & > :is(tbody, tfoot, thead) > tr > th {
+        background-color: #222222;
+        color: #CCCCCC;
+    }
+
+    @nest & > :is(tbody, tfoot, thead) > tr > :is(td, th) {
+        border: 1px solid #888888;
+        padding: 0.3em 0.6em;
+        text-align: inherit;
+        user-select: text;
+    }
+}
+
+.row-number {
+    @nest .tsv-table > tbody > tr > td& {
+        background-color: #222222;
+        color: #CCCCCC;
+        text-align: right;
+    }
+
+    @nest &::after {
+        content: counter(row-number);
+    }
+}
