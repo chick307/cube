@@ -1,7 +1,7 @@
 import type { HistoryController } from '../controllers/history-controller';
 import type { TabController } from '../controllers/tab-controller';
 import type { EntryService } from '../services/entry-service';
-import { ImageService } from '../services/image-service';
+import type { ImageService } from '../services/image-service';
 import { ComicViewerController, ComicViewerControllerImpl } from '../viewer-controllers/comic-viewer-controller';
 import {
     DirectoryViewerController,
@@ -16,6 +16,7 @@ import {
     SymbolicLinkViewerController,
     SymbolicLinkViewerControllerImpl,
 } from '../viewer-controllers/symbolic-link-viewer-controller';
+import { TsvViewerController, TsvViewerControllerImpl } from '../viewer-controllers/tsv-viewer-controller';
 
 export type ComicViewerControllerFactory = {
     createComicViewerController(params: CreateComicViewerControllerParams): ComicViewerController;
@@ -54,12 +55,17 @@ export type CreateSymbolicLinkViewerControllerParams = {
     historyController: HistoryController;
 };
 
+export type TsvViewerControllerFactory = {
+    createTsvViewerController(): TsvViewerController;
+};
+
 export class ViewerControllerFactoryImpl implements
     ComicViewerControllerFactory,
     DirectoryViewerControllerFactory,
     ImageViewerControllerFactory,
     MarkdownViewerControllerFactory,
-    SymbolicLinkViewerControllerFactory {
+    SymbolicLinkViewerControllerFactory,
+    TsvViewerControllerFactory {
     #entryService: EntryService;
 
     #imageService: ImageService;
@@ -107,6 +113,12 @@ export class ViewerControllerFactoryImpl implements
         return new SymbolicLinkViewerControllerImpl({
             entryService: this.#entryService,
             historyController: params.historyController,
+        });
+    }
+
+    createTsvViewerController(): TsvViewerController {
+        return new TsvViewerControllerImpl({
+            entryService: this.#entryService,
         });
     }
 }

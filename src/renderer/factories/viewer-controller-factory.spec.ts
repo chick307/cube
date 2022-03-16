@@ -7,12 +7,14 @@ import { DirectoryViewerControllerImpl } from '../viewer-controllers/directory-v
 import { ImageViewerControllerImpl } from '../viewer-controllers/image-viewer-controller';
 import { MarkdownViewerControllerImpl } from '../viewer-controllers/markdown-viewer-controller';
 import { SymbolicLinkViewerControllerImpl } from '../viewer-controllers/symbolic-link-viewer-controller';
+import { TsvViewerControllerImpl } from '../viewer-controllers/tsv-viewer-controller';
 import {
     ComicViewerControllerFactory,
     DirectoryViewerControllerFactory,
     ImageViewerControllerFactory,
     MarkdownViewerControllerFactory,
     SymbolicLinkViewerControllerFactory,
+    TsvViewerControllerFactory,
     ViewerControllerFactoryImpl,
 } from './viewer-controller-factory';
 
@@ -78,6 +80,15 @@ describe('ViewerControllerFactoryImpl class', () => {
                 createViewerControllerFactory().viewerControllerFactory;
             const viewerController = viewerControllerFactory.createSymbolicLinkViewerController({ historyController });
             expect(viewerController).toBeInstanceOf(SymbolicLinkViewerControllerImpl);
+        });
+    });
+
+    describe('tsvViewerControllerFactory.createTsvViewerController() method', () => {
+        test('it creates an instance of `TsvViewerControllerImpl` class', () => {
+            const viewerControllerFactory: TsvViewerControllerFactory =
+                createViewerControllerFactory().viewerControllerFactory;
+            const viewerController = viewerControllerFactory.createTsvViewerController();
+            expect(viewerController).toBeInstanceOf(TsvViewerControllerImpl);
         });
     });
 });
