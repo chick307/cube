@@ -1,5 +1,9 @@
 import { PdfViewerState } from '../viewer-state';
 
+const directions = [null, 'L2R', 'R2L'] as const;
+
+const pageDisplays = ['single', 'two'] as const;
+
 describe('PdfViewerState class', () => {
     describe('PdfViewerState.fromJson() method', () => {
         test('it returns an instance of PdfViewerState class', () => {
@@ -21,6 +25,17 @@ describe('PdfViewerState class', () => {
             expect(() => PdfViewerState.fromJson({})).toThrow();
             expect(() => PdfViewerState.fromJson({ type: '' })).toThrow();
             expect(() => PdfViewerState.fromJson({ type: 'binary' })).toThrow();
+        });
+    });
+
+    describe('pdfViewerState.setDirection() method', () => {
+        test('it creates a new instance of PdfViewerState class', () => {
+            for (const { value, direction, pageDisplay } of directions.map((value) => ({ value }))
+                .flatMap((values) => directions.map((direction) => ({ ...values, direction })))
+                .flatMap((values) => pageDisplays.map((pageDisplay) => ({ ...values, pageDisplay })))) {
+                expect(new PdfViewerState({ direction, pageDisplay }).setDirection(value))
+                    .toEqual(new PdfViewerState({ direction: value, pageDisplay }));
+            }
         });
     });
 
