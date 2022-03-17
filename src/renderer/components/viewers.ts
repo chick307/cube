@@ -3,3 +3,4 @@ export { DirectoryViewer, Props as DirectoryViewerProps } from './viewers/direct
 export { ImageViewer, Props as ImageViewerProps } from './viewers/image-viewer';
 export { MarkdownViewer, Props as MarkdownViewerProps } from './viewers/markdown-viewer';
 export { SymbolicLinkViewer, Props as SymbolicLinkViewerProps } from './viewers/symbolic-link-viewer';
+export { TsvViewer, Props as TsvViewerProps } from './viewers/tsv-viewer';

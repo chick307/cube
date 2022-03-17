@@ -200,7 +200,9 @@ const textViewer = createFileViewer({
 const tsvViewer = createFileViewer({
     name: 'TSV',
     viewerStateFactory: () => new ViewerStates.TsvViewerState(),
-    render: ({ entry, fileSystem }) => ({ node: <EntryViews.TsvEntryView {...{ entry, fileSystem }} /> }),
+    render: ({ entry, fileSystem, viewerState }) => ({
+        node: <Viewers.TsvViewer {...{ entry, fileSystem, viewerState }} />,
+    }),
 });
 
 const createRedirectViewer = (params: {
