@@ -48,6 +48,10 @@ export class PdfViewerState extends ViewerState {
         return new PdfViewerState({ ...this, direction: value });
     }
 
+    setPageDisplay(value: PdfViewerPageDisplay): PdfViewerState {
+        return new PdfViewerState({ ...this, pageDisplay: value });
+    }
+
     override toJson(): PdfViewerStateJson {
         return {
             type: 'pdf',

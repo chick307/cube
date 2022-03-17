@@ -39,6 +39,17 @@ describe('PdfViewerState class', () => {
         });
     });
 
+    describe('pdfViewerState.setPageDisplay() method', () => {
+        test('it creates a new instance of PdfViewerState class', () => {
+            for (const { value, direction, pageDisplay } of pageDisplays.map((value) => ({ value }))
+                .flatMap((values) => directions.map((direction) => ({ ...values, direction })))
+                .flatMap((values) => pageDisplays.map((pageDisplay) => ({ ...values, pageDisplay })))) {
+                expect(new PdfViewerState({ direction, pageDisplay }).setPageDisplay(value))
+                    .toEqual(new PdfViewerState({ direction, pageDisplay: value }));
+            }
+        });
+    });
+
     describe('pdfViewerState.toJson() method', () => {
         test('it returns JSON object', () => {
             expect(new PdfViewerState().toJson())
