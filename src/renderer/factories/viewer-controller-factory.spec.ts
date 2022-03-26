@@ -6,6 +6,7 @@ import { ComicViewerControllerImpl } from '../viewer-controllers/comic-viewer-co
 import { DirectoryViewerControllerImpl } from '../viewer-controllers/directory-viewer-controller';
 import { ImageViewerControllerImpl } from '../viewer-controllers/image-viewer-controller';
 import { MarkdownViewerControllerImpl } from '../viewer-controllers/markdown-viewer-controller';
+import { PdfViewerControllerImpl } from '../viewer-controllers/pdf-viewer-controller';
 import { SymbolicLinkViewerControllerImpl } from '../viewer-controllers/symbolic-link-viewer-controller';
 import { TsvViewerControllerImpl } from '../viewer-controllers/tsv-viewer-controller';
 import {
@@ -13,6 +14,7 @@ import {
     DirectoryViewerControllerFactory,
     ImageViewerControllerFactory,
     MarkdownViewerControllerFactory,
+    PdfViewerControllerFactory,
     SymbolicLinkViewerControllerFactory,
     TsvViewerControllerFactory,
     ViewerControllerFactoryImpl,
@@ -52,6 +54,15 @@ describe('ViewerControllerFactoryImpl class', () => {
         });
     });
 
+    describe('imageViewerControllerFactory.createImageViewerController() method', () => {
+        test('it creates an instance of `ImageViewerControllerImpl` class', () => {
+            const viewerControllerFactory: ImageViewerControllerFactory =
+                createViewerControllerFactory().viewerControllerFactory;
+            const viewerController = viewerControllerFactory.createImageViewerController();
+            expect(viewerController).toBeInstanceOf(ImageViewerControllerImpl);
+        });
+    });
+
     describe('markdownViewerControllerFactory.createMarkdownViewerController() method', () => {
         test('it creates an instance of `MarkdownViewerControllerImpl` class', () => {
             const { historyController } = createHistoryController();
@@ -64,12 +75,14 @@ describe('ViewerControllerFactoryImpl class', () => {
         });
     });
 
-    describe('imageViewerControllerFactory.createImageViewerController() method', () => {
-        test('it creates an instance of `ImageViewerControllerImpl` class', () => {
-            const viewerControllerFactory: ImageViewerControllerFactory =
+    describe('pdfViewerControllerFactory.createPdfViewerController() method', () => {
+        test('it creates an instance of `PdfViewerControllerImpl` class', () => {
+            const { historyController } = createHistoryController();
+            const viewerControllerFactory: PdfViewerControllerFactory =
                 createViewerControllerFactory().viewerControllerFactory;
-            const viewerController = viewerControllerFactory.createImageViewerController();
-            expect(viewerController).toBeInstanceOf(ImageViewerControllerImpl);
+            const viewerController =
+                viewerControllerFactory.createPdfViewerController({ historyController });
+            expect(viewerController).toBeInstanceOf(PdfViewerControllerImpl);
         });
     });
 
