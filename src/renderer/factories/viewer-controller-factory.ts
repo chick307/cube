@@ -12,6 +12,7 @@ import {
     MarkdownViewerController,
     MarkdownViewerControllerImpl,
 } from '../viewer-controllers/markdown-viewer-controller';
+import { MediaViewerController, MediaViewerControllerImpl } from '../viewer-controllers/media-viewer-controller';
 import { PdfViewerController, PdfViewerControllerImpl } from '../viewer-controllers/pdf-viewer-controller';
 import {
     SymbolicLinkViewerController,
@@ -41,6 +42,10 @@ export type ImageViewerControllerFactory = {
 
 export type MarkdownViewerControllerFactory = {
     createMarkdownViewerController(params: CreateMarkdownViewerControllerParams): MarkdownViewerController;
+};
+
+export type MediaViewerControllerFactory = {
+    createMediaViewerController(): MediaViewerController;
 };
 
 export type CreateMarkdownViewerControllerParams = {
@@ -73,6 +78,7 @@ export class ViewerControllerFactoryImpl implements
     DirectoryViewerControllerFactory,
     ImageViewerControllerFactory,
     MarkdownViewerControllerFactory,
+    MediaViewerControllerFactory,
     PdfViewerControllerFactory,
     SymbolicLinkViewerControllerFactory,
     TsvViewerControllerFactory {
@@ -116,6 +122,12 @@ export class ViewerControllerFactoryImpl implements
             historyController: params.historyController,
             imageService: this.#imageService,
             tabController: params.tabController,
+        });
+    }
+
+    createMediaViewerController(): MediaViewerController {
+        return new MediaViewerControllerImpl({
+            entryService: this.#entryService,
         });
     }
 

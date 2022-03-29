@@ -6,6 +6,7 @@ import { ComicViewerControllerImpl } from '../viewer-controllers/comic-viewer-co
 import { DirectoryViewerControllerImpl } from '../viewer-controllers/directory-viewer-controller';
 import { ImageViewerControllerImpl } from '../viewer-controllers/image-viewer-controller';
 import { MarkdownViewerControllerImpl } from '../viewer-controllers/markdown-viewer-controller';
+import { MediaViewerControllerImpl } from '../viewer-controllers/media-viewer-controller';
 import { PdfViewerControllerImpl } from '../viewer-controllers/pdf-viewer-controller';
 import { SymbolicLinkViewerControllerImpl } from '../viewer-controllers/symbolic-link-viewer-controller';
 import { TsvViewerControllerImpl } from '../viewer-controllers/tsv-viewer-controller';
@@ -14,6 +15,7 @@ import {
     DirectoryViewerControllerFactory,
     ImageViewerControllerFactory,
     MarkdownViewerControllerFactory,
+    MediaViewerControllerFactory,
     PdfViewerControllerFactory,
     SymbolicLinkViewerControllerFactory,
     TsvViewerControllerFactory,
@@ -72,6 +74,15 @@ describe('ViewerControllerFactoryImpl class', () => {
             const viewerController =
                 viewerControllerFactory.createMarkdownViewerController({ historyController, tabController });
             expect(viewerController).toBeInstanceOf(MarkdownViewerControllerImpl);
+        });
+    });
+
+    describe('mediaViewerControllerFactory.createMediaViewerController() method', () => {
+        test('it creates an instance of `MediaViewerControllerImpl` class', () => {
+            const viewerControllerFactory: MediaViewerControllerFactory =
+                createViewerControllerFactory().viewerControllerFactory;
+            const viewerController = viewerControllerFactory.createMediaViewerController();
+            expect(viewerController).toBeInstanceOf(MediaViewerControllerImpl);
         });
     });
 
