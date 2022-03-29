@@ -179,7 +179,9 @@ const markdownViewer = createFileViewer({
 const mediaViewer = createFileViewer({
     name: 'Media',
     viewerStateFactory: () => new ViewerStates.MediaViewerState(),
-    render: ({ entry, fileSystem }) => ({ node: <EntryViews.MediaEntryView {...{ entry, fileSystem }} /> }),
+    render: ({ entry, fileSystem, viewerState }) => ({
+        node: <Viewers.MediaViewer {...{ entry, fileSystem, viewerState }} />,
+    }),
 });
 
 const pdfViewer = createFileViewer({
