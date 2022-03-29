@@ -12,6 +12,7 @@ import {
     MarkdownViewerController,
     MarkdownViewerControllerImpl,
 } from '../viewer-controllers/markdown-viewer-controller';
+import { PdfViewerController, PdfViewerControllerImpl } from '../viewer-controllers/pdf-viewer-controller';
 import {
     SymbolicLinkViewerController,
     SymbolicLinkViewerControllerImpl,
@@ -47,6 +48,14 @@ export type CreateMarkdownViewerControllerParams = {
     tabController: TabController;
 };
 
+export type PdfViewerControllerFactory = {
+    createPdfViewerController(params: CreatePdfViewerControllerParams): PdfViewerController;
+};
+
+export type CreatePdfViewerControllerParams = {
+    historyController: HistoryController;
+};
+
 export type SymbolicLinkViewerControllerFactory = {
     createSymbolicLinkViewerController(params: CreateSymbolicLinkViewerControllerParams): SymbolicLinkViewerController;
 };
@@ -64,6 +73,7 @@ export class ViewerControllerFactoryImpl implements
     DirectoryViewerControllerFactory,
     ImageViewerControllerFactory,
     MarkdownViewerControllerFactory,
+    PdfViewerControllerFactory,
     SymbolicLinkViewerControllerFactory,
     TsvViewerControllerFactory {
     #entryService: EntryService;
@@ -106,6 +116,13 @@ export class ViewerControllerFactoryImpl implements
             historyController: params.historyController,
             imageService: this.#imageService,
             tabController: params.tabController,
+        });
+    }
+
+    createPdfViewerController(params: CreatePdfViewerControllerParams): PdfViewerController {
+        return new PdfViewerControllerImpl({
+            entryService: this.#entryService,
+            historyController: params.historyController,
         });
     }
 
