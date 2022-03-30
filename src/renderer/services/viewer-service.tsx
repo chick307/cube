@@ -195,7 +195,9 @@ const pdfViewer = createFileViewer({
 const textViewer = createFileViewer({
     name: 'Text',
     viewerStateFactory: () => new ViewerStates.TextViewerState(),
-    render: ({ entry, fileSystem }) => ({ node: <EntryViews.TextEntryView {...{ entry, fileSystem }} /> }),
+    render: ({ entry, fileSystem, viewerState }) => ({
+        node: <Viewers.TextViewer {...{ entry, fileSystem, viewerState }} />,
+    }),
 });
 
 const tsvViewer = createFileViewer({
