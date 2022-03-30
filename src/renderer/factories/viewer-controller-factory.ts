@@ -18,6 +18,7 @@ import {
     SymbolicLinkViewerController,
     SymbolicLinkViewerControllerImpl,
 } from '../viewer-controllers/symbolic-link-viewer-controller';
+import { TextViewerController, TextViewerControllerImpl } from '../viewer-controllers/text-viewer-controller';
 import { TsvViewerController, TsvViewerControllerImpl } from '../viewer-controllers/tsv-viewer-controller';
 
 export type ComicViewerControllerFactory = {
@@ -69,6 +70,14 @@ export type CreateSymbolicLinkViewerControllerParams = {
     historyController: HistoryController;
 };
 
+export type TextViewerControllerFactory = {
+    createTextViewerController(params: CreateTextViewerControllerParams): TextViewerController;
+};
+
+export type CreateTextViewerControllerParams = {
+    historyController: HistoryController;
+};
+
 export type TsvViewerControllerFactory = {
     createTsvViewerController(): TsvViewerController;
 };
@@ -81,6 +90,7 @@ export class ViewerControllerFactoryImpl implements
     MediaViewerControllerFactory,
     PdfViewerControllerFactory,
     SymbolicLinkViewerControllerFactory,
+    TextViewerControllerFactory,
     TsvViewerControllerFactory {
     #entryService: EntryService;
 
@@ -140,6 +150,13 @@ export class ViewerControllerFactoryImpl implements
 
     createSymbolicLinkViewerController(params: CreateSymbolicLinkViewerControllerParams): SymbolicLinkViewerController {
         return new SymbolicLinkViewerControllerImpl({
+            entryService: this.#entryService,
+            historyController: params.historyController,
+        });
+    }
+
+    createTextViewerController(params: CreateTextViewerControllerParams): TextViewerController {
+        return new TextViewerControllerImpl({
             entryService: this.#entryService,
             historyController: params.historyController,
         });
