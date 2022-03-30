@@ -4,18 +4,24 @@ import { ViewerState, viewerStateTypes } from './viewer-state';
 export type TextViewerStateJson = {
     type: 'text';
 
+    language: string;
+
     scrollPosition?: PointJson | null | undefined;
 };
 
 export class TextViewerState extends ViewerState {
+    readonly language: string;
+
     readonly scrollPosition: Point;
 
     readonly type = 'text';
 
     constructor(params?: {
+        readonly language?: string | null | undefined;
         readonly scrollPosition?: Point | null | undefined;
     }) {
         super();
+        this.language = params?.language ?? 'plaintext';
         this.scrollPosition = params?.scrollPosition ?? new Point(0, 0);
     }
 
@@ -27,20 +33,36 @@ export class TextViewerState extends ViewerState {
     static fromJson(json: any): TextViewerState {
         if (json == null || json.type !== 'text')
             throw Error();
+        if (json.language != null && typeof json.language !== 'string')
+            throw Error();
+        const language = json.language == null ? null : json.language;
         const scrollPosition = json.scrollPosition == null ? null : Point.fromJson(json.scrollPosition);
-        const textViewerState = new TextViewerState({ scrollPosition });
+        const textViewerState = new TextViewerState({ language, scrollPosition });
         return textViewerState;
     }
 
-    setScrollPosition(position: Point): TextViewerState {
+    #create(params: {
+        readonly language?: string;
+        readonly scrollPosition?: Point;
+    }): TextViewerState {
         return new TextViewerState({
-            scrollPosition: position,
+            language: 'language' in params ? params.language : this.language,
+            scrollPosition: 'scrollPosition' in params ? params.scrollPosition : this.scrollPosition,
         });
+    }
+
+    setLanguage(language: string): TextViewerState {
+        return this.#create({ language });
+    }
+
+    setScrollPosition(scrollPosition: Point): TextViewerState {
+        return this.#create({ scrollPosition });
     }
 
     override toJson(): TextViewerStateJson {
         return {
             type: 'text',
+            language: this.language,
             scrollPosition: this.scrollPosition.toJson(),
         };
     }
