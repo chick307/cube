@@ -50,6 +50,7 @@ afterEach(() => {
 });
 
 const defaultState: TextViewerControllerState = {
+    language: 'plaintext',
     scrollPosition: new Point(0, 0),
     lines: null,
 };
@@ -112,6 +113,42 @@ describe('TextViewerControllerImpl class', () => {
                 lines: expect.any(Array),
                 scrollPosition: new Point(0, 100),
             });
+        });
+    });
+
+    describe('textViewerController.setLanguage() method', () => {
+        test('it replaces the history item', async () => {
+            const replace = jest.spyOn(services.historyController, 'replace');
+            const controller = new TextViewerControllerImpl({ ...services });
+            const entry = entries.get('/a.txt')!;
+            const viewerStateA = new TextViewerState();
+            controller.initialize({ entry, fileSystem, viewerState: viewerStateA });
+            await immediate();
+            expect(replace).not.toHaveBeenCalled();
+            controller.setLanguage('javascript');
+            const viewerStateB = new TextViewerState({ language: 'javascript' });
+            expect(replace).toHaveBeenCalledTimes(1);
+            expect(replace).toHaveBeenCalledWith(new HistoryItem({ entry, fileSystem, viewerState: viewerStateB }));
+        });
+
+        test('it does nothing if the same language is passed', async () => {
+            const replace = jest.spyOn(services.historyController, 'replace');
+            const controller = new TextViewerControllerImpl({ ...services });
+            const entry = entries.get('/a.txt')!;
+            const viewerState = new TextViewerState({ scrollPosition: new Point(0, 0) });
+            controller.initialize({ entry, fileSystem, viewerState });
+            await immediate();
+            expect(replace).not.toHaveBeenCalled();
+            controller.setLanguage('plaintext');
+            expect(replace).not.toHaveBeenCalled();
+        });
+
+        test('it does nothing before initialization', async () => {
+            const replace = jest.spyOn(services.historyController, 'replace');
+            const controller = new TextViewerControllerImpl({ ...services });
+            controller.setLanguage('css');
+            await immediate();
+            expect(replace).not.toHaveBeenCalled();
         });
     });
 

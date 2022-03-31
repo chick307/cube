@@ -17,10 +17,14 @@ export type TextViewerController = {
 
     initialize(params: InitializeParams): void;
 
+    setLanguage(value: string): void;
+
     scrollTo(params: ScrollToParams): void;
 };
 
 export type TextViewerControllerState = {
+    readonly language: string;
+
     readonly lines: TextViewerControllerLineState[] | null;
 
     readonly scrollPosition: Point;
@@ -104,8 +108,9 @@ export class TextViewerControllerImpl implements TextViewerController {
 
         this.#state = this.#restate.state.map((state) => {
             const { lines, viewerState } = state;
-            const { scrollPosition } = viewerState;
+            const { language, scrollPosition } = viewerState;
             return {
+                language,
                 lines,
                 scrollPosition,
             };
@@ -190,7 +195,8 @@ export class TextViewerControllerImpl implements TextViewerController {
             if (text === null)
                 return { ...state, lines: null };
 
-            const rootTree = lowlight.highlight('plaintext', text);
+            const { language } = viewerState;
+            const rootTree = lowlight.highlight(language, text);
             const lineContents = this.#splitLines({ node: rootTree });
             const lines = lineContents.map((content, index) => {
                 const lineNumber = index + 1;
@@ -224,6 +230,23 @@ export class TextViewerControllerImpl implements TextViewerController {
         this.#update(() => ({ ...initialState, viewerState }));
 
         this.#initialize({ entry, fileSystem, viewerState, signal });
+    }
+
+    setLanguage(value: string): void {
+        const entry = this.#entry;
+        if (entry === null)
+            return;
+
+        const fileSystem = this.#fileSystem as FileSystem;
+        const textViewerState = this.#viewerState as TextViewerState;
+        const viewerState = textViewerState.setLanguage(value);
+        if (textViewerState.equals(viewerState))
+            return;
+        this.#viewerState = viewerState;
+        this.#updateWithHighlight((state) => ({ ...state, viewerState }));
+
+        const newHistoryItem = new HistoryItem({ entry, fileSystem, viewerState });
+        this.#historyController.replace(newHistoryItem);
     }
 
     scrollTo(params: ScrollToParams): void {
