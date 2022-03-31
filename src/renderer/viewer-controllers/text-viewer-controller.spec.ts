@@ -1,3 +1,6 @@
+import { toText } from 'hast-util-to-text';
+import { h } from 'hastscript';
+
 import { createEntryMap } from '../../common/entities/entry.test-helper';
 import { DummyFileSystem } from '../../common/entities/file-system.test-helper';
 import { HistoryItem } from '../../common/entities/history-item';
@@ -13,6 +16,7 @@ import { TextViewerControllerImpl, TextViewerControllerState } from './text-view
 
 const entries = createEntryMap([
     '/a.txt',
+    '/b.js',
 ]);
 
 const fileSystem = new DummyFileSystem();
@@ -31,6 +35,7 @@ beforeEach(() => {
             throw Error();
         switch (params.entry.path.toString()) {
             case '/a.txt': return Buffer.from('a.txt');
+            case '/b.js': return Buffer.from('/* 1\n   2\n   3\n */\n');
             default: throw Error();
         }
     });
@@ -61,7 +66,7 @@ describe('TextViewerControllerImpl class', () => {
             const readFile = jest.spyOn(services.entryService, 'readFile');
             const controller = new TextViewerControllerImpl({ ...services });
             const entry = entries.get('/a.txt')!;
-            const viewerState = new TextViewerState();
+            const viewerState = new TextViewerState({ language: 'javascript' });
             controller.initialize({ entry, fileSystem, viewerState });
             expect(controller.state.current).toEqual({ ...defaultState });
             await immediate();
@@ -69,10 +74,30 @@ describe('TextViewerControllerImpl class', () => {
             expect(readFile).toHaveBeenCalledWith({ entry, fileSystem, signal: expect.any(CloseSignal) });
             expect(controller.state.current).toEqual({
                 ...defaultState,
+                language: 'javascript',
                 lines: [
                     { lineNumber: 1, tree: expect.objectContaining({ type: 'root' }) },
                 ],
             });
+        });
+
+        test('it splits the entry into lines', async () => {
+            const controller = new TextViewerControllerImpl({ ...services });
+            const entry = entries.get('/b.js')!;
+            const viewerState = new TextViewerState();
+            controller.initialize({ entry, fileSystem, viewerState });
+            expect(controller.state.current).toEqual({ ...defaultState });
+            await immediate();
+            expect(controller.state.current).toEqual({
+                ...defaultState,
+                lines: expect.any(Array),
+            });
+            expect(controller.state.current.lines!.map(({ tree }) => toText(h('pre', tree)))).toEqual([
+                '/* 1\n',
+                '   2\n',
+                '   3\n',
+                ' */\n',
+            ]);
         });
 
         test('it does nothing if called with the same parameters', async () => {

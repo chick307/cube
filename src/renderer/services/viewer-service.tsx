@@ -156,12 +156,6 @@ const imageViewer = createFileViewer({
     }),
 });
 
-const javascriptViewer = createFileViewer({
-    name: 'JavaScript',
-    viewerStateFactory: () => new ViewerStates.JavaScriptViewerState(),
-    render: ({ entry, fileSystem }) => ({ node: <EntryViews.JavaScriptEntryView {...{ entry, fileSystem }} /> }),
-});
-
 const markdownViewer = createFileViewer({
     name: 'Markdown',
     viewerStateFactory: () => new ViewerStates.MarkdownViewerState(),
@@ -215,6 +209,7 @@ const createTextFileViewer = (params: {
 };
 
 const cssTextViewer = createTextFileViewer({ language: 'css' });
+const javascriptTextViewer = createTextFileViewer({ language: 'javascript' });
 
 const createRedirectViewer = (params: {
     historyItem: HistoryItem;
@@ -288,7 +283,6 @@ export class ViewerServiceImpl implements ViewerService {
 
             viewers.push(binaryViewer);
             viewers.push(imageViewer);
-            viewers.push(javascriptViewer);
             viewers.push(markdownViewer);
             viewers.push(mediaViewer);
             viewers.push(pdfViewer);
@@ -314,12 +308,13 @@ export class ViewerServiceImpl implements ViewerService {
 
             if (this.#hasCssExtension(entry)) {
                 viewers.unshift(cssTextViewer);
+            } else if (this.#hasJavaScriptExtension(entry)) {
+                viewers.unshift(javascriptTextViewer);
             } else {
                 viewers.push(textViewer);
                 viewers.sort(
                     this.#hasComicExtension(entry) ? (viewer) => viewer.id === 'redirected-comic' ? -1 : 0 :
                     this.#hasImageExtension(entry) ? (viewer) => viewer.id === 'image' ? -1 : 0 :
-                    this.#hasJavaScriptExtension(entry) ? (viewer) => viewer.id === 'javascript' ? -1 : 0 :
                     this.#hasMarkdownExtension(entry) ? (viewer) => viewer.id === 'markdown' ? -1 : 0 :
                     this.#hasMediaExtension(entry) ? (viewer) => viewer.id === 'media' ? -1 : 0 :
                     this.#hasPdfExtension(entry) ? (viewer) => viewer.id === 'pdf' ? -1 : 0 :
