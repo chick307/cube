@@ -211,6 +211,7 @@ const createTextFileViewer = (params: {
 const cssTextViewer = createTextFileViewer({ language: 'css' });
 const javascriptTextViewer = createTextFileViewer({ language: 'javascript' });
 const markdownTextViewer = createTextFileViewer({ language: 'markdown' });
+const typescriptTextViewer = createTextFileViewer({ language: 'typescript' });
 
 const createRedirectViewer = (params: {
     historyItem: HistoryItem;
@@ -314,6 +315,8 @@ export class ViewerServiceImpl implements ViewerService {
             } else if (this.#hasMarkdownExtension(entry)) {
                 viewers.unshift(markdownTextViewer);
                 viewers.sort((viewer) => viewer.id === 'markdown' ? -1 : 0);
+            } else if (this.#hasTypeScriptExtension(entry)) {
+                viewers.unshift(typescriptTextViewer);
             } else {
                 viewers.push(textViewer);
                 viewers.sort(
@@ -368,6 +371,10 @@ export class ViewerServiceImpl implements ViewerService {
 
     #hasTsvExtension(entry: FileEntry) {
         return /^\.(?:tsv)$/i.test(entry.path.getExtension());
+    }
+
+    #hasTypeScriptExtension(entry: FileEntry) {
+        return /^\.(?:tsx?)$/i.test(entry.path.getExtension());
     }
 
     #hasZipExtension(entry: FileEntry) {
