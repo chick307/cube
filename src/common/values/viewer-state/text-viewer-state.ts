@@ -51,6 +51,16 @@ export class TextViewerState extends ViewerState {
         });
     }
 
+    equals(other: TextViewerState | null | undefined): boolean {
+        if (other == null)
+            return false;
+        if (this.language !== other.language)
+            return false;
+        if (!this.scrollPosition.equals(other.scrollPosition))
+            return false;
+        return true;
+    }
+
     setLanguage(language: string): TextViewerState {
         return this.#create({ language });
     }

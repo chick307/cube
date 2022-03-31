@@ -7,6 +7,15 @@ const defaultJson = {
     scrollPosition: { x: 0, y: 0 },
 };
 
+const languages = ['plaintext', 'javascript', 'css'];
+
+const scrollPositions = [new Point(0, 0), new Point(10, 20), new Point(33, 44)];
+
+const combinations = [{}]
+    .flatMap((values) => languages.map((v) => ({ ...values, language: v })))
+    .flatMap((values) => scrollPositions.map((v) => ({ ...values, scrollPosition: v })))
+    .concat([]);
+
 describe('TextViewerState class', () => {
     describe('TextViewerState.fromJson() method', () => {
         test('it returns an instance of TextViewerState class', () => {
@@ -24,6 +33,25 @@ describe('TextViewerState class', () => {
             expect(() => TextViewerState.fromJson({})).toThrow();
             expect(() => TextViewerState.fromJson({ type: '' })).toThrow();
             expect(() => TextViewerState.fromJson({ type: 'binary' })).toThrow();
+        });
+    });
+
+    describe('textViewerState.equals() method', () => {
+        test('it returns whether the passed object has the same values', () => {
+            for (let i = 0; i < combinations.length; i++) {
+                const a = new TextViewerState(combinations[i]);
+                expect(a.equals(null)).toBe(false);
+                expect(a.equals(undefined)).toBe(false);
+                expect(a.equals(a)).toBe(true);
+                for (let j = 0; j < combinations.length; j++) {
+                    const b = new TextViewerState(combinations[j]);
+                    if (i === j) {
+                        expect(a.equals(b)).toBe(true);
+                    } else {
+                        expect(a.equals(b)).toBe(false);
+                    }
+                }
+            }
         });
     });
 
