@@ -213,6 +213,7 @@ const htmlTextViewer = createTextFileViewer({ language: 'html' });
 const javascriptTextViewer = createTextFileViewer({ language: 'javascript' });
 const markdownTextViewer = createTextFileViewer({ language: 'markdown' });
 const typescriptTextViewer = createTextFileViewer({ language: 'typescript' });
+const xmlTextViewer = createTextFileViewer({ language: 'xml' });
 
 const createRedirectViewer = (params: {
     historyItem: HistoryItem;
@@ -320,6 +321,8 @@ export class ViewerServiceImpl implements ViewerService {
                 viewers.sort((viewer) => viewer.id === 'markdown' ? -1 : 0);
             } else if (this.#hasTypeScriptExtension(entry)) {
                 viewers.unshift(typescriptTextViewer);
+            } else if (this.#hasXmlExtension(entry)) {
+                viewers.unshift(xmlTextViewer);
             } else {
                 viewers.push(textViewer);
                 viewers.sort(
@@ -386,6 +389,10 @@ export class ViewerServiceImpl implements ViewerService {
 
     #hasZipExtension(entry: FileEntry) {
         return /^\.(?:zip)$/i.test(entry.path.getExtension());
+    }
+
+    #hasXmlExtension(entry: FileEntry) {
+        return /^\.(?:atom|rss|xml)$/i.test(entry.path.getExtension());
     }
 
     async prioritizeViewers(

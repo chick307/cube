@@ -140,6 +140,7 @@ export const TextViewer = (props: Props) => {
         { label: 'JavaScript', value: 'javascript' },
         { label: 'Markdown', value: 'markdown' },
         { label: 'TypeScript', value: 'typescript' },
+        { label: 'XML', value: 'xml' },
     ], []);
 
     return (
