@@ -9,10 +9,13 @@ import { Point } from '../../../common/values/point';
 import type { TextViewerState } from '../../../common/values/viewer-state';
 import type { HistoryController } from '../../controllers/history-controller';
 import type { TextViewerControllerFactory } from '../../factories/viewer-controller-factory';
+import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
 import { useRestate } from '../../hooks/use-restate';
 import { useService } from '../../hooks/use-service';
 import { useTask } from '../../hooks/use-task';
 import { rehypeCssModules } from '../../utils/rehype-css-modules';
+import { StatusBarSelect } from '../status-bar/status-bar-select';
+import { StatusBarSpace } from '../status-bar/status-bar-space';
 import styles from './text-viewer.module.css';
 
 export type Props = {
@@ -44,7 +47,10 @@ export const TextViewer = (props: Props) => {
 
     const viewerElementRef = React.useRef<HTMLDivElement>(null);
 
+    const StatusBarGateway = useStatusBarGateway();
+
     const {
+        language,
         lines,
         scrollPosition,
     } = useRestate(viewerController.state);
@@ -123,6 +129,17 @@ export const TextViewer = (props: Props) => {
         container.scrollTo(scrollPosition.x, scrollPosition.y);
     }, [lineElements]);
 
+    const onLanguageChange = React.useCallback((value: string) => {
+        viewerController.setLanguage(value);
+    }, [viewerController]);
+
+    const languageOptions = StatusBarSelect.useOptions(() => [
+        { label: 'Plain Text', value: 'plaintext' },
+        { label: 'CSS', value: 'css' },
+        { label: 'JavaScript', value: 'javascript' },
+        { label: 'Markdown', value: 'markdown' },
+    ], []);
+
     return (
         <div ref={viewerElementRef} {...{ className }}>
             <pre>
@@ -132,6 +149,10 @@ export const TextViewer = (props: Props) => {
                     </div>
                 </code>
             </pre>
+            <StatusBarGateway>
+                <StatusBarSpace />
+                <StatusBarSelect value={language} onChange={onLanguageChange} options={languageOptions} />
+            </StatusBarGateway>
         </div>
     );
 };
