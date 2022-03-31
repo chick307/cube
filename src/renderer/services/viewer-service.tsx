@@ -211,6 +211,7 @@ const createTextFileViewer = (params: {
 const cssTextViewer = createTextFileViewer({ language: 'css' });
 const htmlTextViewer = createTextFileViewer({ language: 'html' });
 const javascriptTextViewer = createTextFileViewer({ language: 'javascript' });
+const jsonTextViewer = createTextFileViewer({ language: 'json' });
 const markdownTextViewer = createTextFileViewer({ language: 'markdown' });
 const typescriptTextViewer = createTextFileViewer({ language: 'typescript' });
 const xmlTextViewer = createTextFileViewer({ language: 'xml' });
@@ -316,6 +317,8 @@ export class ViewerServiceImpl implements ViewerService {
                 viewers.unshift(htmlTextViewer);
             } else if (this.#hasJavaScriptExtension(entry)) {
                 viewers.unshift(javascriptTextViewer);
+            } else if (this.#hasJsonExtension(entry)) {
+                viewers.unshift(jsonTextViewer);
             } else if (this.#hasMarkdownExtension(entry)) {
                 viewers.unshift(markdownTextViewer);
                 viewers.sort((viewer) => viewer.id === 'markdown' ? -1 : 0);
@@ -361,6 +364,10 @@ export class ViewerServiceImpl implements ViewerService {
 
     #hasJavaScriptExtension(entry: FileEntry) {
         return /^\.(?:jsx?)$/i.test(entry.path.getExtension());
+    }
+
+    #hasJsonExtension(entry: FileEntry) {
+        return /^\.(?:json|webmanifest)$/i.test(entry.path.getExtension());
     }
 
     #hasMarkdownExtension(entry: FileEntry) {
