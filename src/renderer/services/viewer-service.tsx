@@ -322,6 +322,9 @@ export class ViewerServiceImpl implements ViewerService {
             } else if (this.#hasMarkdownExtension(entry)) {
                 viewers.unshift(markdownTextViewer);
                 viewers.sort((viewer) => viewer.id === 'markdown' ? -1 : 0);
+            } else if (this.#hasSvgExtension(entry)) {
+                viewers.unshift(xmlTextViewer);
+                viewers.sort((viewer) => viewer.id === 'image' ? -1 : 0);
             } else if (this.#hasTypeScriptExtension(entry)) {
                 viewers.unshift(typescriptTextViewer);
             } else if (this.#hasXmlExtension(entry)) {
@@ -359,7 +362,7 @@ export class ViewerServiceImpl implements ViewerService {
     }
 
     #hasImageExtension(entry: FileEntry) {
-        return /^\.(?:jpe?g|png|svg|webp)$/i.test(entry.path.getExtension());
+        return /^\.(?:jpe?g|png|webp)$/i.test(entry.path.getExtension());
     }
 
     #hasJavaScriptExtension(entry: FileEntry) {
@@ -380,6 +383,10 @@ export class ViewerServiceImpl implements ViewerService {
 
     #hasPdfExtension(entry: FileEntry) {
         return /^\.pdf$/i.test(entry.path.getExtension());
+    }
+
+    #hasSvgExtension(entry: FileEntry) {
+        return /^\.(?:svg)$/i.test(entry.path.getExtension());
     }
 
     #hasTextExtension(entry: FileEntry) {
