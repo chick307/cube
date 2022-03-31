@@ -136,6 +136,7 @@ export const TextViewer = (props: Props) => {
     const languageOptions = StatusBarSelect.useOptions(() => [
         { label: 'Plain Text', value: 'plaintext' },
         { label: 'CSS', value: 'css' },
+        { label: 'Dockerfile', value: 'dockerfile' },
         { label: 'HTML', value: 'html' },
         { label: 'JavaScript', value: 'javascript' },
         { label: 'JSON', value: 'json' },

@@ -209,6 +209,7 @@ const createTextFileViewer = (params: {
 };
 
 const cssTextViewer = createTextFileViewer({ language: 'css' });
+const dockerfileTextViewer = createTextFileViewer({ language: 'dockerfile' });
 const htmlTextViewer = createTextFileViewer({ language: 'html' });
 const javascriptTextViewer = createTextFileViewer({ language: 'javascript' });
 const jsonTextViewer = createTextFileViewer({ language: 'json' });
@@ -329,6 +330,8 @@ export class ViewerServiceImpl implements ViewerService {
                 viewers.unshift(typescriptTextViewer);
             } else if (this.#hasXmlExtension(entry)) {
                 viewers.unshift(xmlTextViewer);
+            } else if (this.#isDockerfile(entry)) {
+                viewers.unshift(dockerfileTextViewer);
             } else {
                 viewers.push(textViewer);
                 viewers.sort(
@@ -347,6 +350,10 @@ export class ViewerServiceImpl implements ViewerService {
         }
 
         return [];
+    }
+
+    #isDockerfile(entry: FileEntry) {
+        return /^dockerfile$/i.test(entry.name.toString());
     }
 
     #hasComicExtension(entry: FileEntry) {

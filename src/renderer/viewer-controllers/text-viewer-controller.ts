@@ -1,6 +1,6 @@
 import type { ElementContent, Root, RootContent } from 'hast';
 import { h } from 'hastscript';
-import { lowlight } from 'lowlight';
+import { lowlight } from 'lowlight/lib/all';
 
 import type { Entry, FileEntry } from '../../common/entities/entry';
 import type { FileSystem } from '../../common/entities/file-system';
