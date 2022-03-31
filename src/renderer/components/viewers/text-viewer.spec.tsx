@@ -25,6 +25,7 @@ import type { TextViewerController } from '../../viewer-controllers/text-viewer-
 import { createTextViewerController } from '../../viewer-controllers/text-viewer-controller.test-helper';
 import { TextViewer } from './text-viewer';
 import styles from './text-viewer.module.css';
+import { useStatusBar } from '../../gateways/status-bar-gateway';
 
 const entries = createEntryMap([
     '/a.txt',
@@ -134,6 +135,49 @@ describe('TextViewer component', () => {
             await controller.setLines([h(null, 'Hello, TextViewer!')]);
         });
         expect(container.textContent).toBe('1Hello, TextViewer!');
+    });
+
+    test('it updates the state if the language option is selected', async () => {
+        const setLanguage = jest.spyOn(services.$viewerController, 'setLanguage');
+        const entry = entries.get('/a.txt')!;
+        const viewerState = new TextViewerState();
+        const Component = () => {
+            const { StatusBarExit, StatusBarProvider } = useStatusBar();
+            return composeElements(
+                <ServicesProvider value={services} />,
+                <div>
+                    {composeElements(
+                        <StatusBarProvider />,
+                        <TextViewer {...{ entry, fileSystem, viewerState }} />,
+                    )}
+                    <div className="test-status-bar">
+                        <StatusBarExit />,
+                    </div>
+                </div>,
+            );
+        };
+        await TestUtils.act(async () => {
+            ReactDom.render(<Component />, container);
+            await immediate();
+        });
+        await TestUtils.act(async () => {
+            await controller.setLines([h(null, 'Hello, TextViewer!')]);
+        });
+        const selectElement =
+            container.getElementsByClassName(styles.languageSelect)[0].getElementsByTagName('select')[0];
+        const options = Array.from(selectElement.getElementsByTagName('option'));
+        const cssOption = options.find((option) => option.textContent === 'CSS')!;
+        const javascriptOption = options.find((option) => option.textContent === 'JavaScript')!;
+        selectElement.value = cssOption.value;
+        TestUtils.Simulate.change(selectElement);
+        expect(setLanguage).toHaveBeenCalledTimes(1);
+        expect(setLanguage).toHaveBeenCalledWith('css');
+        setLanguage.mockClear();
+        selectElement.value = javascriptOption.value;
+        TestUtils.Simulate.change(selectElement);
+        expect(setLanguage).toHaveBeenCalledTimes(1);
+        expect(setLanguage).toHaveBeenCalledWith('javascript');
+        setLanguage.mockClear();
     });
 
     describe('className property', () => {

@@ -156,7 +156,8 @@ export const TextViewer = (props: Props) => {
             </pre>
             <StatusBarGateway>
                 <StatusBarSpace />
-                <StatusBarSelect value={language} onChange={onLanguageChange} options={languageOptions} />
+                <StatusBarSelect className={styles.languageSelect}
+                    value={language} onChange={onLanguageChange} options={languageOptions} />
             </StatusBarGateway>
         </div>
     );
