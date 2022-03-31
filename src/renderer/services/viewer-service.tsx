@@ -148,12 +148,6 @@ const binaryViewer = createFileViewer({
     render: ({ entry, fileSystem }) => ({ node: <EntryViews.BinaryEntryView {...{ entry, fileSystem }} /> }),
 });
 
-const cssViewer = createFileViewer({
-    name: 'CSS',
-    viewerStateFactory: () => new ViewerStates.CssViewerState(),
-    render: ({ entry, fileSystem }) => ({ node: <EntryViews.CssEntryView {...{ entry, fileSystem }} /> }),
-});
-
 const imageViewer = createFileViewer({
     name: 'Image',
     viewerStateFactory: () => new ViewerStates.ImageViewerState(),
@@ -207,6 +201,20 @@ const tsvViewer = createFileViewer({
         node: <Viewers.TsvViewer {...{ entry, fileSystem, viewerState }} />,
     }),
 });
+
+const createTextFileViewer = (params: {
+    language: string;
+}) => {
+    return createFileViewer({
+        name: 'Text',
+        viewerStateFactory: () => new ViewerStates.TextViewerState({ language: params.language }),
+        render: ({ entry, fileSystem, viewerState }) => ({
+            node: <Viewers.TextViewer {...{ entry, fileSystem, viewerState }} />,
+        }),
+    });
+};
+
+const cssTextViewer = createTextFileViewer({ language: 'css' });
 
 const createRedirectViewer = (params: {
     historyItem: HistoryItem;
@@ -279,13 +287,11 @@ export class ViewerServiceImpl implements ViewerService {
             const viewers = [] as Viewer[];
 
             viewers.push(binaryViewer);
-            viewers.push(cssViewer);
             viewers.push(imageViewer);
             viewers.push(javascriptViewer);
             viewers.push(markdownViewer);
             viewers.push(mediaViewer);
             viewers.push(pdfViewer);
-            viewers.push(textViewer);
             viewers.push(tsvViewer);
 
             const zipFileSystem = new ZipFileSystem({ container: { entry, fileSystem } });
@@ -306,19 +312,23 @@ export class ViewerServiceImpl implements ViewerService {
                 viewer: zipViewer,
             }));
 
-            viewers.sort(
-                this.#hasComicExtension(entry) ? (viewer) => viewer.id === 'redirected-comic' ? -1 : 0 :
-                this.#hasCssExtension(entry) ? (viewer) => viewer.id === 'css' ? -1 : 0 :
-                this.#hasImageExtension(entry) ? (viewer) => viewer.id === 'image' ? -1 : 0 :
-                this.#hasJavaScriptExtension(entry) ? (viewer) => viewer.id === 'javascript' ? -1 : 0 :
-                this.#hasMarkdownExtension(entry) ? (viewer) => viewer.id === 'markdown' ? -1 : 0 :
-                this.#hasMediaExtension(entry) ? (viewer) => viewer.id === 'media' ? -1 : 0 :
-                this.#hasPdfExtension(entry) ? (viewer) => viewer.id === 'pdf' ? -1 : 0 :
-                this.#hasTextExtension(entry) ? (viewer) => viewer.id === 'text' ? -1 : 0 :
-                this.#hasTsvExtension(entry) ? (viewer) => viewer.id === 'tsv' ? -1 : 0 :
-                this.#hasZipExtension(entry) ? (viewer) => viewer.id === 'redirected-zip' ? -1 : 0 :
-                () => 0,
-            );
+            if (this.#hasCssExtension(entry)) {
+                viewers.unshift(cssTextViewer);
+            } else {
+                viewers.push(textViewer);
+                viewers.sort(
+                    this.#hasComicExtension(entry) ? (viewer) => viewer.id === 'redirected-comic' ? -1 : 0 :
+                    this.#hasImageExtension(entry) ? (viewer) => viewer.id === 'image' ? -1 : 0 :
+                    this.#hasJavaScriptExtension(entry) ? (viewer) => viewer.id === 'javascript' ? -1 : 0 :
+                    this.#hasMarkdownExtension(entry) ? (viewer) => viewer.id === 'markdown' ? -1 : 0 :
+                    this.#hasMediaExtension(entry) ? (viewer) => viewer.id === 'media' ? -1 : 0 :
+                    this.#hasPdfExtension(entry) ? (viewer) => viewer.id === 'pdf' ? -1 : 0 :
+                    this.#hasTextExtension(entry) ? (viewer) => viewer.id === 'text' ? -1 : 0 :
+                    this.#hasTsvExtension(entry) ? (viewer) => viewer.id === 'tsv' ? -1 : 0 :
+                    this.#hasZipExtension(entry) ? (viewer) => viewer.id === 'redirected-zip' ? -1 : 0 :
+                    () => 0,
+                );
+            }
 
             return viewers;
         }
