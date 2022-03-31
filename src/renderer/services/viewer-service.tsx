@@ -210,6 +210,7 @@ const createTextFileViewer = (params: {
 
 const cssTextViewer = createTextFileViewer({ language: 'css' });
 const javascriptTextViewer = createTextFileViewer({ language: 'javascript' });
+const markdownTextViewer = createTextFileViewer({ language: 'markdown' });
 
 const createRedirectViewer = (params: {
     historyItem: HistoryItem;
@@ -310,12 +311,14 @@ export class ViewerServiceImpl implements ViewerService {
                 viewers.unshift(cssTextViewer);
             } else if (this.#hasJavaScriptExtension(entry)) {
                 viewers.unshift(javascriptTextViewer);
+            } else if (this.#hasMarkdownExtension(entry)) {
+                viewers.unshift(markdownTextViewer);
+                viewers.sort((viewer) => viewer.id === 'markdown' ? -1 : 0);
             } else {
                 viewers.push(textViewer);
                 viewers.sort(
                     this.#hasComicExtension(entry) ? (viewer) => viewer.id === 'redirected-comic' ? -1 : 0 :
                     this.#hasImageExtension(entry) ? (viewer) => viewer.id === 'image' ? -1 : 0 :
-                    this.#hasMarkdownExtension(entry) ? (viewer) => viewer.id === 'markdown' ? -1 : 0 :
                     this.#hasMediaExtension(entry) ? (viewer) => viewer.id === 'media' ? -1 : 0 :
                     this.#hasPdfExtension(entry) ? (viewer) => viewer.id === 'pdf' ? -1 : 0 :
                     this.#hasTextExtension(entry) ? (viewer) => viewer.id === 'text' ? -1 : 0 :
