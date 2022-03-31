@@ -209,6 +209,7 @@ const createTextFileViewer = (params: {
 };
 
 const cssTextViewer = createTextFileViewer({ language: 'css' });
+const htmlTextViewer = createTextFileViewer({ language: 'html' });
 const javascriptTextViewer = createTextFileViewer({ language: 'javascript' });
 const markdownTextViewer = createTextFileViewer({ language: 'markdown' });
 const typescriptTextViewer = createTextFileViewer({ language: 'typescript' });
@@ -310,6 +311,8 @@ export class ViewerServiceImpl implements ViewerService {
 
             if (this.#hasCssExtension(entry)) {
                 viewers.unshift(cssTextViewer);
+            } else if (this.#hasHtmlExtension(entry)) {
+                viewers.unshift(htmlTextViewer);
             } else if (this.#hasJavaScriptExtension(entry)) {
                 viewers.unshift(javascriptTextViewer);
             } else if (this.#hasMarkdownExtension(entry)) {
@@ -343,6 +346,10 @@ export class ViewerServiceImpl implements ViewerService {
 
     #hasCssExtension(entry: FileEntry) {
         return /^\.(?:css)$/i.test(entry.path.getExtension());
+    }
+
+    #hasHtmlExtension(entry: FileEntry) {
+        return /^\.(?:html?)$/i.test(entry.path.getExtension());
     }
 
     #hasImageExtension(entry: FileEntry) {
