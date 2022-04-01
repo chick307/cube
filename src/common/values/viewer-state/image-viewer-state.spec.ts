@@ -1,3 +1,4 @@
+import { Point } from '../point';
 import { ImageViewerState } from '../viewer-state';
 
 describe('ImageViewerState class', () => {
@@ -11,6 +12,15 @@ describe('ImageViewerState class', () => {
             expect(() => ImageViewerState.fromJson({})).toThrow();
             expect(() => ImageViewerState.fromJson({ type: '' })).toThrow();
             expect(() => ImageViewerState.fromJson({ type: 'binary' })).toThrow();
+        });
+    });
+
+    describe('imageViewerState.setScrollPosition() method', () => {
+        test('it creates a new state', () => {
+            expect(new ImageViewerState().setScrollPosition(new Point(3, 14)))
+                .toEqual(new ImageViewerState({ scrollPosition: new Point(3, 14) }));
+            expect(new ImageViewerState({ scrollPosition: new Point(1, 12) }).setScrollPosition(new Point(3, 58)))
+                .toEqual(new ImageViewerState({ scrollPosition: new Point(3, 58) }));
         });
     });
 
