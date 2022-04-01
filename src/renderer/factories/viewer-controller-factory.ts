@@ -38,7 +38,11 @@ export type CreateDirectoryViewerControllerParams = {
 };
 
 export type ImageViewerControllerFactory = {
-    createImageViewerController(): ImageViewerController;
+    createImageViewerController(params: CreateImageViewerControllerParams): ImageViewerController;
+};
+
+export type CreateImageViewerControllerParams = {
+    historyController: HistoryController;
 };
 
 export type MarkdownViewerControllerFactory = {
@@ -120,8 +124,9 @@ export class ViewerControllerFactoryImpl implements
         });
     }
 
-    createImageViewerController(): ImageViewerController {
+    createImageViewerController(params: CreateImageViewerControllerParams): ImageViewerController {
         return new ImageViewerControllerImpl({
+            historyController: params.historyController,
             imageService: this.#imageService,
         });
     }

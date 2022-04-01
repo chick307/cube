@@ -1,18 +1,25 @@
 import type { Entry, FileEntry } from '../../common/entities/entry';
 import type { FileSystem } from '../../common/entities/file-system';
+import { HistoryItem } from '../../common/entities/history-item';
 import { CloseController, CloseSignal } from '../../common/utils/close-controller';
 import { Restate, State } from '../../common/utils/restate';
+import { Point } from '../../common/values/point';
 import { ImageViewerState } from '../../common/values/viewer-state';
+import { HistoryController } from '../controllers/history-controller';
 import type { ImageService } from '../services/image-service';
 
 export type ImageViewerController = {
     readonly state: State<ImageViewerControllerState>;
 
     initialize(params: InitializeParams): void;
+
+    scrollTo(params: ScrollToParams): void;
 };
 
 export type ImageViewerControllerState = {
     readonly blob: Blob | null;
+
+    readonly scrollPosition: Point;
 };
 
 export type InitializeParams = {
@@ -21,6 +28,10 @@ export type InitializeParams = {
     readonly fileSystem: FileSystem;
 
     readonly viewerState: ImageViewerState;
+};
+
+export type ScrollToParams = {
+    readonly position: Point;
 };
 
 type InternalState = {
@@ -43,6 +54,8 @@ export class ImageViewerControllerImpl implements ImageViewerController {
 
     #fileSystem: FileSystem | null;
 
+    #historyController: HistoryController;
+
     #imageService: ImageService;
 
     #restate: Restate<InternalState>;
@@ -52,8 +65,10 @@ export class ImageViewerControllerImpl implements ImageViewerController {
     #viewerState: ImageViewerState | null;
 
     constructor(params: {
+        readonly historyController: HistoryController;
         readonly imageService: ImageService;
     }) {
+        this.#historyController = params.historyController;
         this.#imageService = params.imageService;
 
         this.#closeController = null;
@@ -64,9 +79,11 @@ export class ImageViewerControllerImpl implements ImageViewerController {
         this.#restate = new Restate<InternalState>(initialState);
 
         this.#state = this.#restate.state.map((state) => {
-            const { blob } = state;
+            const { blob, viewerState } = state;
+            const { scrollPosition } = viewerState;
             return {
                 blob,
+                scrollPosition,
             };
         });
     }
@@ -120,5 +137,21 @@ export class ImageViewerControllerImpl implements ImageViewerController {
         this.#update(() => ({ ...initialState, viewerState }));
 
         this.#initialize({ entry, fileSystem, viewerState, signal });
+    }
+
+    scrollTo(params: ScrollToParams): void {
+        const entry = this.#entry;
+        if (entry == null)
+            return;
+
+        const { position } = params;
+        const imageViewerState = this.#viewerState as ImageViewerState;
+        if (imageViewerState.scrollPosition.equals(position))
+            return;
+        const fileSystem = this.#fileSystem as FileSystem;
+        const viewerState = imageViewerState.setScrollPosition(position);
+        this.#viewerState = viewerState;
+        const historyItem = new HistoryItem({ entry, fileSystem, viewerState });
+        this.#historyController.replace(historyItem);
     }
 }

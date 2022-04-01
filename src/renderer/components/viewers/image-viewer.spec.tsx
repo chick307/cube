@@ -5,17 +5,14 @@ import { createEntryMap } from '../../../common/entities/entry.test-helper';
 import { DummyFileSystem } from '../../../common/entities/file-system.test-helper';
 import { immediate } from '../../../common/utils/immediate';
 import { Restate } from '../../../common/utils/restate';
+import { Point } from '../../../common/values/point';
 import { ImageViewerState } from '../../../common/values/viewer-state';
 import type { HistoryController } from '../../controllers/history-controller';
 import { createHistoryController } from '../../controllers/history-controller.test-helper';
 import type { ImageViewerControllerFactory } from '../../factories/viewer-controller-factory';
 import { ServicesProvider } from '../../hooks/use-service';
-import type { EntryIconService } from '../../services/entry-icon-service';
-import { createEntryIconService } from '../../services/entry-icon-service.test-helper';
 import type { EntryService } from '../../services/entry-service';
 import { createEntryService } from '../../services/entry-service.test-helper';
-import type { LocalEntryService } from '../../services/local-entry-service';
-import { createLocalEntryService } from '../../services/local-entry-service.test-helper';
 import { composeElements } from '../../utils/compose-elements';
 import type {
     ImageViewerController,
@@ -35,17 +32,14 @@ let services: {
 
     entryService: EntryService;
 
-    entryIconService: EntryIconService;
-
     historyController: HistoryController;
-
-    localEntryService: LocalEntryService;
 
     viewerControllerFactory: ImageViewerControllerFactory;
 };
 
-let controllers: {
-    restate: Restate<ImageViewerControllerState>;
+let controller: {
+    setBlob: (blob: Blob) => Promise<void>;
+    setScrollPosition: (scrollPosition: Point) => Promise<void>;
 };
 
 let container: HTMLElement;
@@ -54,39 +48,39 @@ beforeEach(() => {
     container = document.createElement('div');
     document.body.appendChild(container);
 
-    const { entryIconService } = createEntryIconService();
-
     const { entryService } = createEntryService();
 
     const { historyController } = createHistoryController();
-
-    const { localEntryService } = createLocalEntryService();
 
     const viewerControllerFactory: ImageViewerControllerFactory = {
         createImageViewerController: () => $viewerController,
     };
 
-    const restate = new Restate<ImageViewerControllerState>({
+    const imageViewerControllerRestate = new Restate<ImageViewerControllerState>({
         blob: null,
+        scrollPosition: new Point(0, 0),
     });
 
     const $viewerController: ImageViewerController = {
-        state: restate.state,
+        state: imageViewerControllerRestate.state,
         initialize: () => {},
+        scrollTo: () => {},
     };
 
-    controllers = {
-        restate,
+    controller = {
+        setBlob: (blob) => imageViewerControllerRestate.update((state) => ({ ...state, blob })),
+        setScrollPosition: (position) =>
+            imageViewerControllerRestate.update((state) => ({ ...state, scrollPosition: position })),
     };
 
     services = {
         $viewerController,
-        entryIconService,
         entryService,
         historyController,
-        localEntryService,
         viewerControllerFactory,
     };
+
+    jest.useFakeTimers();
 });
 
 afterEach(() => {
@@ -95,7 +89,10 @@ afterEach(() => {
     container = null!;
 
     services = null!;
-    controllers = null!;
+    controller = null!;
+
+    jest.clearAllTimers();
+    jest.useRealTimers();
 });
 
 describe('ImageViewer component', () => {
@@ -117,12 +114,7 @@ describe('ImageViewer component', () => {
         expect(initialize).toHaveBeenCalledWith({ entry, fileSystem, viewerState });
         expect(container.getElementsByClassName(styles.image).length).toBe(0);
         await TestUtils.act(async () => {
-            await controllers.restate.update((state) => {
-                return {
-                    ...state,
-                    blob: new Blob(['<svg />'], { type: 'image/svg+xml' }),
-                };
-            });
+            await controller.setBlob(new Blob(['<svg />'], { type: 'image/svg+xml' }));
         });
         const images = Array.from(container.getElementsByClassName(styles.image));
         expect(images).toEqual([expect.any(HTMLImageElement)]);
@@ -144,6 +136,79 @@ describe('ImageViewer component', () => {
             });
             const imageViewer = container.getElementsByClassName(styles.imageViewer)[0];
             expect(imageViewer.classList.contains('test-class')).toBe(true);
+        });
+    });
+
+    describe('if rendered in a scrollable element', () => {
+        const offsetParentPropertyDescriptor = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetParent')!;
+
+        beforeEach(() => {
+            Object.defineProperty(HTMLElement.prototype, 'offsetParent', {
+                configurable: true,
+                enumerable: true,
+                value: container,
+                writable: false,
+            });
+
+            container.scrollTo = () => {};
+        });
+
+        afterEach(() => {
+            Object.defineProperty(HTMLElement.prototype, 'offsetParent', offsetParentPropertyDescriptor);
+
+            Reflect.deleteProperty(container, 'scrollTo');
+        });
+
+        test('it saves the scroll position after scrolled', async () => {
+            const scrollTo = jest.spyOn(services.$viewerController, 'scrollTo');
+            const entry = entries.get('/a.svg')!;
+            const viewerState = new ImageViewerState();
+            const Component = () => {
+                return composeElements(
+                    <ServicesProvider value={services} />,
+                    <ImageViewer {...{ entry, fileSystem, viewerState }} />,
+                );
+            };
+            await TestUtils.act(async () => {
+                ReactDom.render(<Component />, container);
+                await immediate();
+            });
+            container.scrollLeft = 50;
+            container.scrollTop = 150;
+            container.dispatchEvent(new UIEvent('scroll'));
+            jest.advanceTimersByTime(10);
+            expect(scrollTo).not.toHaveBeenCalled();
+            container.scrollLeft = 100;
+            container.scrollTop = 200;
+            container.dispatchEvent(new UIEvent('scroll'));
+            jest.advanceTimersByTime(100);
+            expect(scrollTo).toHaveBeenCalledTimes(1);
+            expect(scrollTo).toHaveBeenCalledWith({ position: new Point(100, 200) });
+        });
+
+        test('it restores the scroll position after rendered', async () => {
+            const scrollTo = jest.spyOn(container, 'scrollTo');
+            const entry = entries.get('/a.svg')!;
+            const viewerState = new ImageViewerState({ scrollPosition: new Point(100, 200) });
+            const Component = () => {
+                return composeElements(
+                    <ServicesProvider value={services} />,
+                    <ImageViewer {...{ entry, fileSystem, viewerState }} />,
+                );
+            };
+            await TestUtils.act(async () => {
+                await controller.setScrollPosition(new Point(100, 200));
+                ReactDom.render(<Component />, container);
+            });
+            await TestUtils.act(async () => {
+                await controller.setBlob(new Blob(['<svg />'], { type: 'image/svg+xml' }));
+            });
+            const images = Array.from(container.getElementsByClassName(styles.image));
+            expect(images).toEqual([expect.any(HTMLImageElement)]);
+            expect(scrollTo).not.toHaveBeenCalled();
+            TestUtils.Simulate.load(images[0]);
+            expect(scrollTo).toHaveBeenCalledTimes(1);
+            expect(scrollTo).toHaveBeenCalledWith(100, 200);
         });
     });
 });
