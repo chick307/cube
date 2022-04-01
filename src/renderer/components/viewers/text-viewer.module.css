@@ -1,0 +1,41 @@
+.text-viewer {
+    flex: 0;
+    padding: 2em;
+    min-width: max-content;
+
+    @nest & > pre {
+        margin: 0;
+
+        @nest & > code {
+            border-radius: 4px;
+            user-select: text;
+            cursor: text;
+        }
+    }
+}
+
+.text-contents {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    line-height: 1.75;
+    tab-size: 4;
+}
+
+.line {
+    display: contents;
+}
+
+.line-number {
+    margin-right: 0.7em;
+    border-right: 1px solid currentColor;
+    padding-right: 0.7em;
+    text-align: right;
+    user-select: none;
+    pointer-events: none;
+}
+
+.line-content {
+    user-select: text;
+}
+
+.language-select {}

@@ -1,9 +1,31 @@
+import { Point } from '../point';
 import { TextViewerState } from '../viewer-state';
+
+const defaultJson = {
+    type: 'text',
+    language: 'plaintext',
+    scrollPosition: { x: 0, y: 0 },
+};
+
+const languages = ['plaintext', 'javascript', 'css'];
+
+const scrollPositions = [new Point(0, 0), new Point(10, 20), new Point(33, 44)];
+
+const combinations = [{}]
+    .flatMap((values) => languages.map((v) => ({ ...values, language: v })))
+    .flatMap((values) => scrollPositions.map((v) => ({ ...values, scrollPosition: v })))
+    .concat([]);
 
 describe('TextViewerState class', () => {
     describe('TextViewerState.fromJson() method', () => {
         test('it returns an instance of TextViewerState class', () => {
             expect(TextViewerState.fromJson({ type: 'text' })).toEqual(new TextViewerState());
+            expect(TextViewerState.fromJson({ type: 'text', scrollPosition: { x: 10, y: 20 } }))
+                .toEqual(new TextViewerState({ scrollPosition: new Point(10, 20) }));
+            expect(TextViewerState.fromJson({ type: 'text', language: 'javascript' }))
+                .toEqual(new TextViewerState({ language: 'javascript' }));
+            expect(TextViewerState.fromJson({ type: 'text', language: 'css', scrollPosition: { x: 30, y: 40 } }))
+                .toEqual(new TextViewerState({ language: 'css', scrollPosition: new Point(30, 40) }));
         });
 
         test('it throws an error if the passed JSON is invalid', () => {
@@ -14,9 +36,52 @@ describe('TextViewerState class', () => {
         });
     });
 
+    describe('textViewerState.equals() method', () => {
+        test('it returns whether the passed object has the same values', () => {
+            for (let i = 0; i < combinations.length; i++) {
+                const a = new TextViewerState(combinations[i]);
+                expect(a.equals(null)).toBe(false);
+                expect(a.equals(undefined)).toBe(false);
+                expect(a.equals(a)).toBe(true);
+                for (let j = 0; j < combinations.length; j++) {
+                    const b = new TextViewerState(combinations[j]);
+                    if (i === j) {
+                        expect(a.equals(b)).toBe(true);
+                    } else {
+                        expect(a.equals(b)).toBe(false);
+                    }
+                }
+            }
+        });
+    });
+
+    describe('textViewerState.setLanguage() method', () => {
+        test('it creates a new state', () => {
+            expect(new TextViewerState().setLanguage('javascript'))
+                .toEqual(new TextViewerState({ language: 'javascript' }));
+            expect(new TextViewerState({ language: 'html' }).setLanguage('css'))
+                .toEqual(new TextViewerState({ language: 'css' }));
+            expect(new TextViewerState({ scrollPosition: new Point(3, 58) }).setLanguage('typescript'))
+                .toEqual(new TextViewerState({ language: 'typescript', scrollPosition: new Point(3, 58) }));
+        });
+    });
+
+    describe('textViewerState.setScrollPosition() method', () => {
+        test('it creates a new state', () => {
+            expect(new TextViewerState().setScrollPosition(new Point(3, 14)))
+                .toEqual(new TextViewerState({ scrollPosition: new Point(3, 14) }));
+            expect(new TextViewerState({ scrollPosition: new Point(1, 12) }).setScrollPosition(new Point(3, 58)))
+                .toEqual(new TextViewerState({ scrollPosition: new Point(3, 58) }));
+            expect(new TextViewerState({ language: 'javascript' }).setScrollPosition(new Point(3, 58)))
+                .toEqual(new TextViewerState({ language: 'javascript', scrollPosition: new Point(3, 58) }));
+        });
+    });
+
     describe('textViewerState.toJson() method', () => {
         test('it returns JSON object', () => {
-            expect(new TextViewerState().toJson()).toEqual({ type: 'text' });
+            expect(new TextViewerState().toJson()).toEqual({ ...defaultJson });
+            expect(new TextViewerState({ scrollPosition: new Point(10, 20) }).toJson())
+                .toEqual({ ...defaultJson, scrollPosition: { x: 10, y: 20 } });
         });
     });
 });

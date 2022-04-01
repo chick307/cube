@@ -9,6 +9,7 @@ import { MarkdownViewerControllerImpl } from '../viewer-controllers/markdown-vie
 import { MediaViewerControllerImpl } from '../viewer-controllers/media-viewer-controller';
 import { PdfViewerControllerImpl } from '../viewer-controllers/pdf-viewer-controller';
 import { SymbolicLinkViewerControllerImpl } from '../viewer-controllers/symbolic-link-viewer-controller';
+import { TextViewerControllerImpl } from '../viewer-controllers/text-viewer-controller';
 import { TsvViewerControllerImpl } from '../viewer-controllers/tsv-viewer-controller';
 import {
     ComicViewerControllerFactory,
@@ -18,6 +19,7 @@ import {
     MediaViewerControllerFactory,
     PdfViewerControllerFactory,
     SymbolicLinkViewerControllerFactory,
+    TextViewerControllerFactory,
     TsvViewerControllerFactory,
     ViewerControllerFactoryImpl,
 } from './viewer-controller-factory';
@@ -104,6 +106,17 @@ describe('ViewerControllerFactoryImpl class', () => {
                 createViewerControllerFactory().viewerControllerFactory;
             const viewerController = viewerControllerFactory.createSymbolicLinkViewerController({ historyController });
             expect(viewerController).toBeInstanceOf(SymbolicLinkViewerControllerImpl);
+        });
+    });
+
+    describe('textViewerControllerFactory.createTextViewerController() method', () => {
+        test('it creates an instance of `TextViewerControllerImpl` class', () => {
+            const { historyController } = createHistoryController();
+            const viewerControllerFactory: TextViewerControllerFactory =
+                createViewerControllerFactory().viewerControllerFactory;
+            const viewerController =
+                viewerControllerFactory.createTextViewerController({ historyController });
+            expect(viewerController).toBeInstanceOf(TextViewerControllerImpl);
         });
     });
 

@@ -148,24 +148,12 @@ const binaryViewer = createFileViewer({
     render: ({ entry, fileSystem }) => ({ node: <EntryViews.BinaryEntryView {...{ entry, fileSystem }} /> }),
 });
 
-const cssViewer = createFileViewer({
-    name: 'CSS',
-    viewerStateFactory: () => new ViewerStates.CssViewerState(),
-    render: ({ entry, fileSystem }) => ({ node: <EntryViews.CssEntryView {...{ entry, fileSystem }} /> }),
-});
-
 const imageViewer = createFileViewer({
     name: 'Image',
     viewerStateFactory: () => new ViewerStates.ImageViewerState(),
     render: ({ entry, fileSystem, viewerState }) => ({
         node: <Viewers.ImageViewer {...{ entry, fileSystem, viewerState }} />,
     }),
-});
-
-const javascriptViewer = createFileViewer({
-    name: 'JavaScript',
-    viewerStateFactory: () => new ViewerStates.JavaScriptViewerState(),
-    render: ({ entry, fileSystem }) => ({ node: <EntryViews.JavaScriptEntryView {...{ entry, fileSystem }} /> }),
 });
 
 const markdownViewer = createFileViewer({
@@ -195,7 +183,9 @@ const pdfViewer = createFileViewer({
 const textViewer = createFileViewer({
     name: 'Text',
     viewerStateFactory: () => new ViewerStates.TextViewerState(),
-    render: ({ entry, fileSystem }) => ({ node: <EntryViews.TextEntryView {...{ entry, fileSystem }} /> }),
+    render: ({ entry, fileSystem, viewerState }) => ({
+        node: <Viewers.TextViewer {...{ entry, fileSystem, viewerState }} />,
+    }),
 });
 
 const tsvViewer = createFileViewer({
@@ -205,6 +195,27 @@ const tsvViewer = createFileViewer({
         node: <Viewers.TsvViewer {...{ entry, fileSystem, viewerState }} />,
     }),
 });
+
+const createTextFileViewer = (params: {
+    language: string;
+}) => {
+    return createFileViewer({
+        name: 'Text',
+        viewerStateFactory: () => new ViewerStates.TextViewerState({ language: params.language }),
+        render: ({ entry, fileSystem, viewerState }) => ({
+            node: <Viewers.TextViewer {...{ entry, fileSystem, viewerState }} />,
+        }),
+    });
+};
+
+const cssTextViewer = createTextFileViewer({ language: 'css' });
+const dockerfileTextViewer = createTextFileViewer({ language: 'dockerfile' });
+const htmlTextViewer = createTextFileViewer({ language: 'html' });
+const javascriptTextViewer = createTextFileViewer({ language: 'javascript' });
+const jsonTextViewer = createTextFileViewer({ language: 'json' });
+const markdownTextViewer = createTextFileViewer({ language: 'markdown' });
+const typescriptTextViewer = createTextFileViewer({ language: 'typescript' });
+const xmlTextViewer = createTextFileViewer({ language: 'xml' });
 
 const createRedirectViewer = (params: {
     historyItem: HistoryItem;
@@ -277,13 +288,10 @@ export class ViewerServiceImpl implements ViewerService {
             const viewers = [] as Viewer[];
 
             viewers.push(binaryViewer);
-            viewers.push(cssViewer);
             viewers.push(imageViewer);
-            viewers.push(javascriptViewer);
             viewers.push(markdownViewer);
             viewers.push(mediaViewer);
             viewers.push(pdfViewer);
-            viewers.push(textViewer);
             viewers.push(tsvViewer);
 
             const zipFileSystem = new ZipFileSystem({ container: { entry, fileSystem } });
@@ -304,24 +312,48 @@ export class ViewerServiceImpl implements ViewerService {
                 viewer: zipViewer,
             }));
 
-            viewers.sort(
-                this.#hasComicExtension(entry) ? (viewer) => viewer.id === 'redirected-comic' ? -1 : 0 :
-                this.#hasCssExtension(entry) ? (viewer) => viewer.id === 'css' ? -1 : 0 :
-                this.#hasImageExtension(entry) ? (viewer) => viewer.id === 'image' ? -1 : 0 :
-                this.#hasJavaScriptExtension(entry) ? (viewer) => viewer.id === 'javascript' ? -1 : 0 :
-                this.#hasMarkdownExtension(entry) ? (viewer) => viewer.id === 'markdown' ? -1 : 0 :
-                this.#hasMediaExtension(entry) ? (viewer) => viewer.id === 'media' ? -1 : 0 :
-                this.#hasPdfExtension(entry) ? (viewer) => viewer.id === 'pdf' ? -1 : 0 :
-                this.#hasTextExtension(entry) ? (viewer) => viewer.id === 'text' ? -1 : 0 :
-                this.#hasTsvExtension(entry) ? (viewer) => viewer.id === 'tsv' ? -1 : 0 :
-                this.#hasZipExtension(entry) ? (viewer) => viewer.id === 'redirected-zip' ? -1 : 0 :
-                () => 0,
-            );
+            if (this.#hasCssExtension(entry)) {
+                viewers.unshift(cssTextViewer);
+            } else if (this.#hasHtmlExtension(entry)) {
+                viewers.unshift(htmlTextViewer);
+            } else if (this.#hasJavaScriptExtension(entry)) {
+                viewers.unshift(javascriptTextViewer);
+            } else if (this.#hasJsonExtension(entry)) {
+                viewers.unshift(jsonTextViewer);
+            } else if (this.#hasMarkdownExtension(entry)) {
+                viewers.unshift(markdownTextViewer);
+                viewers.sort((viewer) => viewer.id === 'markdown' ? -1 : 0);
+            } else if (this.#hasSvgExtension(entry)) {
+                viewers.unshift(xmlTextViewer);
+                viewers.sort((viewer) => viewer.id === 'image' ? -1 : 0);
+            } else if (this.#hasTypeScriptExtension(entry)) {
+                viewers.unshift(typescriptTextViewer);
+            } else if (this.#hasXmlExtension(entry)) {
+                viewers.unshift(xmlTextViewer);
+            } else if (this.#isDockerfile(entry)) {
+                viewers.unshift(dockerfileTextViewer);
+            } else {
+                viewers.push(textViewer);
+                viewers.sort(
+                    this.#hasComicExtension(entry) ? (viewer) => viewer.id === 'redirected-comic' ? -1 : 0 :
+                    this.#hasImageExtension(entry) ? (viewer) => viewer.id === 'image' ? -1 : 0 :
+                    this.#hasMediaExtension(entry) ? (viewer) => viewer.id === 'media' ? -1 : 0 :
+                    this.#hasPdfExtension(entry) ? (viewer) => viewer.id === 'pdf' ? -1 : 0 :
+                    this.#hasTextExtension(entry) ? (viewer) => viewer.id === 'text' ? -1 : 0 :
+                    this.#hasTsvExtension(entry) ? (viewer) => viewer.id === 'tsv' ? -1 : 0 :
+                    this.#hasZipExtension(entry) ? (viewer) => viewer.id === 'redirected-zip' ? -1 : 0 :
+                    () => 0,
+                );
+            }
 
             return viewers;
         }
 
         return [];
+    }
+
+    #isDockerfile(entry: FileEntry) {
+        return /^dockerfile$/i.test(entry.name.toString());
     }
 
     #hasComicExtension(entry: FileEntry) {
@@ -332,12 +364,20 @@ export class ViewerServiceImpl implements ViewerService {
         return /^\.(?:css)$/i.test(entry.path.getExtension());
     }
 
+    #hasHtmlExtension(entry: FileEntry) {
+        return /^\.(?:html?)$/i.test(entry.path.getExtension());
+    }
+
     #hasImageExtension(entry: FileEntry) {
-        return /^\.(?:jpe?g|png|svg|webp)$/i.test(entry.path.getExtension());
+        return /^\.(?:jpe?g|png|webp)$/i.test(entry.path.getExtension());
     }
 
     #hasJavaScriptExtension(entry: FileEntry) {
         return /^\.(?:jsx?)$/i.test(entry.path.getExtension());
+    }
+
+    #hasJsonExtension(entry: FileEntry) {
+        return /^\.(?:json|webmanifest)$/i.test(entry.path.getExtension());
     }
 
     #hasMarkdownExtension(entry: FileEntry) {
@@ -352,6 +392,10 @@ export class ViewerServiceImpl implements ViewerService {
         return /^\.pdf$/i.test(entry.path.getExtension());
     }
 
+    #hasSvgExtension(entry: FileEntry) {
+        return /^\.(?:svg)$/i.test(entry.path.getExtension());
+    }
+
     #hasTextExtension(entry: FileEntry) {
         return /^\.(?:txt)$/i.test(entry.path.getExtension());
     }
@@ -360,8 +404,16 @@ export class ViewerServiceImpl implements ViewerService {
         return /^\.(?:tsv)$/i.test(entry.path.getExtension());
     }
 
+    #hasTypeScriptExtension(entry: FileEntry) {
+        return /^\.(?:tsx?)$/i.test(entry.path.getExtension());
+    }
+
     #hasZipExtension(entry: FileEntry) {
         return /^\.(?:zip)$/i.test(entry.path.getExtension());
+    }
+
+    #hasXmlExtension(entry: FileEntry) {
+        return /^\.(?:atom|rss|xml)$/i.test(entry.path.getExtension());
     }
 
     async prioritizeViewers(

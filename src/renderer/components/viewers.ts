@@ -5,4 +5,5 @@ export { MarkdownViewer, Props as MarkdownViewerProps } from './viewers/markdown
 export { MediaViewer, Props as MediaViewerProps } from './viewers/media-viewer';
 export { PdfViewer, Props as PdfViewerProps } from './viewers/pdf-viewer';
 export { SymbolicLinkViewer, Props as SymbolicLinkViewerProps } from './viewers/symbolic-link-viewer';
+export { TextViewer, Props as TextViewerProps } from './viewers/text-viewer';
 export { TsvViewer, Props as TsvViewerProps } from './viewers/tsv-viewer';
