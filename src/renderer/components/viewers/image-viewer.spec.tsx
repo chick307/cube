@@ -5,17 +5,14 @@ import { createEntryMap } from '../../../common/entities/entry.test-helper';
 import { DummyFileSystem } from '../../../common/entities/file-system.test-helper';
 import { immediate } from '../../../common/utils/immediate';
 import { Restate } from '../../../common/utils/restate';
+import { Point } from '../../../common/values/point';
 import { ImageViewerState } from '../../../common/values/viewer-state';
 import type { HistoryController } from '../../controllers/history-controller';
 import { createHistoryController } from '../../controllers/history-controller.test-helper';
 import type { ImageViewerControllerFactory } from '../../factories/viewer-controller-factory';
 import { ServicesProvider } from '../../hooks/use-service';
-import type { EntryIconService } from '../../services/entry-icon-service';
-import { createEntryIconService } from '../../services/entry-icon-service.test-helper';
 import type { EntryService } from '../../services/entry-service';
 import { createEntryService } from '../../services/entry-service.test-helper';
-import type { LocalEntryService } from '../../services/local-entry-service';
-import { createLocalEntryService } from '../../services/local-entry-service.test-helper';
 import { composeElements } from '../../utils/compose-elements';
 import type {
     ImageViewerController,
@@ -35,11 +32,7 @@ let services: {
 
     entryService: EntryService;
 
-    entryIconService: EntryIconService;
-
     historyController: HistoryController;
-
-    localEntryService: LocalEntryService;
 
     viewerControllerFactory: ImageViewerControllerFactory;
 };
@@ -54,13 +47,9 @@ beforeEach(() => {
     container = document.createElement('div');
     document.body.appendChild(container);
 
-    const { entryIconService } = createEntryIconService();
-
     const { entryService } = createEntryService();
 
     const { historyController } = createHistoryController();
-
-    const { localEntryService } = createLocalEntryService();
 
     const viewerControllerFactory: ImageViewerControllerFactory = {
         createImageViewerController: () => $viewerController,
@@ -68,11 +57,13 @@ beforeEach(() => {
 
     const restate = new Restate<ImageViewerControllerState>({
         blob: null,
+        scrollPosition: new Point(0, 0),
     });
 
     const $viewerController: ImageViewerController = {
         state: restate.state,
         initialize: () => {},
+        scrollTo: () => {},
     };
 
     controllers = {
@@ -81,10 +72,8 @@ beforeEach(() => {
 
     services = {
         $viewerController,
-        entryIconService,
         entryService,
         historyController,
-        localEntryService,
         viewerControllerFactory,
     };
 });

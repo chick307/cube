@@ -3,6 +3,7 @@ import React from 'react';
 import type { Entry } from '../../../common/entities/entry';
 import type { FileSystem } from '../../../common/entities/file-system';
 import type { ImageViewerState } from '../../../common/values/viewer-state';
+import type { HistoryController } from '../../controllers/history-controller';
 import type { ImageViewerControllerFactory } from '../../factories/viewer-controller-factory';
 import { useRestate } from '../../hooks/use-restate';
 import { useService } from '../../hooks/use-service';
@@ -26,11 +27,13 @@ export const ImageViewer = (props: Props) => {
         viewerState,
     } = props;
 
+    const historyController = useService('historyController');
+
     const viewerControllerFactory = useService('viewerControllerFactory');
 
     const viewerController = React.useMemo(() => {
-        return viewerControllerFactory.createImageViewerController();
-    }, [viewerControllerFactory]);
+        return viewerControllerFactory.createImageViewerController({ historyController });
+    }, [historyController, viewerControllerFactory]);
 
     viewerController.initialize({ entry, fileSystem, viewerState });
 
@@ -66,6 +69,8 @@ export const ImageViewer = (props: Props) => {
 declare module '../../hooks/use-service' {
     interface Services {
         'components/viewers/image-viewer': {
+            historyController: HistoryController;
+
             viewerControllerFactory: ImageViewerControllerFactory;
         };
     }

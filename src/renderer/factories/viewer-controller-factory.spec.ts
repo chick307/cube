@@ -60,9 +60,10 @@ describe('ViewerControllerFactoryImpl class', () => {
 
     describe('imageViewerControllerFactory.createImageViewerController() method', () => {
         test('it creates an instance of `ImageViewerControllerImpl` class', () => {
+            const { historyController } = createHistoryController();
             const viewerControllerFactory: ImageViewerControllerFactory =
                 createViewerControllerFactory().viewerControllerFactory;
-            const viewerController = viewerControllerFactory.createImageViewerController();
+            const viewerController = viewerControllerFactory.createImageViewerController({ historyController });
             expect(viewerController).toBeInstanceOf(ImageViewerControllerImpl);
         });
     });
