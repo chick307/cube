@@ -39,6 +39,7 @@ export class ImageServiceImpl implements ImageService {
         const extension = entryPath.getExtension().toLowerCase();
         switch (extension) {
             case '.gif': return 'image/gif';
+            case '.ico': return 'image/vnd.microsoft.icon';
             case '.jpg': case '.jpeg': return 'image/jpeg';
             case '.png': return 'image/png';
             case '.svg': return 'image/svg+xml';
