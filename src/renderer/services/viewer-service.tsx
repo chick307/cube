@@ -369,7 +369,7 @@ export class ViewerServiceImpl implements ViewerService {
     }
 
     #hasImageExtension(entry: FileEntry) {
-        return /^\.(?:jpe?g|png|webp)$/i.test(entry.path.getExtension());
+        return /^\.(?:gif|jpe?g|png|webp)$/i.test(entry.path.getExtension());
     }
 
     #hasJavaScriptExtension(entry: FileEntry) {

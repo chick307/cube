@@ -38,11 +38,11 @@ export class ImageServiceImpl implements ImageService {
     #getMediaType(entryPath: EntryPath): string | undefined {
         const extension = entryPath.getExtension().toLowerCase();
         switch (extension) {
+            case '.gif': return 'image/gif';
             case '.jpg': case '.jpeg': return 'image/jpeg';
             case '.png': return 'image/png';
-            case '.gif': return 'image/gif';
-            case '.webp': return 'image/webp';
             case '.svg': return 'image/svg+xml';
+            case '.webp': return 'image/webp';
             default: return undefined;
         }
     }
