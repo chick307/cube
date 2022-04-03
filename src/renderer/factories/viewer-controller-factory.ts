@@ -2,6 +2,7 @@ import type { HistoryController } from '../controllers/history-controller';
 import type { TabController } from '../controllers/tab-controller';
 import type { EntryService } from '../services/entry-service';
 import type { ImageService } from '../services/image-service';
+import { BinaryViewerController, BinaryViewerControllerImpl } from '../viewer-controllers/binary-viewer-controller';
 import { ComicViewerController, ComicViewerControllerImpl } from '../viewer-controllers/comic-viewer-controller';
 import {
     DirectoryViewerController,
@@ -20,6 +21,14 @@ import {
 } from '../viewer-controllers/symbolic-link-viewer-controller';
 import { TextViewerController, TextViewerControllerImpl } from '../viewer-controllers/text-viewer-controller';
 import { TsvViewerController, TsvViewerControllerImpl } from '../viewer-controllers/tsv-viewer-controller';
+
+export type BinaryViewerControllerFactory = {
+    createBinaryViewerController(params: CreateBinaryViewerControllerParams): BinaryViewerController;
+};
+
+export type CreateBinaryViewerControllerParams = {
+    historyController: HistoryController;
+};
 
 export type ComicViewerControllerFactory = {
     createComicViewerController(params: CreateComicViewerControllerParams): ComicViewerController;
@@ -87,6 +96,7 @@ export type TsvViewerControllerFactory = {
 };
 
 export class ViewerControllerFactoryImpl implements
+    BinaryViewerControllerFactory,
     ComicViewerControllerFactory,
     DirectoryViewerControllerFactory,
     ImageViewerControllerFactory,
@@ -107,6 +117,13 @@ export class ViewerControllerFactoryImpl implements
     }) {
         this.#entryService = params.entryService;
         this.#imageService = params.imageService;
+    }
+
+    createBinaryViewerController(params: CreateBinaryViewerControllerParams): BinaryViewerController {
+        return new BinaryViewerControllerImpl({
+            entryService: this.#entryService,
+            historyController: params.historyController,
+        });
     }
 
     createComicViewerController(params: CreateComicViewerControllerParams): ComicViewerController {

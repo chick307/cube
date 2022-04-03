@@ -2,6 +2,7 @@ import { createHistoryController } from '../controllers/history-controller.test-
 import { createTabController } from '../controllers/tab-controller.test-helper';
 import { createEntryService } from '../services/entry-service.test-helper';
 import { createImageService } from '../services/image-service.test-helper';
+import { BinaryViewerControllerImpl } from '../viewer-controllers/binary-viewer-controller';
 import { ComicViewerControllerImpl } from '../viewer-controllers/comic-viewer-controller';
 import { DirectoryViewerControllerImpl } from '../viewer-controllers/directory-viewer-controller';
 import { ImageViewerControllerImpl } from '../viewer-controllers/image-viewer-controller';
@@ -12,6 +13,7 @@ import { SymbolicLinkViewerControllerImpl } from '../viewer-controllers/symbolic
 import { TextViewerControllerImpl } from '../viewer-controllers/text-viewer-controller';
 import { TsvViewerControllerImpl } from '../viewer-controllers/tsv-viewer-controller';
 import {
+    BinaryViewerControllerFactory,
     ComicViewerControllerFactory,
     DirectoryViewerControllerFactory,
     ImageViewerControllerFactory,
@@ -38,6 +40,17 @@ const createViewerControllerFactory = () => {
 };
 
 describe('ViewerControllerFactoryImpl class', () => {
+    describe('binaryViewerControllerFactory.createBinaryViewerController() method', () => {
+        test('it creates an instance of `BinaryViewerControllerImpl` class', () => {
+            const { historyController } = createHistoryController();
+            const viewerControllerFactory: BinaryViewerControllerFactory =
+                createViewerControllerFactory().viewerControllerFactory;
+            const viewerController =
+                viewerControllerFactory.createBinaryViewerController({ historyController });
+            expect(viewerController).toBeInstanceOf(BinaryViewerControllerImpl);
+        });
+    });
+
     describe('comicViewerControllerFactory.createComicViewerController() method', () => {
         test('it creates an instance of `ComicViewerControllerImpl` class', () => {
             const { historyController } = createHistoryController();
