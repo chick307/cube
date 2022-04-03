@@ -1,0 +1,27 @@
+.binary-header {
+    display: flex;
+    column-gap: 4px;
+    position: sticky;
+    top: 0;
+    margin-bottom: 4px;
+    background-color: #333333;
+    box-shadow: 0 0 4px #333333;
+    z-index: 1;
+}
+
+.header-address {
+    margin-right: 13px;
+    text-align: right;
+    line-height: 1.75;
+    color: transparent;
+}
+
+.header-column {
+    text-align: center;
+    line-height: 1.75;
+    color: #888888;
+
+    @nest &:nth-of-type(8n+10) {
+        margin-left: 8px;
+    }
+}

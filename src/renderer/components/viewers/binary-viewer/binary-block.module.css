@@ -1,0 +1,54 @@
+.binary-block {
+    display: grid;
+    column-gap: 4px;
+    grid-template-columns:
+        min-content
+        repeat(calc(var(--column-count) * 16), min-content)
+        repeat(calc(var(--column-count) * 16), min-content);
+
+    @nest &:empty {
+        display: block;
+        height: calc(var(--row-count) * 1.75em);
+    }
+}
+
+.address {
+    grid-column: 1;
+    margin-right: 4px;
+    padding-right: 8px;
+    border-right: 1px solid currentColor;
+    text-align: right;
+    line-height: 1.75;
+    color: #888888;
+
+    @nest .header > & {
+        opacity: 0;
+    }
+}
+
+.row {
+    display: contents;
+}
+
+.byte {
+    text-align: center;
+    line-height: 1.75;
+
+    @nest &:nth-of-type(8n+10) {
+        margin-left: 8px;
+    }
+}
+
+.character {
+    text-align: center;
+    line-height: 1.75;
+    width: 1em;
+
+    @nest &:not(& + &) {
+        grid-column-start: calc(var(--column-count) * 16 + 2);
+    }
+
+    @nest &:nth-of-type(8n+10) {
+        margin-left: 8px;
+    }
+}

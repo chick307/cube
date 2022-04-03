@@ -1,3 +1,4 @@
+export { BinaryViewer, Props as BinaryViewerProps } from './viewers/binary-viewer';
 export { ComicViewer, Props as ComicViewerProps } from './viewers/comic-viewer';
 export { DirectoryViewer, Props as DirectoryViewerProps } from './viewers/directory-viewer';
 export { ImageViewer, Props as ImageViewerProps } from './viewers/image-viewer';
