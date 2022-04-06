@@ -4,7 +4,6 @@ import { HistoryItem } from '../../common/entities/history-item';
 import { CloseSignal } from '../../common/utils/close-controller';
 import { EntryPath } from '../../common/values/entry-path';
 import * as ViewerStates from '../../common/values/viewer-state';
-import * as EntryViews from '../components/entry-views';
 import * as Viewers from '../components/viewers';
 import type { EntryService } from './entry-service';
 
@@ -145,7 +144,9 @@ const createFileViewer = <ViewerState extends ViewerStates.ViewerState>(params: 
 const binaryViewer = createFileViewer({
     name: 'Binary',
     viewerStateFactory: () => new ViewerStates.BinaryViewerState(),
-    render: ({ entry, fileSystem }) => ({ node: <EntryViews.BinaryEntryView {...{ entry, fileSystem }} /> }),
+    render: ({ entry, fileSystem, viewerState }) => ({
+        node: <Viewers.BinaryViewer {...{ entry, fileSystem, viewerState }} />,
+    }),
 });
 
 const imageViewer = createFileViewer({

@@ -1,0 +1,8 @@
+.binary-character {
+    user-select: text;
+
+    @nest &.control-character {
+        opacity: 0.3;
+        user-select: none;
+    }
+}

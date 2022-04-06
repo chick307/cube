@@ -5,6 +5,22 @@ import { jest } from '@jest/globals';
 
 global.Blob = Blob;
 
+global.IntersectionObserver = jest.fn(() => {
+    return {
+        disconnect: jest.fn(),
+        observe: jest.fn(),
+        unobserve: jest.fn(),
+    };
+});
+
+global.ResizeObserver = jest.fn(() => {
+    return {
+        disconnect: jest.fn(),
+        observe: jest.fn(),
+        unobserve: jest.fn(),
+    };
+});
+
 global.URL = URL;
 
 global.jest = jest;
