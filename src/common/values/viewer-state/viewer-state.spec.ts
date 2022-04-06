@@ -7,8 +7,6 @@ describe('ViewerState class', () => {
                 .toEqual(new ViewerStates.BinaryViewerState());
             expect(ViewerStates.ViewerState.fromJson({ type: 'comic' }))
                 .toEqual(new ViewerStates.ComicViewerState());
-            expect(ViewerStates.ViewerState.fromJson({ type: 'css' }))
-                .toEqual(new ViewerStates.CssViewerState());
             expect(ViewerStates.ViewerState.fromJson({ type: 'directory' }))
                 .toEqual(new ViewerStates.DirectoryViewerState());
             expect(ViewerStates.ViewerState.fromJson({ type: 'image' }))

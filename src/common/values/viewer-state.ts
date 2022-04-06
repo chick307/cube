@@ -1,6 +1,5 @@
 export { BinaryViewerState, BinaryViewerStateJson } from './viewer-state/binary-viewer-state';
 export { ComicViewerState, ComicViewerStateJson } from './viewer-state/comic-viewer-state';
-export { CssViewerState, CssViewerStateJson } from './viewer-state/css-viewer-state';
 export { DirectoryViewerState, DirectoryViewerStateJson } from './viewer-state/directory-viewer-state';
 export { ImageViewerState, ImageViewerStateJson } from './viewer-state/image-viewer-state';
 export { JavaScriptViewerState, JavaScriptViewerStateJson } from './viewer-state/javascript-viewer-state';
