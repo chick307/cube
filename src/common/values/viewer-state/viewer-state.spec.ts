@@ -11,8 +11,6 @@ describe('ViewerState class', () => {
                 .toEqual(new ViewerStates.DirectoryViewerState());
             expect(ViewerStates.ViewerState.fromJson({ type: 'image' }))
                 .toEqual(new ViewerStates.ImageViewerState());
-            expect(ViewerStates.ViewerState.fromJson({ type: 'javascript' }))
-                .toEqual(new ViewerStates.JavaScriptViewerState());
             expect(ViewerStates.ViewerState.fromJson({ type: 'markdown' }))
                 .toEqual(new ViewerStates.MarkdownViewerState());
             expect(ViewerStates.ViewerState.fromJson({ type: 'media' }))

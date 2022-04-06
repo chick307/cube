@@ -2,7 +2,6 @@ export { BinaryViewerState, BinaryViewerStateJson } from './viewer-state/binary-
 export { ComicViewerState, ComicViewerStateJson } from './viewer-state/comic-viewer-state';
 export { DirectoryViewerState, DirectoryViewerStateJson } from './viewer-state/directory-viewer-state';
 export { ImageViewerState, ImageViewerStateJson } from './viewer-state/image-viewer-state';
-export { JavaScriptViewerState, JavaScriptViewerStateJson } from './viewer-state/javascript-viewer-state';
 export { MarkdownViewerState, MarkdownViewerStateJson } from './viewer-state/markdown-viewer-state';
 export { MediaViewerState, MediaViewerStateJson } from './viewer-state/media-viewer-state';
 export {
