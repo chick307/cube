@@ -32,6 +32,18 @@ export class ComicViewerState extends ViewerState {
         return comicViewerState;
     }
 
+    #create(params: {
+        readonly pageDisplay?: ComicViewerPageDisplay | undefined;
+    }) {
+        return new ComicViewerState({
+            pageDisplay: params.pageDisplay == null ? this.pageDisplay : params.pageDisplay,
+        });
+    }
+
+    setPageDisplay(pageDisplay: ComicViewerPageDisplay): ComicViewerState {
+        return this.#create({ pageDisplay });
+    }
+
     override toJson(): ComicViewerStateJson {
         return {
             type: 'comic',

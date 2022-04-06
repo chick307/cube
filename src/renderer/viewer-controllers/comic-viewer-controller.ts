@@ -331,7 +331,8 @@ export class ComicViewerControllerImpl implements ComicViewerController {
         const fileSystem = this.#fileSystem;
         if (entry === null || fileSystem === null)
             return;
-        const viewerState = new ComicViewerState({ pageDisplay: value as ComicViewerPageDisplay });
+        const comicViewerState = this.#viewerState as ComicViewerState;
+        const viewerState = comicViewerState.setPageDisplay(value);
         this.#viewerState = viewerState;
         this.#updatePages((state) => {
             if (value === 'single') {

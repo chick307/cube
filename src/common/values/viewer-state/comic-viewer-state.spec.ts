@@ -1,5 +1,11 @@
 import { ComicViewerState } from '../viewer-state';
 
+const pageDisplays = ['single', 'two'] as const;
+
+const combinations = [{}]
+    .flatMap((values) => pageDisplays.map((pageDisplay) => ({ ...values, pageDisplay })))
+    .concat([]);
+
 describe('ComicViewerState class', () => {
     describe('ComicViewerState.fromJson() method', () => {
         test('it returns an instance of ComicViewerState class', () => {
@@ -16,6 +22,16 @@ describe('ComicViewerState class', () => {
             expect(() => ComicViewerState.fromJson({})).toThrow();
             expect(() => ComicViewerState.fromJson({ type: '' })).toThrow();
             expect(() => ComicViewerState.fromJson({ type: 'binary' })).toThrow();
+        });
+    });
+
+    describe('comicViewerState.setPageDisplay() method', () => {
+        test('it creates a new viewer state', () => {
+            for (const values of combinations) {
+                const a = new ComicViewerState(values);
+                for (const value of pageDisplays)
+                    expect(a.setPageDisplay(value)).toEqual(new ComicViewerState({ ...values, pageDisplay: value }));
+            }
         });
     });
 
