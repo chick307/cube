@@ -65,7 +65,7 @@ afterEach(() => {
 const defaultState: BinaryViewerControllerState = {
     blocks: null,
     buffer: null,
-    scrollPosition: new Point(0, 0),
+    scrollPosition: Point.zero,
 };
 
 describe('BinaryViewerControllerImpl class', () => {
@@ -160,7 +160,7 @@ describe('BinaryViewerControllerImpl class', () => {
         test('it updates the state of the viewer', async () => {
             const controller = new BinaryViewerControllerImpl({ ...services });
             const entry = entries.get('/a')!;
-            const viewerStateA = new BinaryViewerState({ scrollPosition: new Point(0, 0) });
+            const viewerStateA = new BinaryViewerState({ scrollPosition: Point.zero });
             const viewerStateB = new BinaryViewerState({ scrollPosition: new Point(0, 100) });
             controller.initialize({ entry, fileSystem, viewerState: viewerStateA });
             await immediate();
@@ -168,7 +168,7 @@ describe('BinaryViewerControllerImpl class', () => {
                 ...defaultState,
                 blocks: expect.any(Array),
                 buffer: expect.any(Buffer),
-                scrollPosition: new Point(0, 0),
+                scrollPosition: Point.zero,
             });
             controller.initialize({ entry, fileSystem, viewerState: viewerStateB });
             await immediate();
@@ -200,11 +200,11 @@ describe('BinaryViewerControllerImpl class', () => {
             const replace = jest.spyOn(services.historyController, 'replace');
             const controller = new BinaryViewerControllerImpl({ ...services });
             const entry = entries.get('/a')!;
-            const viewerState = new BinaryViewerState({ scrollPosition: new Point(0, 0) });
+            const viewerState = new BinaryViewerState({ scrollPosition: Point.zero });
             controller.initialize({ entry, fileSystem, viewerState });
             await immediate();
             expect(replace).not.toHaveBeenCalled();
-            controller.scrollTo({ position: new Point(0, 0) });
+            controller.scrollTo({ position: Point.zero });
             expect(replace).not.toHaveBeenCalled();
         });
 

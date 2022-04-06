@@ -56,7 +56,7 @@ afterEach(() => {
 
 const defaultState: TextViewerControllerState = {
     language: 'plaintext',
-    scrollPosition: new Point(0, 0),
+    scrollPosition: Point.zero,
     lines: null,
 };
 
@@ -122,14 +122,14 @@ describe('TextViewerControllerImpl class', () => {
         test('it updates the state of the viewer', async () => {
             const controller = new TextViewerControllerImpl({ ...services });
             const entry = entries.get('/a.txt')!;
-            const viewerStateA = new TextViewerState({ scrollPosition: new Point(0, 0) });
+            const viewerStateA = new TextViewerState({ scrollPosition: Point.zero });
             const viewerStateB = new TextViewerState({ scrollPosition: new Point(0, 100) });
             controller.initialize({ entry, fileSystem, viewerState: viewerStateA });
             await immediate();
             expect(controller.state.current).toEqual({
                 ...defaultState,
                 lines: expect.any(Array),
-                scrollPosition: new Point(0, 0),
+                scrollPosition: Point.zero,
             });
             controller.initialize({ entry, fileSystem, viewerState: viewerStateB });
             await immediate();
@@ -160,7 +160,7 @@ describe('TextViewerControllerImpl class', () => {
             const replace = jest.spyOn(services.historyController, 'replace');
             const controller = new TextViewerControllerImpl({ ...services });
             const entry = entries.get('/a.txt')!;
-            const viewerState = new TextViewerState({ scrollPosition: new Point(0, 0) });
+            const viewerState = new TextViewerState({ scrollPosition: Point.zero });
             controller.initialize({ entry, fileSystem, viewerState });
             await immediate();
             expect(replace).not.toHaveBeenCalled();
@@ -196,11 +196,11 @@ describe('TextViewerControllerImpl class', () => {
             const replace = jest.spyOn(services.historyController, 'replace');
             const controller = new TextViewerControllerImpl({ ...services });
             const entry = entries.get('/a.txt')!;
-            const viewerState = new TextViewerState({ scrollPosition: new Point(0, 0) });
+            const viewerState = new TextViewerState({ scrollPosition: Point.zero });
             controller.initialize({ entry, fileSystem, viewerState });
             await immediate();
             expect(replace).not.toHaveBeenCalled();
-            controller.scrollTo({ position: new Point(0, 0) });
+            controller.scrollTo({ position: Point.zero });
             expect(replace).not.toHaveBeenCalled();
         });
 

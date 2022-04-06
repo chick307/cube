@@ -6,7 +6,7 @@ export const createBinaryViewerController = () => {
     const binaryViewerControllerRestate = new Restate<BinaryViewerControllerState>({
         blocks: null,
         buffer: null,
-        scrollPosition: new Point(0, 0),
+        scrollPosition: Point.zero,
     });
 
     const binaryViewerController: BinaryViewerController = {

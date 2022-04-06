@@ -85,7 +85,7 @@ afterEach(() => {
 });
 
 const defaultState: MarkdownViewerControllerState = {
-    scrollPosition: new Point(0, 0),
+    scrollPosition: Point.zero,
     tree: null,
 };
 
@@ -134,13 +134,13 @@ describe('MarkdownViewerControllerImpl class', () => {
         test('it updates the state of the viewer', async () => {
             const controller = new MarkdownViewerControllerImpl({ ...services });
             const entry = entries.get('/a.md')!;
-            const viewerStateA = new MarkdownViewerState({ scrollPosition: new Point(0, 0) });
+            const viewerStateA = new MarkdownViewerState({ scrollPosition: Point.zero });
             const viewerStateB = new MarkdownViewerState({ scrollPosition: new Point(0, 100) });
             controller.initialize({ entry, fileSystem, viewerState: viewerStateA });
             await immediate();
             expect(controller.state.current).toEqual({
                 ...defaultState,
-                scrollPosition: new Point(0, 0),
+                scrollPosition: Point.zero,
                 tree: expect.any(Object),
             });
             controller.initialize({ entry, fileSystem, viewerState: viewerStateB });
@@ -344,11 +344,11 @@ describe('MarkdownViewerControllerImpl class', () => {
             const replace = jest.spyOn(services.historyController, 'replace');
             const controller = new MarkdownViewerControllerImpl({ ...services });
             const entry = entries.get('/a.md')!;
-            const viewerState = new MarkdownViewerState({ scrollPosition: new Point(0, 0) });
+            const viewerState = new MarkdownViewerState({ scrollPosition: Point.zero });
             controller.initialize({ entry, fileSystem, viewerState });
             await immediate();
             expect(replace).not.toHaveBeenCalled();
-            controller.scrollTo({ position: new Point(0, 0) });
+            controller.scrollTo({ position: Point.zero });
             expect(replace).not.toHaveBeenCalled();
         });
 

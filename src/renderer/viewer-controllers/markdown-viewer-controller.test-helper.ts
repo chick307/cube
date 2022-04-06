@@ -4,7 +4,7 @@ import { MarkdownViewerController, MarkdownViewerControllerState } from './markd
 
 export const createMarkdownViewerController = () => {
     const markdownViewerControllerRestate = new Restate<MarkdownViewerControllerState>({
-        scrollPosition: new Point(0, 0),
+        scrollPosition: Point.zero,
         tree: null,
     });
 

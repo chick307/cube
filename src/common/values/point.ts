@@ -5,6 +5,8 @@ export type PointJson = {
 };
 
 export class Point {
+    static readonly zero = new Point(0, 0);
+
     readonly x: number;
 
     readonly y: number;

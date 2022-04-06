@@ -5,7 +5,7 @@ import { TextViewerController, TextViewerControllerState } from './text-viewer-c
 export const createTextViewerController = () => {
     const textViewerControllerRestate = new Restate<TextViewerControllerState>({
         language: 'plaintext',
-        scrollPosition: new Point(0, 0),
+        scrollPosition: Point.zero,
         lines: null,
     });
 

@@ -22,7 +22,7 @@ export class TextViewerState extends ViewerState {
     }) {
         super();
         this.language = params?.language ?? 'plaintext';
-        this.scrollPosition = params?.scrollPosition ?? new Point(0, 0);
+        this.scrollPosition = params?.scrollPosition ?? Point.zero;
     }
 
     static fromJson(json: TextViewerStateJson): TextViewerState;

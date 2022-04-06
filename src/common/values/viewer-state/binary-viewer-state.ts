@@ -16,7 +16,7 @@ export class BinaryViewerState extends ViewerState {
         readonly scrollPosition?: Point | null | undefined;
     }) {
         super();
-        this.scrollPosition = params?.scrollPosition ?? new Point(0, 0);
+        this.scrollPosition = params?.scrollPosition ?? Point.zero;
     }
 
     static fromJson(json: BinaryViewerStateJson): BinaryViewerState;

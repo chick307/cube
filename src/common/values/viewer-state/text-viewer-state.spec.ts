@@ -9,7 +9,7 @@ const defaultJson = {
 
 const languages = ['plaintext', 'javascript', 'css'];
 
-const scrollPositions = [new Point(0, 0), new Point(10, 20), new Point(33, 44)];
+const scrollPositions = [Point.zero, new Point(10, 20), new Point(33, 44)];
 
 const combinations = [{}]
     .flatMap((values) => languages.map((v) => ({ ...values, language: v })))

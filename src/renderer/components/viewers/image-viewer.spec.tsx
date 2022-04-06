@@ -58,7 +58,7 @@ beforeEach(() => {
 
     const imageViewerControllerRestate = new Restate<ImageViewerControllerState>({
         blob: null,
-        scrollPosition: new Point(0, 0),
+        scrollPosition: Point.zero,
     });
 
     const $viewerController: ImageViewerController = {

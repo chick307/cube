@@ -6,7 +6,7 @@ const defaultJson = {
     scrollPosition: { x: 0, y: 0 },
 };
 
-const scrollPositions = [new Point(0, 0), new Point(10, 20), new Point(33, 44)];
+const scrollPositions = [Point.zero, new Point(10, 20), new Point(33, 44)];
 
 const combinations = [{}]
     .flatMap((values) => scrollPositions.map((v) => ({ ...values, scrollPosition: v })))

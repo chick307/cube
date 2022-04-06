@@ -3,7 +3,7 @@ import { MarkdownViewerState } from '../viewer-state';
 
 const defaultJson = {
     type: 'markdown',
-    scrollPosition: new Point(0, 0),
+    scrollPosition: Point.zero,
 };
 
 describe('MarkdownViewerState class', () => {
