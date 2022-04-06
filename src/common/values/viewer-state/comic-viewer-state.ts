@@ -1,4 +1,4 @@
-import { ViewerState, viewerStateTypes } from './viewer-state';
+import { defineViewerState, ViewerState } from './viewer-state';
 
 export type ComicViewerStateJson = {
     type: 'comic';
@@ -38,6 +38,10 @@ export class ComicViewerState extends ViewerState {
             pageDisplay: this.pageDisplay,
         };
     }
+
+    static {
+        defineViewerState('comic', this);
+    }
 }
 
 declare module './viewer-state' {
@@ -45,5 +49,3 @@ declare module './viewer-state' {
         comic: typeof ComicViewerState;
     }
 }
-
-viewerStateTypes['comic'] = ComicViewerState;

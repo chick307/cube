@@ -1,5 +1,5 @@
 import { ViewerState } from '../viewer-state';
-import { viewerStateTypes } from './viewer-state';
+import { defineViewerState } from './viewer-state';
 
 export class DummyViewerState extends ViewerState {
     readonly type = 'dummy';
@@ -19,6 +19,10 @@ export class DummyViewerState extends ViewerState {
             type: 'dummy',
         };
     }
+
+    static {
+        defineViewerState('dummy', this);
+    }
 }
 
 declare module './viewer-state' {
@@ -26,5 +30,3 @@ declare module './viewer-state' {
         dummy: typeof DummyViewerState;
     }
 }
-
-viewerStateTypes['dummy'] = DummyViewerState;

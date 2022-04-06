@@ -1,4 +1,4 @@
-import { ViewerState, viewerStateTypes } from './viewer-state';
+import { defineViewerState, ViewerState } from './viewer-state';
 
 export type TsvViewerStateJson = {
     type: 'tsv';
@@ -24,6 +24,10 @@ export class TsvViewerState extends ViewerState {
             type: 'tsv',
         };
     }
+
+    static {
+        defineViewerState('tsv', this);
+    }
 }
 
 declare module './viewer-state' {
@@ -31,5 +35,3 @@ declare module './viewer-state' {
         tsv: typeof TsvViewerState;
     }
 }
-
-viewerStateTypes['tsv'] = TsvViewerState;

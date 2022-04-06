@@ -1,4 +1,4 @@
-import { ViewerState, viewerStateTypes } from './viewer-state';
+import { defineViewerState, ViewerState } from './viewer-state';
 
 export type CssViewerStateJson = {
     type: 'css';
@@ -24,6 +24,10 @@ export class CssViewerState extends ViewerState {
             type: 'css',
         };
     }
+
+    static {
+        defineViewerState('css', this);
+    }
 }
 
 declare module './viewer-state' {
@@ -31,5 +35,3 @@ declare module './viewer-state' {
         css: typeof CssViewerState;
     }
 }
-
-viewerStateTypes['css'] = CssViewerState;

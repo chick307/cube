@@ -1,5 +1,5 @@
 import { Point, PointJson } from '../point';
-import { ViewerState, viewerStateTypes } from './viewer-state';
+import { defineViewerState, ViewerState } from './viewer-state';
 
 export type MarkdownViewerStateJson = {
     type: 'markdown';
@@ -44,6 +44,10 @@ export class MarkdownViewerState extends ViewerState {
             scrollPosition: this.scrollPosition.toJson(),
         };
     }
+
+    static {
+        defineViewerState('markdown', this);
+    }
 }
 
 declare module './viewer-state' {
@@ -51,5 +55,3 @@ declare module './viewer-state' {
         markdown: typeof MarkdownViewerState;
     }
 }
-
-viewerStateTypes['markdown'] = MarkdownViewerState;

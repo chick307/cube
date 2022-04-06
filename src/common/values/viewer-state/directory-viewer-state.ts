@@ -1,4 +1,4 @@
-import { ViewerState, viewerStateTypes } from './viewer-state';
+import { defineViewerState, ViewerState } from './viewer-state';
 
 export type DirectoryViewerStateJson = {
     hiddenEntriesVisible?: boolean;
@@ -43,6 +43,10 @@ export class DirectoryViewerState extends ViewerState {
             hiddenEntriesVisible: !this.hiddenEntriesVisible,
         });
     }
+
+    static {
+        defineViewerState('directory', this);
+    }
 }
 
 declare module './viewer-state' {
@@ -50,5 +54,3 @@ declare module './viewer-state' {
         directory: typeof DirectoryViewerState;
     }
 }
-
-viewerStateTypes['directory'] = DirectoryViewerState;

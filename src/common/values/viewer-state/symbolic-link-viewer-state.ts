@@ -1,4 +1,4 @@
-import { ViewerState, viewerStateTypes } from './viewer-state';
+import { defineViewerState, ViewerState } from './viewer-state';
 
 export type SymbolicLinkViewerStateJson = {
     type: 'symbolic-link';
@@ -24,6 +24,10 @@ export class SymbolicLinkViewerState extends ViewerState {
             type: 'symbolic-link',
         };
     }
+
+    static {
+        defineViewerState('symbolic-link', this);
+    }
 }
 
 declare module './viewer-state' {
@@ -31,5 +35,3 @@ declare module './viewer-state' {
         'symbolic-link': typeof SymbolicLinkViewerState;
     }
 }
-
-viewerStateTypes['symbolic-link'] = SymbolicLinkViewerState;

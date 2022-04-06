@@ -1,5 +1,5 @@
 import { Point, PointJson } from '../point';
-import { ViewerState, viewerStateTypes } from './viewer-state';
+import { defineViewerState, ViewerState } from './viewer-state';
 
 export type TextViewerStateJson = {
     type: 'text';
@@ -76,6 +76,10 @@ export class TextViewerState extends ViewerState {
             scrollPosition: this.scrollPosition.toJson(),
         };
     }
+
+    static {
+        defineViewerState('text', this);
+    }
 }
 
 declare module './viewer-state' {
@@ -83,5 +87,3 @@ declare module './viewer-state' {
         text: typeof TextViewerState;
     }
 }
-
-viewerStateTypes['text'] = TextViewerState;

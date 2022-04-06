@@ -1,4 +1,4 @@
-import { ViewerState, viewerStateTypes } from './viewer-state';
+import { defineViewerState, ViewerState } from './viewer-state';
 
 export type JavaScriptViewerStateJson = {
     type: 'javascript';
@@ -24,6 +24,10 @@ export class JavaScriptViewerState extends ViewerState {
             type: 'javascript',
         };
     }
+
+    static {
+        defineViewerState('javascript', this);
+    }
 }
 
 declare module './viewer-state' {
@@ -31,5 +35,3 @@ declare module './viewer-state' {
         javascript: typeof JavaScriptViewerState;
     }
 }
-
-viewerStateTypes['javascript'] = JavaScriptViewerState;

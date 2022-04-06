@@ -17,7 +17,17 @@ export type ViewerStateJsonTypes = {
 
 export type ViewerStateJson = ViewerStateJsonTypes[keyof ViewerStateJsonTypes];
 
-export const viewerStateTypes = {} as Partial<ViewerStateTypes>;
+const viewerStateTypes = {} as Partial<ViewerStateTypes>;
+
+export const defineViewerState = <
+    Type extends keyof ViewerStateTypes,
+    Implementation extends ViewerStateTypes[Type],
+>(
+    type: Type,
+    implementation: Implementation,
+): void => {
+    viewerStateTypes[type] = implementation;
+};
 
 export abstract class ViewerState {
     static fromJson<Type extends keyof ViewerStateTypes>(json: ViewerStateJsonTypes[Type]): (

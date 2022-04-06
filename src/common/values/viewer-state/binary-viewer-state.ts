@@ -1,5 +1,5 @@
 import { Point, PointJson } from '../point';
-import { ViewerState, viewerStateTypes } from './viewer-state';
+import { defineViewerState, ViewerState } from './viewer-state';
 
 export type BinaryViewerStateJson = {
     type: 'binary';
@@ -58,6 +58,10 @@ export class BinaryViewerState extends ViewerState {
             scrollPosition: this.scrollPosition.toJson(),
         };
     }
+
+    static {
+        defineViewerState('binary', this);
+    }
 }
 
 declare module './viewer-state' {
@@ -65,5 +69,3 @@ declare module './viewer-state' {
         binary: typeof BinaryViewerState;
     }
 }
-
-viewerStateTypes['binary'] = BinaryViewerState;

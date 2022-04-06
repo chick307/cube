@@ -1,5 +1,5 @@
 import { Point, PointJson } from '../point';
-import { ViewerState, viewerStateTypes } from './viewer-state';
+import { defineViewerState, ViewerState } from './viewer-state';
 
 export type ImageViewerStateJson = {
     type: 'image';
@@ -49,6 +49,10 @@ export class ImageViewerState extends ViewerState {
             type: 'image',
         };
     }
+
+    static {
+        defineViewerState('image', this);
+    }
 }
 
 declare module './viewer-state' {
@@ -56,5 +60,3 @@ declare module './viewer-state' {
         image: typeof ImageViewerState;
     }
 }
-
-viewerStateTypes['image'] = ImageViewerState;

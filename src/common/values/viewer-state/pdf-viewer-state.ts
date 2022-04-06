@@ -1,4 +1,4 @@
-import { ViewerState, viewerStateTypes } from './viewer-state';
+import { defineViewerState, ViewerState } from './viewer-state';
 
 export type PdfViewerStateJson = {
     type: 'pdf';
@@ -59,6 +59,10 @@ export class PdfViewerState extends ViewerState {
             pageDisplay: this.pageDisplay,
         };
     }
+
+    static {
+        defineViewerState('pdf', this);
+    }
 }
 
 declare module './viewer-state' {
@@ -66,5 +70,3 @@ declare module './viewer-state' {
         pdf: typeof PdfViewerState;
     }
 }
-
-viewerStateTypes['pdf'] = PdfViewerState;

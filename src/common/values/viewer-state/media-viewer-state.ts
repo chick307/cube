@@ -1,4 +1,4 @@
-import { ViewerState, viewerStateTypes } from './viewer-state';
+import { defineViewerState, ViewerState } from './viewer-state';
 
 export type MediaViewerStateJson = {
     type: 'media';
@@ -24,6 +24,10 @@ export class MediaViewerState extends ViewerState {
             type: 'media',
         };
     }
+
+    static {
+        defineViewerState('media', this);
+    }
 }
 
 declare module './viewer-state' {
@@ -31,5 +35,3 @@ declare module './viewer-state' {
         media: typeof MediaViewerState;
     }
 }
-
-viewerStateTypes['media'] = MediaViewerState;
