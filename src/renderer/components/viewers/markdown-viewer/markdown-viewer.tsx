@@ -1,5 +1,3 @@
-import highlightStyles from 'highlight.js/styles/base16/solarized-dark.css';
-import katextStyles from 'katex/dist/katex.css';
 import React from 'react';
 import rehypeReact from 'rehype-react';
 import { unified } from 'unified';
@@ -14,6 +12,8 @@ import type { MarkdownViewerControllerFactory } from '../../../factories/viewer-
 import { useRestate } from '../../../hooks/use-restate';
 import { ServiceProvider, useService } from '../../../hooks/use-service';
 import { useTask } from '../../../hooks/use-task';
+import highlightStyles from '../../../styles/highlight.module.css';
+import katextStyles from '../../../styles/katex.module.css';
 import { rehypeCssModules } from '../../../utils/rehype-css-modules';
 import { MarkdownBlockquote } from './markdown-blockquote';
 import { MarkdownCode } from './markdown-code';

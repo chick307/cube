@@ -1,4 +1,3 @@
-import highlightStyles from 'highlight.js/styles/base16/solarized-dark.css';
 import React from 'react';
 import rehypeReact from 'rehype-react';
 import { unified } from 'unified';
@@ -13,6 +12,7 @@ import { useStatusBarGateway } from '../../gateways/status-bar-gateway';
 import { useRestate } from '../../hooks/use-restate';
 import { useService } from '../../hooks/use-service';
 import { useTask } from '../../hooks/use-task';
+import highlightStyles from '../../styles/highlight.module.css';
 import { rehypeCssModules } from '../../utils/rehype-css-modules';
 import { StatusBarSelect } from '../status-bar/status-bar-select';
 import { StatusBarSpace } from '../status-bar/status-bar-space';

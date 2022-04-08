@@ -1,5 +1,4 @@
-import highlightStyles from 'highlight.js/styles/base16/solarized-dark.css';
-
+import highlightStyles from '../../../styles/highlight.module.css';
 import styles from './markdown-code.module.css';
 
 export type Props = React.ComponentProps<'code'>;
