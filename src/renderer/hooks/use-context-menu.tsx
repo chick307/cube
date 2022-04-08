@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ContextMenuItemTemplate, ContextMenuService } from '../services/context-menu-service';
-import styles from './use-context-menu.css';
+import styles from './use-context-menu.module.css';
 import { useService } from './use-service';
 
 export type Props = {

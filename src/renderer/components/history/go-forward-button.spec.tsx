@@ -10,7 +10,7 @@ import { State } from '../../../common/utils/restate';
 import type { HistoryController, HistoryControllerState } from '../../controllers/history-controller';
 import { ServicesProvider } from '../../hooks/use-service';
 import { composeElements } from '../../utils/compose-elements';
-import buttonStyles from '../button.css';
+import buttonStyles from '../button.module.css';
 import { GoForwardButton } from './go-forward-button';
 
 const entryA = Entry.fromJson({ type: 'directory', path: '/a' });

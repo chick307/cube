@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styles from './button.css';
+import styles from './button.module.css';
 
 export type Props = React.ComponentProps<'button'>;
 

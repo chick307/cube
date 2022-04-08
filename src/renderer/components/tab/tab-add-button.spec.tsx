@@ -4,8 +4,8 @@ import TestUtils from 'react-dom/test-utils';
 import { createTabController } from '../../controllers/tab-controller.test-helper';
 import { ServicesProvider } from '../../hooks/use-service';
 import { composeElements } from '../../utils/compose-elements';
-import styles from './tab-add-button.css';
 import { TabAddButton } from './tab-add-button';
+import styles from './tab-add-button.module.css';
 
 let container: HTMLElement;
 

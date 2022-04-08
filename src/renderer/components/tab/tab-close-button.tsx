@@ -3,7 +3,7 @@ import React from 'react';
 import { TabController } from '../../controllers/tab-controller';
 import { useService } from '../../hooks/use-service';
 import { XSmallIcon } from '../icons';
-import styles from './tab-close-button.css';
+import styles from './tab-close-button.module.css';
 
 export type Props = {
     className?: string;

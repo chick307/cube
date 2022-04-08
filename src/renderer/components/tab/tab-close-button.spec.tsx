@@ -3,8 +3,8 @@ import TestUtils from 'react-dom/test-utils';
 
 import { createTabController } from '../../controllers/tab-controller.test-helper';
 import { composeElements } from '../../utils/compose-elements';
-import styles from './tab-close-button.css';
 import { TabCloseButton } from './tab-close-button';
+import styles from './tab-close-button.module.css';
 import { ServicesProvider } from '../../hooks/use-service';
 
 let container: HTMLElement;

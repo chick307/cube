@@ -3,7 +3,7 @@ import React from 'react';
 import type { TabController } from '../../controllers/tab-controller';
 import { useService } from '../../hooks/use-service';
 import { PlusSmallIcon } from '../icons';
-import styles from './tab-add-button.css';
+import styles from './tab-add-button.module.css';
 
 export const TabAddButton = () => {
     const tabController = useService('tabController');
