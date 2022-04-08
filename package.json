@@ -80,7 +80,7 @@
   },
   "keywords": [],
   "license": "MIT",
-  "main": "dist/webpack/prod/entries/main.js",
+  "main": "dist/webpack/prod/entries/main.cjs",
   "private": true,
   "scripts": {
     "build:dev": "npm run build:dev:webpack",
