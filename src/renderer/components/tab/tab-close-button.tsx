@@ -23,7 +23,7 @@ export const TabCloseButton = (props: Props) => {
 
     return (
         <button {...{ className, onClick }}>
-            {XSmallIcon}
+            <XSmallIcon />
         </button>
     );
 };

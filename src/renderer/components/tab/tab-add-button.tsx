@@ -17,7 +17,7 @@ export const TabAddButton = () => {
 
     return (
         <button {...{ className, onClick }}>
-            {PlusSmallIcon}
+            <PlusSmallIcon />
         </button>
     );
 };

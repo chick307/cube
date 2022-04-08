@@ -1,18 +1,18 @@
-export const ArrowLeftIcon = (
+export const ArrowLeftIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#666666" viewBox="0 0 24 24">
         <polygon fillRule="evenodd"
             points="6.414 13 12.707 19.293 11.293 20.707 2.586 12 11.293 3.293 12.707 4.707 6.414 11 21 11 21 13"/>
     </svg>
 );
 
-export const ArrowRightIcon = (
+export const ArrowRightIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#666666" viewBox="0 0 24 24">
         <polygon fillRule="evenodd"
             points="17.586 13 3 13 3 11 17.586 11 11.293 4.707 12.707 3.293 21.414 12 12.707 20.707 11.293 19.293"/>
     </svg>
 );
 
-export const BrokenLinkIcon = (
+export const BrokenLinkIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
         <path fillRule="evenodd" d={
             'M5.60143966,7.01565323 L1.29289322,2.70710678 L2.70710678,1.29289322 L22.7071068,21.2928932 ' +
@@ -26,14 +26,14 @@ export const BrokenLinkIcon = (
     </svg>
 );
 
-export const ChevronRightSmallIcon = (
+export const ChevronRightSmallIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
         <polygon fillRule="evenodd"
             points="9.586 8 4.293 2.707 5.707 1.293 12.414 8 5.707 14.707 4.293 13.293"/>
     </svg>
 );
 
-export const ExternalLinkIcon = (
+export const ExternalLinkIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
         <path fillRule="evenodd" d={
             'M19,14 L19,19 C19,20.1045695 18.1045695,21 17,21 L5,21 C3.8954305,21 3,20.1045695 3,19 L3,7 ' +
@@ -44,7 +44,7 @@ export const ExternalLinkIcon = (
     </svg>
 );
 
-export const FileDeleteIcon = (
+export const FileDeleteIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
         <path fillRule="evenodd" d={
             'M12,12.5857864 L14.2928932,10.2928932 L15.7071068,11.7071068 L13.4142136,14 L15.7071068,16.2928932 ' +
@@ -57,7 +57,7 @@ export const FileDeleteIcon = (
     </svg>
 );
 
-export const HomeIcon = (
+export const HomeIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
         <path fillRule="evenodd" d={
             'M17.8913288,10 L11.8900003,3.99867157 L5.88867192,10 L5.89001465,10 L5.89001465,20 L17.8900146,20 ' +
@@ -70,7 +70,7 @@ export const HomeIcon = (
     </svg>
 );
 
-export const LinkIcon = (
+export const LinkIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
         <path fillRule="evenodd" d={
             'M14,9 L14,7 L18,7 C20.7614237,7 23,9.23857625 23,12 C23,14.7614237 20.7614237,17 18,17 L14,17 L14,15 ' +
@@ -81,7 +81,7 @@ export const LinkIcon = (
     </svg>
 );
 
-export const MonitorIcon = (
+export const MonitorIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
         <path fillRule="evenodd" d={
             'M9,20 L9,19 L3,19 C1.8954305,19 1,18.1045695 1,17 L1,4 C1,2.8954305 1.8954305,2 3,2 L21,2 C22.1045695,2 ' +
@@ -91,7 +91,7 @@ export const MonitorIcon = (
     </svg>
 );
 
-export const MoreHorizontalIcon = (
+export const MoreHorizontalIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
         <path fillRule="evenodd" d={
             'M5,14 C3.8954305,14 3,13.1045695 3,12 C3,10.8954305 3.8954305,10 5,10 C6.1045695,10 7,10.8954305 7,12 ' +
@@ -103,14 +103,13 @@ export const MoreHorizontalIcon = (
     </svg>
 );
 
-
-export const PlusSmallIcon = (
+export const PlusSmallIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
         <polygon fillRule="evenodd" points="9 7 14 7 14 9 9 9 9 14 7 14 7 9 2 9 2 7 7 7 7 2 9 2"/>
     </svg>
 );
 
-export const RefreshIcon = (
+export const RefreshIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
         <path fillRule="evenodd" d={
             'M17.8069373,7 C16.4464601,5.07869636 14.3936238,4 12,4 C7.581722,4 4,7.581722 4,12 L2,12 C2,6.4771525 ' +
@@ -122,7 +121,7 @@ export const RefreshIcon = (
     </svg>
 );
 
-export const XSmallIcon = (
+export const XSmallIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
         <polygon fillRule="evenodd" points={
             '8 9.414 3.707 13.707 2.293 12.293 6.586 8 2.293 3.707 3.707 2.293 8 6.586 ' +
@@ -131,7 +130,7 @@ export const XSmallIcon = (
     </svg>
 );
 
-export const ZipFolderIcon = (
+export const ZipFolderIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
         <path fillRule="evenodd" d={
             'M18,19 L21,19 L21,7 L17,6.99999363 L17,8 L18,8 L18,10 L17,10 L17,11 L18,11 L18,13 L17,13 L17,14 L18,14 ' +

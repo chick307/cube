@@ -41,7 +41,7 @@ export const MarkdownImage = (props: Props) => {
 
     const imageElement =
         url !== null ? <img src={url} {...{ ...elementProps }} /> :
-        (loaded || error != null) ? <span className={styles.altText}>{FileDeleteIcon}{altProp || srcProp}</span> :
+        (loaded || error != null) ? <span className={styles.altText}><FileDeleteIcon />{altProp || srcProp}</span> :
         null;
 
     return (

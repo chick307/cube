@@ -81,7 +81,7 @@ export const EntryView = (props: Props) => {
                 <GoBackButton className={styles.goBackButton} />
                 <GoForwardButton className={styles.goForwardButton} />
                 <Button className={styles.refreshButton} onClick={onRefreshButtonClick}>
-                    {RefreshIcon}
+                    <RefreshIcon />
                 </Button>
                 <span className={styles.pathContainer}>
                     <EntryPathView entry={historyItem.entry} fileSystem={historyItem.fileSystem} />

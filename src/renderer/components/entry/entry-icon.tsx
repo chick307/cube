@@ -55,16 +55,16 @@ export const EntryIcon = (props: Props) => {
     if (entryPath.isRoot()) {
         if (fileSystem.isZip()) {
             return (
-                <span {...{ className, ...spanProps }}>{ZipFolderIcon}</span>
+                <span {...{ className, ...spanProps }}><ZipFolderIcon /></span>
             );
         } else {
             return (
-                <span {...{ className, ...spanProps }}>{MonitorIcon}</span>
+                <span {...{ className, ...spanProps }}><MonitorIcon /></span>
             );
         }
     } else if (fileSystem.isLocal() && entryPath.equals(homeDirectory.path)) {
         return (
-            <span {...{ className, ...spanProps }}>{HomeIcon}</span>
+            <span {...{ className, ...spanProps }}><HomeIcon /></span>
         );
     }
 

@@ -19,8 +19,8 @@ const rootDirectoryPath = new EntryPath('/');
 
 const shrinkIndicator = (
     <span key={0} className={styles.shrinkIndicator}>
-        <span className={styles.delimiter}>{ChevronRightSmallIcon}</span>
-        <div className={styles.moreIcon}>{MoreHorizontalIcon}</div>
+        <span className={styles.delimiter}><ChevronRightSmallIcon /></span>
+        <div className={styles.moreIcon}><MoreHorizontalIcon /></div>
     </span>
 );
 
@@ -80,7 +80,7 @@ export const EntryPathView = (props: Props) => {
                 <span className={styles.entryNameContainer} {...{ key }}>
                     <span className={styles.entryNameContent}>
                         <EntryDraggable {...{ fileSystem, type }} path={p} className={styles.entryName}>
-                            <span className={styles.delimiter}>{ChevronRightSmallIcon}</span>
+                            <span className={styles.delimiter}><ChevronRightSmallIcon /></span>
                             <EntryDragImage className={styles.dragImage} offsetX={8} offsetY={8}>
                                 <span className={styles.iconContainer}>
                                     <EntryIcon {...{ entryPath: p, fileSystem }} />

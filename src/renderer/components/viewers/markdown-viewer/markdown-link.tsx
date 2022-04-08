@@ -9,19 +9,19 @@ export type Props = React.ComponentProps<'a'>;
 
 const brokenLinkIcon = (
     <span className={styles.icon}>
-        {BrokenLinkIcon}
+        <BrokenLinkIcon />
     </span>
 );
 
 const externalLinkIcon = (
     <span className={styles.icon}>
-        {ExternalLinkIcon}
+        <ExternalLinkIcon />
     </span>
 );
 
 const linkIcon = (
     <span className={styles.icon}>
-        {LinkIcon}
+        <LinkIcon />
     </span>
 );
 

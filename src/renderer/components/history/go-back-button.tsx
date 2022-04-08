@@ -11,7 +11,7 @@ export type Props = ButtonProps;
 
 const defaultIcon = (
     <span className={styles.defaultIcon}>
-        {ArrowLeftIcon}
+        <ArrowLeftIcon />
     </span>
 );
 
