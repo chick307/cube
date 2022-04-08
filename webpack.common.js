@@ -146,13 +146,6 @@ const electronRenderer = (options) => {
         },
         plugins: [
             ...base.plugins,
-            new CopyPlugin({
-                patterns: [
-                    { from: 'src/renderer/views', to: 'views' },
-                    { from: 'node_modules/pdfjs-dist/build/pdf.worker.min.js', to: 'workers' },
-                    { from: 'node_modules/pdfjs-dist/cmaps', to: 'cmaps' },
-                ],
-            }),
             new MiniCssExtractPlugin({ filename: path.join('styles', '[name].css') }),
         ],
         target: 'electron-renderer',
@@ -165,6 +158,13 @@ const assets = (options) => {
         ...base,
         plugins: [
             ...base.plugins,
+            new CopyPlugin({
+                patterns: [
+                    { from: 'assets/views', to: 'views' },
+                    { from: 'node_modules/pdfjs-dist/build/pdf.worker.min.js', to: 'workers' },
+                    { from: 'node_modules/pdfjs-dist/cmaps', to: 'cmaps' },
+                ],
+            }),
         ],
     };
 };
