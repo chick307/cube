@@ -165,7 +165,6 @@ const assets = (options) => {
         ...base,
         plugins: [
             ...base.plugins,
-            new CopyPlugin({ patterns: [{ from: 'assets/images', to: 'images' }] }),
         ],
     };
 };
