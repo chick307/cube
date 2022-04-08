@@ -117,6 +117,13 @@ const electronRenderer = (options) => {
                         },
                     ],
                 },
+                {
+                    generator: {
+                        filename: 'fonts/[hash][ext][query]',
+                    },
+                    test: /\.(?:eot|otf|ttf|woff2?)$/,
+                    type: 'asset/resource',
+                },
             ],
         },
         plugins: [
