@@ -85,7 +85,7 @@ export const MarkdownViewer = (props: Props) => {
             });
         const file = await signal.wrapPromise(processor.process({}));
         const element = file.result;
-        return element;
+        return element as React.ReactNode;
     }, [tree]);
 
     // save scroll position

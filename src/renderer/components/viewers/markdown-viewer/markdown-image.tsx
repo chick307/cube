@@ -6,7 +6,7 @@ import { MarkdownViewerController } from '../../../viewer-controllers/markdown-v
 import { FileDeleteIcon } from '../../icons';
 import styles from './markdown-image.module.css';
 
-export type Props = React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
+export type Props = React.ComponentProps<'img'>;
 
 export const MarkdownImage = (props: Props) => {
     const {

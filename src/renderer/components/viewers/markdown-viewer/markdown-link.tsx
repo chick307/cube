@@ -5,7 +5,7 @@ import { MarkdownViewerController } from '../../../viewer-controllers/markdown-v
 import { BrokenLinkIcon, ExternalLinkIcon, LinkIcon } from '../../icons';
 import styles from './markdown-link.module.css';
 
-export type Props = React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>;
+export type Props = React.ComponentProps<'a'>;
 
 const brokenLinkIcon = (
     <span className={styles.icon}>

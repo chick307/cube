@@ -1,6 +1,6 @@
 import styles from './markdown-paragraph.module.css';
 
-export type Props = React.DetailedHTMLProps<React.HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement>;
+export type Props = React.ComponentProps<'p'>;
 
 export const MarkdownParagraph = (props: Props) => {
     const {

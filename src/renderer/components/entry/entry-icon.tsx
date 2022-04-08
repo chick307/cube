@@ -10,7 +10,7 @@ import type { LocalEntryService } from '../../services/local-entry-service';
 import { HomeIcon, MonitorIcon, ZipFolderIcon } from '../icons';
 import styles from './entry-icon.module.css';
 
-export type Props = React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLSpanElement>, HTMLSpanElement> & {
+export type Props = React.ComponentProps<'img'> & {
     entryPath: EntryPath;
     fileSystem: FileSystem;
     iconPlaceholder?: React.ReactNode;

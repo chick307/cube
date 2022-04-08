@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from './button.css';
 
-export type Props = React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
+export type Props = React.ComponentProps<'button'>;
 
 export const Button = (props: Props) => {
     const { className = '', onClick, ...buttonProps } = props;

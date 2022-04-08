@@ -1,6 +1,6 @@
 import styles from './markdown-table.module.css';
 
-export type Props = React.DetailedHTMLProps<React.TableHTMLAttributes<HTMLTableElement>, HTMLTableElement>;
+export type Props = React.ComponentProps<'table'>;
 
 export const MarkdownTable = (props: Props) => {
     const {

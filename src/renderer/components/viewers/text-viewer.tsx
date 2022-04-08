@@ -78,7 +78,7 @@ export const TextViewer = (props: Props) => {
                     createElement: React.createElement,
                 });
             const file = await signal.wrapPromise(processor.process({}));
-            const content = file.result;
+            const content = file.result as React.ReactNode;
             lineElements.push(
                 <div key={line.lineNumber} className={styles.line}>
                     <span className={lineNumberClassName}>{line.lineNumber}</span>
