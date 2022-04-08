@@ -97,7 +97,25 @@ const electronRenderer = (options) => {
             rules: [
                 ...base.module.rules,
                 {
-                    test: /\.css$/,
+                    test: /(?<!\.module)\.css$/,
+                    use: [
+                        {
+                            loader: MiniCssExtractPlugin.loader,
+                        },
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                ...options.cssLoaderOptions,
+                                modules: false,
+                            },
+                        },
+                        {
+                            loader: 'postcss-loader',
+                        },
+                    ],
+                },
+                {
+                    test: /\.module\.css$/,
                     use: [
                         {
                             loader: MiniCssExtractPlugin.loader,

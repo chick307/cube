@@ -14,7 +14,7 @@ body {
     color: #FFFFFF;
 }
 
-:global(#container) {
+#container {
     display: flex;
     height: 100%;
 
