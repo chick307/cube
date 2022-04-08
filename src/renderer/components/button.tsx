@@ -14,7 +14,7 @@ export const Button = (props: Props) => {
             event.currentTarget.blur();
     }, []);
 
-    return <>
+    return (
         <button className={`${className} ${styles.button}`} onClick={onButtonClick} {...buttonProps} />
-    </>;
+    );
 };

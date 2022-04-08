@@ -41,9 +41,9 @@ export const GoForwardButton = (props: Props) => {
 
     const children = React.useMemo(() => buttonChildren || defaultIcon, [buttonChildren]);
 
-    return <>
+    return (
         <Button {...{ className, disabled, onClick, children, ...buttonProps }} />
-    </>;
+    );
 };
 
 declare module '../../hooks/use-service' {
