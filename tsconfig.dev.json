@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsxdev",
+  },
+  "exclude": [
+    "dist",
+    "node_modules",
+    "src/**/*.spec.*",
+    "src/**/*.test-helper.*"
+  ],
+  "extends": "./tsconfig.json"
+}

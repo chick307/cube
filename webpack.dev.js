@@ -12,8 +12,6 @@ export default config({
     mode: 'development',
     path: path.resolve(new URL(import.meta.url).pathname, '../dist/webpack/dev'),
     tsLoaderOptions: {
-        compilerOptions: {
-            jsx: 'react-jsxdev',
-        },
+        configFile: 'tsconfig.dev.json',
     },
 });
