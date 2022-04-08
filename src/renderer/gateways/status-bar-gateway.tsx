@@ -14,10 +14,8 @@ export type StatusBarProviderProps = {
 const Context = React.createContext<React.FunctionComponent<GatewayProps>>(() => null);
 
 export const useStatusBar = (): {
-    /* eslint-disable @typescript-eslint/naming-convention */
     StatusBarExit: React.FunctionComponent;
     StatusBarProvider: React.FunctionComponent<StatusBarProviderProps>;
-    /* eslint-enable @typescript-eslint/naming-convention */
 } => {
     const { Exit, Gateway } = useGateway();
 
@@ -32,7 +30,6 @@ export const useStatusBar = (): {
         );
     }, []);
 
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     return { StatusBarExit, StatusBarProvider };
 };
 

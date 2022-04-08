@@ -73,7 +73,6 @@ export const TextViewer = (props: Props) => {
                     styles: { ...highlightStyles },
                 })
                 .use(rehypeReact, {
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
                     Fragment: React.Fragment,
                     createElement: React.createElement,
                 });

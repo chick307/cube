@@ -62,7 +62,6 @@ module.exports = {
         '@typescript-eslint/explicit-function-return-type': ['off'],
         '@typescript-eslint/explicit-module-boundary-types': ['off'],
         '@typescript-eslint/indent': ['error', 4, {
-            /* eslint-disable-next-line @typescript-eslint/naming-convention */
             SwitchCase: 1,
             flatTernaryExpressions: true,
             ignoredNodes: ['TSConditionalType *'],
@@ -78,6 +77,7 @@ module.exports = {
             { format: ['camelCase'], leadingUnderscore: 'allow', selector: 'parameter' },
             { format: ['camelCase'], leadingUnderscore: 'require', modifiers: ['private'], selector: 'memberLike' },
             { format: ['PascalCase'], selector: 'typeLike' },
+            { format: null, selector: ['objectLiteralProperty', 'typeProperty'] },
         ],
         '@typescript-eslint/no-unused-vars': [
             'warn',

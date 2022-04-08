@@ -71,7 +71,6 @@ export const MarkdownViewer = (props: Props) => {
                 styles: { ...highlightStyles, ...katextStyles },
             })
             .use(rehypeReact, {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
                 Fragment: React.Fragment,
                 components: {
                     a: MarkdownLink,

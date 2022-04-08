@@ -1,6 +1,6 @@
 import { DummyEntry } from '../../common/entities/entry.test-helper';
 import { DummyFileSystem } from '../../common/entities/file-system.test-helper';
-import { CloseController, CloseSignal } from '../../common/utils/close-controller';
+import { CloseController } from '../../common/utils/close-controller';
 import { immediate } from '../../common/utils/immediate';
 import { EntryPath } from '../../common/values/entry-path';
 import type { EntryService } from './entry-service';

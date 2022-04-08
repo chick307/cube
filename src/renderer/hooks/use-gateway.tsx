@@ -5,10 +5,8 @@ export type GatewayProps = {
 };
 
 export const useGateway = (): {
-    /* eslint-disable @typescript-eslint/naming-convention */
     Exit: React.FunctionComponent;
     Gateway: React.FunctionComponent<GatewayProps>;
-    /* eslint-enable @typescript-eslint/naming-convention */
 } => {
     const nodeRef = React.useRef<React.ReactNode>(null);
     const callbacksRef = React.useRef<((node: React.ReactNode) => void)[]>([]);
@@ -42,9 +40,7 @@ export const useGateway = (): {
     }, []);
 
     return {
-        /* eslint-disable @typescript-eslint/naming-convention */
         Exit,
         Gateway,
-        /* eslint-enable @typescript-eslint/naming-convention */
     };
 };
