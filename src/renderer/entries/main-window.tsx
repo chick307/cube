@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron';
 import * as pdfjsLib from 'pdfjs-dist';
-import ReactDom from 'react-dom';
+import ReactDom from 'react-dom/client';
 
 import { LocalFileSystem } from '../../common/entities/file-system';
 import { createContainer, createFactory } from '../../common/utils/create-container';
@@ -75,7 +75,8 @@ const MainWindow = () => {
     );
 };
 
-ReactDom.render(<MainWindow />, document.querySelector('#container'));
+const root = ReactDom.createRoot(document.querySelector('#container') as HTMLElement);
+root.render(<MainWindow />);
 
 document.addEventListener('dragover', (event) => {
     event.preventDefault();
