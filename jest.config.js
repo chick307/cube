@@ -14,7 +14,7 @@ export default {
         },
     },
     preset: 'ts-jest/presets/default-esm',
-    testEnvironment: 'jsdom',
+    testEnvironment: 'jest-environment-jsdom',
     testMatch: ['<rootDir>/src/**/*.spec.(js|ts|tsx)'],
     transform: {
         '\\.css$': '<rootDir>/jest-css-modules-transformer.js',
