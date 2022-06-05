@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, render } from '@testing-library/react';
 
 import { BinaryCharacter } from './binary-character';
 import styles from './binary-character.module.css';
@@ -12,7 +11,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 });
@@ -24,8 +23,8 @@ describe('BinaryCharacter component', () => {
                 <BinaryCharacter codePoint={0x61} />
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         const binaryCharacters = Array.from(container.getElementsByClassName(styles.binaryCharacter));
         expect(binaryCharacters).toEqual([expect.objectContaining({ tagName: 'DIV', textContent: 'a' })]);
@@ -37,13 +36,13 @@ describe('BinaryCharacter component', () => {
                 <BinaryCharacter codePoint={props.codePoint} />
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component codePoint={0x00} />, container);
+        act(() => {
+            render(<Component codePoint={0x00} />, { container });
         });
         const binaryCharacters = Array.from(container.getElementsByClassName(styles.binaryCharacter));
         expect(binaryCharacters).toEqual([expect.objectContaining({ tagName: 'DIV', textContent: '\u2400' })]);
-        TestUtils.act(() => {
-            ReactDom.render(<Component codePoint={0x7F} />, container);
+        act(() => {
+            render(<Component codePoint={0x7F} />, { container });
         });
         expect(binaryCharacters).toEqual([expect.objectContaining({ tagName: 'DIV', textContent: '\u2421' })]);
     });
@@ -54,8 +53,8 @@ describe('BinaryCharacter component', () => {
                 <BinaryCharacter codePoint={null} />
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         const binaryCharacters = Array.from(container.getElementsByClassName(styles.binaryCharacter));
         expect(binaryCharacters).toEqual([expect.objectContaining({ tagName: 'DIV', textContent: '\uFFFD' })]);
@@ -67,8 +66,8 @@ describe('BinaryCharacter component', () => {
                 <BinaryCharacter codePoint={1929671} />
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         const binaryCharacters = Array.from(container.getElementsByClassName(styles.binaryCharacter));
         expect(binaryCharacters).toEqual([expect.objectContaining({ tagName: 'DIV', textContent: '\uFFFD' })]);
@@ -81,8 +80,8 @@ describe('BinaryCharacter component', () => {
                     <BinaryCharacter className={'test-class'} codePoint={null} />
                 );
             };
-            TestUtils.act(() => {
-                ReactDom.render(<Component />, container);
+            act(() => {
+                render(<Component />, { container });
             });
             const binaryCharacter = container.getElementsByClassName(styles.binaryCharacter)[0];
             expect(binaryCharacter.classList.contains('test-class')).toBe(true);

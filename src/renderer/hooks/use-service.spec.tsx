@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, render } from '@testing-library/react';
 
 import { composeElements } from '../utils/compose-elements';
 import { ServiceProvider, ServicesProvider, useService } from './use-service';
@@ -12,7 +11,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 });
@@ -24,19 +23,19 @@ describe('useService() hook', () => {
             const value = useService('testService');
             return <div>{value}</div>;
         };
-        TestUtils.act(() => {
-            ReactDom.render(composeElements(
+        act(() => {
+            render(composeElements(
                 <ServicesProvider value={services}/>,
                 <Component />,
-            ), container);
+            ), { container });
         });
         expect(container.textContent).toBe('ABC');
-        TestUtils.act(() => {
-            ReactDom.render(composeElements(
+        act(() => {
+            render(composeElements(
                 <ServicesProvider value={services} />,
                 <ServiceProvider name="testService" value="TEST" />,
                 <Component />,
-            ), container);
+            ), { container });
         });
         expect(container.textContent).toBe('TEST');
     });
@@ -50,10 +49,10 @@ describe('useService() hook', () => {
             called = true;
             return <></>;
         };
-        TestUtils.act(() => {
-            ReactDom.render((
+        act(() => {
+            render((
                 <Component />
-            ), container);
+            ), { container });
         });
         expect(called).toBe(true);
     });
@@ -68,11 +67,11 @@ describe('useService() hook', () => {
             called = true;
             return <></>;
         };
-        TestUtils.act(() => {
-            ReactDom.render(composeElements(
+        act(() => {
+            render(composeElements(
                 <ServicesProvider value={services} />,
                 <Component />,
-            ), container);
+            ), { container });
         });
         expect(called).toBe(true);
     });

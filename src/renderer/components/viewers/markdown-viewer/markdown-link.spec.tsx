@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, fireEvent, render } from '@testing-library/react';
 
 import { ServicesProvider } from '../../../hooks/use-service';
 import { composeElements } from '../../../utils/compose-elements';
@@ -26,7 +25,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 
@@ -43,8 +42,8 @@ describe('MarkdownLink component', () => {
                 </MarkdownLink>,
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         const markdownLinks = Array.from(container.getElementsByClassName(styles.markdownLink));
         expect(markdownLinks).toEqual([expect.objectContaining({ tagName: 'A', textContent: 'link' })]);
@@ -60,12 +59,12 @@ describe('MarkdownLink component', () => {
                 </MarkdownLink>,
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         expect(openLink).not.toHaveBeenCalled();
         const markdownLink = container.getElementsByClassName(styles.markdownLink)[0];
-        TestUtils.Simulate.click(markdownLink);
+        fireEvent.click(markdownLink);
         expect(openLink).toHaveBeenCalledTimes(1);
         expect(openLink).toHaveBeenCalledWith({ href: './b.md', inNewTab: false });
     });
@@ -80,12 +79,12 @@ describe('MarkdownLink component', () => {
                 </MarkdownLink>,
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         expect(openLink).not.toHaveBeenCalled();
         const markdownLink = container.getElementsByClassName(styles.markdownLink)[0];
-        TestUtils.Simulate.click(markdownLink, { type: 'auxclick' });
+        fireEvent(markdownLink, new MouseEvent('auxclick', { bubbles: true, cancelable: true }));
         expect(openLink).toHaveBeenCalledTimes(1);
         expect(openLink).toHaveBeenCalledWith({ href: 'https://example.com', inNewTab: true });
     });
@@ -100,12 +99,12 @@ describe('MarkdownLink component', () => {
                 </MarkdownLink>,
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         expect(openLink).not.toHaveBeenCalled();
         const markdownLink = container.getElementsByClassName(styles.markdownLink)[0];
-        TestUtils.Simulate.click(markdownLink);
+        fireEvent.click(markdownLink);
         expect(openLink).not.toHaveBeenCalled();
     });
 
@@ -119,8 +118,8 @@ describe('MarkdownLink component', () => {
                     </MarkdownLink>,
                 );
             };
-            TestUtils.act(() => {
-                ReactDom.render(<Component />, container);
+            act(() => {
+                render(<Component />, { container });
             });
             expect(container.getElementsByClassName(styles.markdownLink).length).toBe(1);
             const markdownLink = container.getElementsByClassName(styles.markdownLink)[0];

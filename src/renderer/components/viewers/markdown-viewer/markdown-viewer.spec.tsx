@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, render } from '@testing-library/react';
 import type { Root } from 'hast';
 import { h } from 'hastscript';
 
@@ -104,7 +103,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 
@@ -126,13 +125,13 @@ describe('MarkdownViewer component', () => {
                 <MarkdownViewer {...{ entry, fileSystem, viewerState }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(initialize).toHaveBeenCalledWith({ entry, fileSystem, viewerState });
         expect(container.getElementsByTagName('h1').length).toBe(0);
-        await TestUtils.act(async () => {
+        await act(async () => {
             await controller.setTree(h(null, 'Hello, MarkdownViewer!'));
         });
         expect(container.textContent).toBe('Hello, MarkdownViewer!');
@@ -147,8 +146,8 @@ describe('MarkdownViewer component', () => {
                 <MarkdownViewer {...{ entry, fileSystem, viewerState }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await controller.setTree(h(null, h('a', { href: './b.md' }, 'link')));
         });
         expect(Array.from(container.getElementsByClassName(markdownLinkStyles.markdownLink)))
@@ -164,8 +163,8 @@ describe('MarkdownViewer component', () => {
                 <MarkdownViewer {...{ entry, fileSystem, viewerState }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await controller.setTree(h(null, h('blockquote', 'blockquote')));
         });
         expect(Array.from(container.getElementsByClassName(markdownBlockquoteStyles.markdownBlockquote)))
@@ -181,8 +180,8 @@ describe('MarkdownViewer component', () => {
                 <MarkdownViewer {...{ entry, fileSystem, viewerState }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await controller.setTree(h(null, h('code', 'code')));
         });
         expect(Array.from(container.getElementsByClassName(markdownCodeStyles.markdownCode)))
@@ -198,8 +197,8 @@ describe('MarkdownViewer component', () => {
                 <MarkdownViewer {...{ entry, fileSystem, viewerState }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await controller.setTree(h(null, h('img')));
         });
         expect(Array.from(container.getElementsByClassName(markdownImageStyles.markdownImage)))
@@ -215,8 +214,8 @@ describe('MarkdownViewer component', () => {
                 <MarkdownViewer {...{ entry, fileSystem, viewerState }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await controller.setTree(h(null, h('p', 'paragraph')));
         });
         expect(Array.from(container.getElementsByClassName(markdownParagraphStyles.markdownParagraph)))
@@ -233,8 +232,8 @@ describe('MarkdownViewer component', () => {
                     <MarkdownViewer {...{ entry, fileSystem, viewerState }} className={'test-class'} />,
                 );
             };
-            await TestUtils.act(async () => {
-                ReactDom.render(<Component />, container);
+            await act(async () => {
+                render(<Component />, { container });
                 await immediate();
             });
             const markdownViewer = container.getElementsByClassName(styles.markdownViewer)[0];
@@ -272,8 +271,8 @@ describe('MarkdownViewer component', () => {
                     <MarkdownViewer {...{ entry, fileSystem, viewerState }} />,
                 );
             };
-            await TestUtils.act(async () => {
-                ReactDom.render(<Component />, container);
+            await act(async () => {
+                render(<Component />, { container });
                 await immediate();
             });
             container.scrollLeft = 50;
@@ -299,12 +298,12 @@ describe('MarkdownViewer component', () => {
                     <MarkdownViewer {...{ entry, fileSystem, viewerState }} />,
                 );
             };
-            await TestUtils.act(async () => {
+            await act(async () => {
                 await controller.setScrollPosition(new Point(100, 200));
-                ReactDom.render(<Component />, container);
+                render(<Component />, { container });
             });
             expect(scrollTo).not.toHaveBeenCalled();
-            await TestUtils.act(async () => {
+            await act(async () => {
                 await controller.setTree(h(null, h('div')));
             });
             expect(scrollTo).toHaveBeenCalledTimes(1);

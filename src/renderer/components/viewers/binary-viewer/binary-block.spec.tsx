@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, render } from '@testing-library/react';
 
 import { BinaryViewerControllerBlockState } from '../../../viewer-controllers/binary-viewer-controller';
 import { BinaryBlock } from './binary-block';
@@ -22,7 +21,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 });
@@ -34,8 +33,8 @@ describe('BinaryBlock component', () => {
                 <BinaryBlock addressTextWidth={1} block={blockA} buffer={bufferA} columnCount={1} visible={true} />
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         const binaryBlocks = Array.from(container.getElementsByClassName(styles.binaryBlock));
         expect(binaryBlocks).toEqual([expect.objectContaining({ tagName: 'DIV' })]);
@@ -50,8 +49,8 @@ describe('BinaryBlock component', () => {
                 <BinaryBlock addressTextWidth={1} block={blockA} buffer={bufferA} columnCount={1} visible={false} />
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         const binaryBlocks = Array.from(container.getElementsByClassName(styles.binaryBlock));
         expect(binaryBlocks).toEqual([expect.objectContaining({ tagName: 'DIV' })]);
@@ -68,8 +67,8 @@ describe('BinaryBlock component', () => {
                         addressTextWidth={1} block={blockA} buffer={bufferA} columnCount={1} visible={true} />
                 );
             };
-            TestUtils.act(() => {
-                ReactDom.render(<Component />, container);
+            act(() => {
+                render(<Component />, { container });
             });
             const binaryBlock = container.getElementsByClassName(styles.binaryBlock)[0];
             expect(binaryBlock.classList.contains('test-class')).toBe(true);

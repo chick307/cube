@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, fireEvent, render } from '@testing-library/react';
 
 import { createTabController } from '../../controllers/tab-controller.test-helper';
 import { ServicesProvider } from '../../hooks/use-service';
@@ -15,7 +14,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 });
@@ -35,10 +34,10 @@ describe('TabAddButton component', () => {
                 <TabAddButton />,
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
-        TestUtils.Simulate.click(container.getElementsByClassName(styles.tabAddButton)[0]);
+        fireEvent.click(container.getElementsByClassName(styles.tabAddButton)[0]);
         expect(addTab).toHaveBeenCalledTimes(1);
         expect(addTab).toHaveBeenCalledWith({ active: true });
     });

@@ -1,4 +1,4 @@
-import TestUtils from 'react-dom/test-utils';
+import { fireEvent } from '@testing-library/react';
 
 import type { ContextMenuService, ContextMenuItemTemplate } from '../services/context-menu-service';
 
@@ -14,7 +14,7 @@ export const createContextMenuService = () => {
         menuItemId: string;
     }) => {
         popupContextMenu.mockClear();
-        TestUtils.Simulate.contextMenu(params.element);
+        fireEvent.contextMenu(params.element);
         const getMenuItem = (menuItems: ContextMenuItemTemplate[]): ContextMenuItemTemplate | null => {
             for (const menuItem of menuItems) {
                 if ('id' in menuItem && menuItem.id === params.menuItemId)

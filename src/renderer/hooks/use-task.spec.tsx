@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, render } from '@testing-library/react';
 
 import { CloseSignal } from '../../common/utils/close-controller';
 import { immediate } from '../../common/utils/immediate';
@@ -13,7 +12,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 });
@@ -29,8 +28,8 @@ describe('useTask() hook', () => {
             result = useTask(callback, []);
             return <></>;
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(result).toEqual([{ a: 123 }]);
@@ -46,8 +45,8 @@ describe('useTask() hook', () => {
             result = useTask(callback, []);
             return <></>;
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(result).toEqual([undefined, Error('ERROR')]);
@@ -64,15 +63,15 @@ describe('useTask() hook', () => {
             useTask(callback, props.deps);
             return <></>;
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component deps={[1]} />, container);
+        await act(async () => {
+            render(<Component deps={[1]} />, { container });
             await immediate();
         });
         expect(callback).toHaveBeenCalledTimes(1);
         expect(closed).not.toHaveBeenCalled();
         callback.mockClear();
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component deps={[2]} />, container);
+        await act(async () => {
+            render(<Component deps={[2]} />, { container });
             await immediate();
         });
         expect(callback).toHaveBeenCalledTimes(1);

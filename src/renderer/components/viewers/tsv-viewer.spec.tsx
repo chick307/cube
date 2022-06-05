@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, render } from '@testing-library/react';
 
 import { createEntryMap } from '../../../common/entities/entry.test-helper';
 import { DummyFileSystem } from '../../../common/entities/file-system.test-helper';
@@ -78,7 +77,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 
@@ -97,15 +96,15 @@ describe('TsvViewer component', () => {
                 <TsvViewer {...{ entry, fileSystem, viewerState }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(initialize).toHaveBeenCalledTimes(1);
         expect(initialize).toHaveBeenCalledWith({ entry, fileSystem, viewerState });
         expect(container.getElementsByClassName(styles.tsvViewer).length).toBe(1);
         expect(container.getElementsByClassName(styles.tsvTable).length).toBe(1);
-        await TestUtils.act(async () => {
+        await act(async () => {
             await controller.updateValues([
                 ['header'],
                 ['value1'],
@@ -129,8 +128,8 @@ describe('TsvViewer component', () => {
                     <TsvViewer {...{ entry, fileSystem, viewerState }} className={'test-class'} />,
                 );
             };
-            await TestUtils.act(async () => {
-                ReactDom.render(<Component />, container);
+            await act(async () => {
+                render(<Component />, { container });
                 await immediate();
             });
             const tsvViewer = container.getElementsByClassName(styles.tsvViewer)[0];

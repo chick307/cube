@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, fireEvent, render } from '@testing-library/react';
 import type { Root } from 'hast';
 import { h } from 'hastscript';
 
@@ -103,7 +102,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 
@@ -125,13 +124,13 @@ describe('TextViewer component', () => {
                 <TextViewer {...{ entry, fileSystem, viewerState }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(initialize).toHaveBeenCalledWith({ entry, fileSystem, viewerState });
         expect(container.getElementsByTagName('h1').length).toBe(0);
-        await TestUtils.act(async () => {
+        await act(async () => {
             await controller.setLines([h(null, 'Hello, TextViewer!')]);
         });
         expect(container.textContent).toBe('1Hello, TextViewer!');
@@ -156,11 +155,11 @@ describe('TextViewer component', () => {
                 </div>,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
-        await TestUtils.act(async () => {
+        await act(async () => {
             await controller.setLines([h(null, 'Hello, TextViewer!')]);
         });
         const selectElement =
@@ -169,12 +168,12 @@ describe('TextViewer component', () => {
         const cssOption = options.find((option) => option.textContent === 'CSS')!;
         const javascriptOption = options.find((option) => option.textContent === 'JavaScript')!;
         selectElement.value = cssOption.value;
-        TestUtils.Simulate.change(selectElement);
+        fireEvent.change(selectElement);
         expect(setLanguage).toHaveBeenCalledTimes(1);
         expect(setLanguage).toHaveBeenCalledWith('css');
         setLanguage.mockClear();
         selectElement.value = javascriptOption.value;
-        TestUtils.Simulate.change(selectElement);
+        fireEvent.change(selectElement);
         expect(setLanguage).toHaveBeenCalledTimes(1);
         expect(setLanguage).toHaveBeenCalledWith('javascript');
         setLanguage.mockClear();
@@ -190,8 +189,8 @@ describe('TextViewer component', () => {
                     <TextViewer {...{ entry, fileSystem, viewerState }} className={'test-class'} />,
                 );
             };
-            await TestUtils.act(async () => {
-                ReactDom.render(<Component />, container);
+            await act(async () => {
+                render(<Component />, { container });
                 await immediate();
             });
             const textViewer = container.getElementsByClassName(styles.textViewer)[0];
@@ -229,8 +228,8 @@ describe('TextViewer component', () => {
                     <TextViewer {...{ entry, fileSystem, viewerState }} />,
                 );
             };
-            await TestUtils.act(async () => {
-                ReactDom.render(<Component />, container);
+            await act(async () => {
+                render(<Component />, { container });
                 await immediate();
             });
             container.scrollLeft = 50;
@@ -256,12 +255,12 @@ describe('TextViewer component', () => {
                     <TextViewer {...{ entry, fileSystem, viewerState }} />,
                 );
             };
-            await TestUtils.act(async () => {
+            await act(async () => {
                 await controller.setScrollPosition(new Point(100, 200));
-                ReactDom.render(<Component />, container);
+                render(<Component />, { container });
             });
             expect(scrollTo).not.toHaveBeenCalled();
-            await TestUtils.act(async () => {
+            await act(async () => {
                 await controller.setLines([h(null, h('div'))]);
             });
             expect(scrollTo).toHaveBeenCalledTimes(1);

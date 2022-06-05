@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, render } from '@testing-library/react';
 
 import { DummyEntry } from '../../../common/entities/entry.test-helper';
 import { DummyFileSystem } from '../../../common/entities/file-system.test-helper';
@@ -45,7 +44,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 
@@ -68,8 +67,8 @@ describe('EntryIcon component', () => {
                 <EntryIcon className={'icon'} {...{ entryPath, fileSystem, iconPlaceholder }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(createEntryFromPath).toHaveBeenCalledTimes(1);
@@ -98,13 +97,13 @@ describe('EntryIcon component', () => {
                 <EntryIcon className={'icon'} {...{ entryPath, fileSystem, iconPlaceholder }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(container.querySelector('.icon > img')).toBeNull();
         expect(container.querySelector('.placeholder')?.textContent).toBe('PLACEHOLDER');
-        await TestUtils.act(async () => {
+        await act(async () => {
             resolve('data:image/png;base64,BBBB');
             await immediate();
         });
@@ -123,8 +122,8 @@ describe('EntryIcon component', () => {
                 <EntryIcon className={'icon'} {...{ entryPath, fileSystem, iconPlaceholder, src }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(container.querySelector('.icon > img')?.getAttribute('src')).toBe('data:image/png;base64,CCCC');

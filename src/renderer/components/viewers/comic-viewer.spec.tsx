@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, fireEvent, render } from '@testing-library/react';
 
 import { createEntryMap } from '../../../common/entities/entry.test-helper';
 import { DummyFileSystem } from '../../../common/entities/file-system.test-helper';
@@ -132,7 +131,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 
@@ -166,8 +165,8 @@ describe('ComicViewer component', () => {
                 </div>,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(initialize).toHaveBeenCalledTimes(1);
@@ -176,7 +175,7 @@ describe('ComicViewer component', () => {
         expect(Array.from(container.getElementsByClassName(styles.entryNameText))).toEqual([]);
         expect(Array.from(container.getElementsByClassName(styles.pageDisplaySelect)))
             .toEqual([expect.any(HTMLElement)]);
-        await TestUtils.act(async () => {
+        await act(async () => {
             await controller.setSpreads([
                 { pages: [{ entry: entries.get('/a/1.png')! }] },
                 { pages: [{ entry: entries.get('/a/2.png')! }, { entry: entries.get('/a/3.png')! }] },
@@ -187,7 +186,7 @@ describe('ComicViewer component', () => {
         expect(Array.from(container.getElementsByClassName(styles.entryNameText)))
             .toEqual([expect.objectContaining({ textContent: '1.png' })]);
         expect(canvasGetContext).not.toHaveBeenCalled();
-        await TestUtils.act(async () => {
+        await act(async () => {
             await controller.loadImages();
         });
         expect(canvasGetContext).toHaveBeenCalledTimes(1);
@@ -212,8 +211,8 @@ describe('ComicViewer component', () => {
                 </div>,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await controller.setSpreads([
                 { pages: [{ entry: entries.get('/a/1.png')! }] },
                 { pages: [{ entry: entries.get('/a/2.png')! }, { entry: entries.get('/a/3.png')! }] },
@@ -239,8 +238,8 @@ describe('ComicViewer component', () => {
                 <ComicViewer {...{ entry, fileSystem, viewerState }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(openPreviousPage).not.toHaveBeenCalled();
@@ -259,8 +258,8 @@ describe('ComicViewer component', () => {
                 <ComicViewer {...{ entry, fileSystem, viewerState }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(openNextPage).not.toHaveBeenCalled();
@@ -279,8 +278,8 @@ describe('ComicViewer component', () => {
                 <ComicViewer {...{ entry, fileSystem, viewerState }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(openLeftPage).not.toHaveBeenCalled();
@@ -299,8 +298,8 @@ describe('ComicViewer component', () => {
                 <ComicViewer {...{ entry, fileSystem, viewerState }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(openRightPage).not.toHaveBeenCalled();
@@ -319,8 +318,8 @@ describe('ComicViewer component', () => {
                 <ComicViewer {...{ entry, fileSystem, viewerState }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(openFirstPage).not.toHaveBeenCalled();
@@ -339,8 +338,8 @@ describe('ComicViewer component', () => {
                 <ComicViewer {...{ entry, fileSystem, viewerState }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(openLastPage).not.toHaveBeenCalled();
@@ -368,8 +367,8 @@ describe('ComicViewer component', () => {
                 </div>,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(setPageDisplay).not.toHaveBeenCalled();
@@ -380,13 +379,13 @@ describe('ComicViewer component', () => {
         const singlePageOption = options.find((option) => option.textContent === 'Single Page')!;
         const twoPagesOption = options.find((option) => option.textContent === 'Two Pages')!;
         selectElement.value = singlePageOption.value;
-        TestUtils.Simulate.change(selectElement);
+        fireEvent.change(selectElement);
         await immediate();
         expect(setPageDisplay).toHaveBeenCalledTimes(1);
         expect(setPageDisplay).toHaveBeenCalledWith('single');
         setPageDisplay.mockClear();
         selectElement.value = twoPagesOption.value;
-        TestUtils.Simulate.change(selectElement);
+        fireEvent.change(selectElement);
         await immediate();
         expect(setPageDisplay).toHaveBeenCalledTimes(1);
         expect(setPageDisplay).toHaveBeenCalledWith('two');
@@ -402,8 +401,8 @@ describe('ComicViewer component', () => {
                     <ComicViewer {...{ entry, fileSystem, viewerState }} className={'test-class'} />,
                 );
             };
-            await TestUtils.act(async () => {
-                ReactDom.render(<Component />, container);
+            await act(async () => {
+                render(<Component />, { container });
                 await immediate();
             });
             const comicViewer = container.getElementsByClassName(styles.comicViewer)[0];

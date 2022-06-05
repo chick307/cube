@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, render } from '@testing-library/react';
 
 import { MarkdownParagraph } from './markdown-paragraph';
 import styles from './markdown-paragraph.module.css';
@@ -12,7 +11,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 });
@@ -26,8 +25,8 @@ describe('MarkdownParagraph component', () => {
                 </MarkdownParagraph>
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         const markdownParagraphs = Array.from(container.getElementsByClassName(styles.markdownParagraph));
         expect(markdownParagraphs).toEqual([expect.objectContaining({ tagName: 'P', textContent: 'paragraph' })]);
@@ -42,8 +41,8 @@ describe('MarkdownParagraph component', () => {
                     </MarkdownParagraph>
                 );
             };
-            TestUtils.act(() => {
-                ReactDom.render(<Component />, container);
+            act(() => {
+                render(<Component />, { container });
             });
             const markdownParagraph = container.getElementsByClassName(styles.markdownParagraph)[0];
             expect(markdownParagraph.classList.contains('test-class')).toBe(true);

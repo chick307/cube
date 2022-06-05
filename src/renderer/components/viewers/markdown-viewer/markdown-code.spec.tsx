@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, render } from '@testing-library/react';
 
 import { MarkdownCode } from './markdown-code';
 import styles from './markdown-code.module.css';
@@ -12,7 +11,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 });
@@ -26,8 +25,8 @@ describe('MarkdownCode component', () => {
                 </MarkdownCode>
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         const markdownCodes = Array.from(container.getElementsByClassName(styles.markdownCode));
         expect(markdownCodes).toEqual([expect.objectContaining({ tagName: 'CODE', textContent: 'code' })]);
@@ -42,8 +41,8 @@ describe('MarkdownCode component', () => {
                     </MarkdownCode>
                 );
             };
-            TestUtils.act(() => {
-                ReactDom.render(<Component />, container);
+            act(() => {
+                render(<Component />, { container });
             });
             const markdownCode = container.getElementsByClassName(styles.markdownCode)[0];
             expect(markdownCode.classList.contains('test-class')).toBe(true);

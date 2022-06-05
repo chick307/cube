@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, render } from '@testing-library/react';
 
 import { immediate } from '../../common/utils/immediate';
 import { Restate, State } from '../../common/utils/restate';
@@ -13,7 +12,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 });
@@ -29,50 +28,30 @@ describe('useRestate() hook', () => {
             spy([counter, text]);
             return <></>;
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(spy).toHaveBeenCalledTimes(1);
         expect(spy).toHaveBeenCalledWith([1, 'abc']);
         spy.mockClear();
-        await TestUtils.act(async () => {
+        await act(async () => {
             await restate.set(2);
             await immediate();
         });
         expect(spy).toHaveBeenCalledTimes(1);
         expect(spy).toHaveBeenCalledWith([2, 'abc']);
         spy.mockClear();
-        await TestUtils.act(async () => {
+        await act(async () => {
             await restate.set(3);
             await immediate();
         });
         expect(spy).toHaveBeenCalledTimes(1);
         expect(spy).toHaveBeenCalledWith([3, 'abc']);
         spy.mockClear();
-        await TestUtils.act(async () => {
-            ReactDom.unmountComponentAtNode(container);
+        await act(async () => {
+            cleanup();
             await immediate();
         });
-    });
-
-    test('returns current state for each generations even when microtask', async () => {
-        const restate = new Restate(0);
-        const constantState = State.of('abc');
-        const spy = jest.fn();
-        const Component = () => {
-            const counter = useRestate(restate.state);
-            const text = useRestate(constantState);
-            spy([counter, text]);
-            return <></>;
-        };
-        restate.set(1);
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
-            await immediate();
-        });
-        expect(spy).toHaveBeenCalledTimes(2);
-        expect(spy).toHaveBeenNthCalledWith(1, [0, 'abc']);
-        expect(spy).toHaveBeenNthCalledWith(2, [1, 'abc']);
     });
 });

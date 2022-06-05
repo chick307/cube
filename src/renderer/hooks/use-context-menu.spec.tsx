@@ -1,7 +1,6 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
-import { composeElements } from '../utils/compose-elements';
+import { act, cleanup, render } from '@testing-library/react';
 
+import { composeElements } from '../utils/compose-elements';
 import { useContextMenu } from './use-context-menu';
 import { ServicesProvider } from './use-service';
 
@@ -13,7 +12,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 });
@@ -33,8 +32,8 @@ describe('useContextMenu() hook', () => {
                 <div id="content" />,
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         const content = container.querySelector('#content') as HTMLDivElement;
         expect(content).toBeInstanceOf(HTMLDivElement);

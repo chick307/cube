@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, render } from '@testing-library/react';
 
 import { MarkdownBlockquote } from './markdown-blockquote';
 import styles from './markdown-blockquote.module.css';
@@ -12,7 +11,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 });
@@ -26,8 +25,8 @@ describe('MarkdownBlockquote component', () => {
                 </MarkdownBlockquote>
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         const markdownBlockquotes = Array.from(container.getElementsByClassName(styles.markdownBlockquote));
         expect(markdownBlockquotes)
@@ -43,8 +42,8 @@ describe('MarkdownBlockquote component', () => {
                     </MarkdownBlockquote>
                 );
             };
-            TestUtils.act(() => {
-                ReactDom.render(<Component />, container);
+            act(() => {
+                render(<Component />, { container });
             });
             const markdownBlockquote = container.getElementsByClassName(styles.markdownBlockquote)[0];
             expect(markdownBlockquote.classList.contains('test-class')).toBe(true);

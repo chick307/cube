@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, fireEvent, render } from '@testing-library/react';
 
 import { SymbolicLinkEntry } from '../../../common/entities/entry';
 import { createEntryMap } from '../../../common/entities/entry.test-helper';
@@ -98,7 +97,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 
@@ -120,8 +119,8 @@ describe('SymbolicLinkViewer component', () => {
                 </div>
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(initialize).toHaveBeenCalledTimes(1);
@@ -129,7 +128,7 @@ describe('SymbolicLinkViewer component', () => {
         expect(container.getElementsByClassName(styles.linkString).length).toBe(0);
         expect(container.getElementsByClassName(styles.linkedEntry).length).toBe(0);
         expect(container.getElementsByClassName(styles.linkedEntryPath).length).toBe(0);
-        await TestUtils.act(async () => {
+        await act(async () => {
             await controllers.restate.update((state) => {
                 return {
                     ...state,
@@ -158,8 +157,8 @@ describe('SymbolicLinkViewer component', () => {
                 </div>
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await controllers.restate.update((state) => {
                 return {
                     ...state,
@@ -169,7 +168,7 @@ describe('SymbolicLinkViewer component', () => {
             });
         });
         expect(container.getElementsByClassName(styles.linkedEntryPath).length).toBe(1);
-        TestUtils.Simulate.click(container.getElementsByClassName(styles.linkedEntryPath)[0]);
+        fireEvent.click(container.getElementsByClassName(styles.linkedEntryPath)[0]);
         expect(openLink).toHaveBeenCalledTimes(1);
     });
 
@@ -186,8 +185,8 @@ describe('SymbolicLinkViewer component', () => {
                     </div>
                 );
             };
-            await TestUtils.act(async () => {
-                ReactDom.render(<Component />, container);
+            await act(async () => {
+                render(<Component />, { container });
                 await immediate();
             });
             expect(container.getElementsByClassName(styles.symbolicLinkViewer).length).toBe(1);

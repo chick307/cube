@@ -1,6 +1,5 @@
+import { act, cleanup, render } from '@testing-library/react';
 import React from 'react';
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
 
 import { composeElements } from './compose-elements';
 
@@ -12,7 +11,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 });
@@ -30,8 +29,8 @@ describe('composeElements() function', () => {
                 <div className={'c'} />,
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         expect((container.firstChild as HTMLElement)?.className).toBe('a');
         expect((container.firstChild?.firstChild as HTMLElement)?.className).toBe('b');
@@ -56,8 +55,8 @@ describe('composeElements() function', () => {
                 <InnerComponent />,
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         expect(a).toBe(1);
         expect(b).toBe(2);

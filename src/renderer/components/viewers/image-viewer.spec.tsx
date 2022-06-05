@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, fireEvent, render } from '@testing-library/react';
 
 import { createEntryMap } from '../../../common/entities/entry.test-helper';
 import { DummyFileSystem } from '../../../common/entities/file-system.test-helper';
@@ -84,7 +83,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 
@@ -106,14 +105,14 @@ describe('ImageViewer component', () => {
                 <ImageViewer {...{ entry, fileSystem, viewerState }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(initialize).toHaveBeenCalledTimes(1);
         expect(initialize).toHaveBeenCalledWith({ entry, fileSystem, viewerState });
         expect(container.getElementsByClassName(styles.image).length).toBe(0);
-        await TestUtils.act(async () => {
+        await act(async () => {
             await controller.setBlob(new Blob(['<svg />'], { type: 'image/svg+xml' }));
         });
         const images = Array.from(container.getElementsByClassName(styles.image));
@@ -130,8 +129,8 @@ describe('ImageViewer component', () => {
                     <ImageViewer {...{ entry, fileSystem, viewerState }} className={'test-class'} />,
                 );
             };
-            await TestUtils.act(async () => {
-                ReactDom.render(<Component />, container);
+            await act(async () => {
+                render(<Component />, { container });
                 await immediate();
             });
             const imageViewer = container.getElementsByClassName(styles.imageViewer)[0];
@@ -169,8 +168,8 @@ describe('ImageViewer component', () => {
                     <ImageViewer {...{ entry, fileSystem, viewerState }} />,
                 );
             };
-            await TestUtils.act(async () => {
-                ReactDom.render(<Component />, container);
+            await act(async () => {
+                render(<Component />, { container });
                 await immediate();
             });
             container.scrollLeft = 50;
@@ -196,17 +195,17 @@ describe('ImageViewer component', () => {
                     <ImageViewer {...{ entry, fileSystem, viewerState }} />,
                 );
             };
-            await TestUtils.act(async () => {
+            await act(async () => {
                 await controller.setScrollPosition(new Point(100, 200));
-                ReactDom.render(<Component />, container);
+                render(<Component />, { container });
             });
-            await TestUtils.act(async () => {
+            await act(async () => {
                 await controller.setBlob(new Blob(['<svg />'], { type: 'image/svg+xml' }));
             });
             const images = Array.from(container.getElementsByClassName(styles.image));
             expect(images).toEqual([expect.any(HTMLImageElement)]);
             expect(scrollTo).not.toHaveBeenCalled();
-            TestUtils.Simulate.load(images[0]);
+            fireEvent.load(images[0]);
             expect(scrollTo).toHaveBeenCalledTimes(1);
             expect(scrollTo).toHaveBeenCalledWith(100, 200);
         });

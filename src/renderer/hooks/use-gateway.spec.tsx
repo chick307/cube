@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, render } from '@testing-library/react';
 
 import { useGateway } from './use-gateway';
 
@@ -11,7 +10,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 });
@@ -44,8 +43,8 @@ describe('useGateway() hook', () => {
                 </>
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         expect(container.textContent).toBe('ABFGHCDEIJ');
     });
@@ -60,12 +59,12 @@ describe('useGateway() hook', () => {
                 </>
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component enabled={true} />, container);
+        act(() => {
+            render(<Component enabled={true} />, { container });
         });
         expect(container.textContent).toBe('ABC');
-        TestUtils.act(() => {
-            ReactDom.render(<Component enabled={false} />, container);
+        act(() => {
+            render(<Component enabled={false} />, { container });
         });
         expect(container.textContent).toBe('');
     });
@@ -92,8 +91,8 @@ describe('useGateway() hook', () => {
                 </>
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         expect(container.textContent).toBe('ADFBECG');
     });
@@ -113,16 +112,16 @@ describe('useGateway() hook', () => {
                 </>
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component content={'X'} />, container);
+        act(() => {
+            render(<Component content={'X'} />, { container });
         });
         expect(container.textContent).toBe('ACXD');
-        TestUtils.act(() => {
-            ReactDom.render(<Component content={'Y'} />, container);
+        act(() => {
+            render(<Component content={'Y'} />, { container });
         });
         expect(container.textContent).toBe('ACYD');
-        TestUtils.act(() => {
-            ReactDom.render(<Component content={'Z'} />, container);
+        act(() => {
+            render(<Component content={'Z'} />, { container });
         });
         expect(container.textContent).toBe('ACZD');
     });

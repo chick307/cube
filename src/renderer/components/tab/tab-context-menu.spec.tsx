@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, render } from '@testing-library/react';
 
 import { createTabController } from '../../controllers/tab-controller.test-helper';
 import { createContextMenuService } from '../../hooks/use-context-menu.test-helper';
@@ -15,7 +14,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 });
@@ -37,8 +36,8 @@ describe('TabContextMenu component', () => {
                 <div id="content" />,
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         const content = document.querySelector('#content') as HTMLElement;
         clickContextMenuItem({ element: content, menuItemId: 'new-tab' });
@@ -58,8 +57,8 @@ describe('TabContextMenu component', () => {
                 <div id="content" />,
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         const content = document.querySelector('#content') as HTMLElement;
         clickContextMenuItem({ element: content, menuItemId: 'close' });

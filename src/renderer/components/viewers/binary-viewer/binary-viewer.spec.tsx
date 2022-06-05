@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, render } from '@testing-library/react';
 
 import { createEntryMap } from '../../../../common/entities/entry.test-helper';
 import { DummyFileSystem } from '../../../../common/entities/file-system.test-helper';
@@ -79,7 +78,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 
@@ -105,12 +104,12 @@ describe('BinaryViewer component', () => {
                 <BinaryViewer {...{ entry, fileSystem, viewerState }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(initialize).toHaveBeenCalledWith({ entry, fileSystem, viewerState });
-        await TestUtils.act(async () => {
+        await act(async () => {
             await controller.setBuffer(Buffer.from([0, 1, 2, 3, 4]));
             await controller.setBlocks([
                 { blockEnd: 5, blockStart: 0, codePoints: [0, 1, 2, 3, 4], id: 'block-a' },
@@ -132,8 +131,8 @@ describe('BinaryViewer component', () => {
                 <BinaryViewer {...{ entry, fileSystem, viewerState }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await controller.setBuffer(Buffer.from([0, 1, 2, 3, 4]));
             await controller.setBlocks([
                 { blockEnd: 5, blockStart: 0, codePoints: [0, 1, 2, 3, 4], id: 'block-a' },
@@ -155,20 +154,20 @@ describe('BinaryViewer component', () => {
             callback([] as any, {} as any);
             await immediate();
         };
-        await TestUtils.act(resize);
+        await act(resize);
         expect(blocks[0].style.getPropertyValue('--column-count')).toBe('2');
         jest.spyOn(wideBinaryContents, 'getBoundingClientRect').mockReturnValue({ width: 540 } as any);
         jest.spyOn(binaryContents, 'getBoundingClientRect').mockReturnValue({ width: 360 } as any);
-        await TestUtils.act(resize);
+        await act(resize);
         expect(blocks[0].style.getPropertyValue('--column-count')).toBe('3');
         jest.spyOn(container, 'getBoundingClientRect').mockReturnValue({ width: 219 } as any);
         jest.spyOn(wideBinaryContents, 'getBoundingClientRect').mockReturnValue({ width: 720 } as any);
         jest.spyOn(binaryContents, 'getBoundingClientRect').mockReturnValue({ width: 540 } as any);
-        await TestUtils.act(resize);
+        await act(resize);
         expect(blocks[0].style.getPropertyValue('--column-count')).toBe('2');
         jest.spyOn(wideBinaryContents, 'getBoundingClientRect').mockReturnValue({ width: 360 } as any);
         jest.spyOn(binaryContents, 'getBoundingClientRect').mockReturnValue({ width: 180 } as any);
-        await TestUtils.act(resize);
+        await act(resize);
         expect(blocks[0].style.getPropertyValue('--column-count')).toBe('1');
     });
 
@@ -182,8 +181,8 @@ describe('BinaryViewer component', () => {
                 <BinaryViewer {...{ entry, fileSystem, viewerState }} />,
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await controller.setBuffer(Buffer.from([0, 1, 2, 3, 4]));
             await controller.setBlocks([
                 { blockEnd: 5, blockStart: 0, codePoints: [0, 1, 2, 3, 4], id: 'block-a' },
@@ -191,13 +190,13 @@ describe('BinaryViewer component', () => {
         });
         const blocks = Array.from(container.getElementsByClassName(styles.block));
         expect(blocks[0].textContent).toBe('');
-        await TestUtils.act(async () => {
+        await act(async () => {
             const callback = IntersectionObserver.mock.calls[IntersectionObserver.mock.calls.length - 1][0];
             callback([{ target: blocks[0], isIntersecting: true }] as any, {} as any);
             await immediate();
         });
         expect(blocks[0].textContent).toMatch(/00\s*01\s*02\s*03\s*04/);
-        await TestUtils.act(async () => {
+        await act(async () => {
             const callback = IntersectionObserver.mock.calls[IntersectionObserver.mock.calls.length - 1][0];
             callback([{ target: blocks[0], isIntersecting: false }] as any, {} as any);
             await immediate();
@@ -215,8 +214,8 @@ describe('BinaryViewer component', () => {
                     <BinaryViewer {...{ entry, fileSystem, viewerState }} className={'test-class'} />,
                 );
             };
-            await TestUtils.act(async () => {
-                ReactDom.render(<Component />, container);
+            await act(async () => {
+                render(<Component />, { container });
                 await immediate();
             });
             const binaryViewer = container.getElementsByClassName(styles.binaryViewer)[0];
@@ -252,8 +251,8 @@ describe('BinaryViewer component', () => {
                     <BinaryViewer {...{ entry, fileSystem, viewerState }} />,
                 );
             };
-            await TestUtils.act(async () => {
-                ReactDom.render(<Component />, container);
+            await act(async () => {
+                render(<Component />, { container });
                 await immediate();
             });
             container.scrollLeft = 50;
@@ -279,12 +278,12 @@ describe('BinaryViewer component', () => {
                     <BinaryViewer {...{ entry, fileSystem, viewerState }} />,
                 );
             };
-            await TestUtils.act(async () => {
+            await act(async () => {
                 await controller.setScrollPosition(new Point(100, 200));
-                ReactDom.render(<Component />, container);
+                render(<Component />, { container });
             });
             expect(scrollTo).not.toHaveBeenCalled();
-            await TestUtils.act(async () => {
+            await act(async () => {
                 await controller.setBuffer(Buffer.from([0, 1, 2, 3, 4]));
                 await controller.setBlocks([
                     { blockEnd: 5, blockStart: 0, codePoints: [0, 1, 2, 3, 4], id: 'block-a' },

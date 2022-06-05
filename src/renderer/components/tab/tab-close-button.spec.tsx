@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, fireEvent, render } from '@testing-library/react';
 
 import { createTabController } from '../../controllers/tab-controller.test-helper';
 import { composeElements } from '../../utils/compose-elements';
@@ -15,7 +14,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 });
@@ -34,8 +33,8 @@ describe('TabCloseButton component', () => {
                 <TabCloseButton className={'class-name'} tabId={123} />,
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         const tabCloseButton = container.getElementsByClassName(styles.tabCloseButton)[0];
         expect(tabCloseButton.classList.contains('class-name')).toBe(true);
@@ -51,11 +50,11 @@ describe('TabCloseButton component', () => {
                 <TabCloseButton tabId={123} />,
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         const tabCloseButton = container.getElementsByClassName(styles.tabCloseButton)[0];
-        TestUtils.Simulate.click(tabCloseButton);
+        fireEvent.click(tabCloseButton);
         expect(removeTab).toHaveBeenCalledTimes(1);
         expect(removeTab).toHaveBeenCalledWith({ id: 123 });
     });

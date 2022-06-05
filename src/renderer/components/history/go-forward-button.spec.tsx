@@ -1,6 +1,5 @@
+import { act, cleanup, fireEvent, render } from '@testing-library/react';
 import React from 'react';
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
 
 import { Entry } from '../../../common/entities/entry';
 import { DummyFileSystem } from '../../../common/entities/file-system.test-helper';
@@ -25,7 +24,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 });
@@ -66,10 +65,10 @@ describe('GoForwardButton component', () => {
                 <GoForwardButton />,
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
-        TestUtils.Simulate.click(container.getElementsByClassName(buttonStyles.button)[0]);
+        fireEvent.click(container.getElementsByClassName(buttonStyles.button)[0]);
         expect(goForward).toHaveBeenCalledTimes(1);
     });
 
@@ -93,10 +92,10 @@ describe('GoForwardButton component', () => {
                 <GoForwardButton onClick={onClick} />,
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
-        TestUtils.Simulate.click(container.getElementsByClassName(buttonStyles.button)[0]);
+        fireEvent.click(container.getElementsByClassName(buttonStyles.button)[0]);
         expect(goForward).not.toHaveBeenCalled();
     });
 });

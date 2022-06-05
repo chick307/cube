@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, render } from '@testing-library/react';
 
 import { immediate } from '../../../../common/utils/immediate';
 import { ServicesProvider } from '../../../hooks/use-service';
@@ -28,7 +27,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 
@@ -49,8 +48,8 @@ describe('MarkdownImage component', () => {
                 </div>
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         const markdownImages = Array.from(container.getElementsByClassName(styles.markdownImage));
@@ -73,8 +72,8 @@ describe('MarkdownImage component', () => {
                 </div>
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         const markdownImages = Array.from(container.getElementsByClassName(styles.markdownImage));
@@ -97,8 +96,8 @@ describe('MarkdownImage component', () => {
                 </div>
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         const markdownImages = Array.from(container.getElementsByClassName(styles.markdownImage));
@@ -118,8 +117,8 @@ describe('MarkdownImage component', () => {
                 </div>
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         const markdownImages = Array.from(container.getElementsByClassName(styles.markdownImage));
@@ -141,8 +140,8 @@ describe('MarkdownImage component', () => {
                 </div>
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         const markdownImage = container.getElementsByClassName(styles.markdownImage)[0];
@@ -161,8 +160,8 @@ describe('MarkdownImage component', () => {
                 </div>
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         const markdownImage = container.getElementsByClassName(styles.markdownImage)[0];
@@ -182,8 +181,8 @@ describe('MarkdownImage component', () => {
                     </div>
                 );
             };
-            await TestUtils.act(async () => {
-                ReactDom.render(<Component />, container);
+            await act(async () => {
+                render(<Component />, { container });
                 await immediate();
             });
             expect(container.getElementsByClassName(styles.markdownImage).length).toBe(1);

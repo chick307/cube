@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, fireEvent, render } from '@testing-library/react';
 
 import { createEntryMap } from '../../../common/entities/entry.test-helper';
 import { DummyFileSystem } from '../../../common/entities/file-system.test-helper';
@@ -112,7 +111,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 
@@ -140,8 +139,8 @@ describe('DirectoryViewer component', () => {
                 </div>
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await immediate();
         });
         expect(initialize).toHaveBeenCalledTimes(1);
@@ -150,7 +149,7 @@ describe('DirectoryViewer component', () => {
         expect(container.getElementsByClassName(styles.listItem).length).toBe(0);
         expect(container.getElementsByClassName(styles.itemCount).length).toBe(1);
         expect(container.getElementsByClassName(styles.itemCount)[0]?.textContent).toBe('no item');
-        await TestUtils.act(async () => {
+        await act(async () => {
             await controllers.restate.update((state) => {
                 return {
                     ...state,
@@ -192,8 +191,8 @@ describe('DirectoryViewer component', () => {
                 </div>
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await controllers.restate.update((state) => {
                 return {
                     ...state,
@@ -207,7 +206,7 @@ describe('DirectoryViewer component', () => {
         });
         const listItems = container.getElementsByClassName(styles.listItem) as HTMLCollectionOf<HTMLElement>;
         expect(listItems.length).toBe(2);
-        TestUtils.Simulate.doubleClick(listItems[0]);
+        fireEvent.doubleClick(listItems[0]);
         expect(openItem).toHaveBeenCalledTimes(1);
         expect(openItem).toHaveBeenCalledWith({ itemId: '0' });
     });
@@ -231,8 +230,8 @@ describe('DirectoryViewer component', () => {
                 </div>
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await controllers.restate.update((state) => {
                 return {
                     ...state,
@@ -245,7 +244,7 @@ describe('DirectoryViewer component', () => {
             });
         });
         const list = container.getElementsByClassName(styles.list)[0];
-        TestUtils.Simulate.doubleClick(list);
+        fireEvent.doubleClick(list);
         expect(openItem).not.toHaveBeenCalled();
     });
 
@@ -268,8 +267,8 @@ describe('DirectoryViewer component', () => {
                 </div>
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await controllers.restate.update((state) => {
                 return {
                     ...state,
@@ -305,8 +304,8 @@ describe('DirectoryViewer component', () => {
                 </div>
             );
         };
-        await TestUtils.act(async () => {
-            ReactDom.render(<Component />, container);
+        await act(async () => {
+            render(<Component />, { container });
             await controllers.restate.update((state) => {
                 return {
                     ...state,
@@ -342,8 +341,8 @@ describe('DirectoryViewer component', () => {
                     </div>
                 );
             };
-            await TestUtils.act(async () => {
-                ReactDom.render(<Component />, container);
+            await act(async () => {
+                render(<Component />, { container });
                 await immediate();
             });
             expect(container.getElementsByClassName(styles.directoryViewer).length).toBe(1);

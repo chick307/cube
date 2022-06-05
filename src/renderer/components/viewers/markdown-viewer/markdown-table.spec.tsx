@@ -1,5 +1,4 @@
-import ReactDom from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import { act, cleanup, render } from '@testing-library/react';
 
 import { MarkdownTable } from './markdown-table';
 import styles from './markdown-table.module.css';
@@ -12,7 +11,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    ReactDom.unmountComponentAtNode(container);
+    cleanup();
     container.remove();
     container = null!;
 });
@@ -26,8 +25,8 @@ describe('MarkdownTable component', () => {
                 </MarkdownTable>
             );
         };
-        TestUtils.act(() => {
-            ReactDom.render(<Component />, container);
+        act(() => {
+            render(<Component />, { container });
         });
         const markdownTables = Array.from(container.getElementsByClassName(styles.markdownTable));
         expect(markdownTables)
@@ -43,8 +42,8 @@ describe('MarkdownTable component', () => {
                     </MarkdownTable>
                 );
             };
-            TestUtils.act(() => {
-                ReactDom.render(<Component />, container);
+            act(() => {
+                render(<Component />, { container });
             });
             const markdownTable = container.getElementsByClassName(styles.markdownTable)[0];
             expect(markdownTable.classList.contains('test-class')).toBe(true);
